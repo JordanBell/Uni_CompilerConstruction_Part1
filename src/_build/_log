@@ -1,0 +1,10 @@
+### Starting build.
+# Target: parser.ml.depends, tags: { extension:ml, file:parser.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep -modules parser.ml > parser.ml.depends
+# Target: parser.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:parser.cmo, file:parser.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc -c -o parser.cmo parser.ml
++ /usr/bin/ocamlc -c -o parser.cmo parser.ml
+File "parser.ml", line 25, characters 9-15:
+Error: Unbound value printf
+Command exited with code 2.
+# Compilation unsuccessful.
