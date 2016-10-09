@@ -15,7 +15,7 @@ read -p "Do you wish to push? " yn
 case $yn in
 	[Yy]* ) echo "Please enter commit details: "
 		read commit_deets 
-		git commit -m commit_deets;;
+		git commit -m "$commit_deets";;
 	[Nn]* ) exit;;
 esac
 
