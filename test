@@ -1,0 +1,18 @@
+#!/bin/bash
+#Run all small tests
+echo "Running all small test 0-9"
+src/parser.native test_cases/small0.txt
+src/parser.native test_cases/small1.txt
+src/parser.native test_cases/small2.txt
+src/parser.native test_cases/small3.txt
+src/parser.native test_cases/small4.txt
+src/parser.native test_cases/small5.txt
+src/parser.native test_cases/small6.txt
+src/parser.native test_cases/small7.txt
+src/parser.native test_cases/small8.txt
+src/parser.native test_cases/small9.txt
+
+#Run all larger tests
+echo "Running all large tests"
+src/parser.native test_cases/large_recursive.txt
+src/parser.native test_cases/large_iterative.txt

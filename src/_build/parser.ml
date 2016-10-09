@@ -1,3 +1,5 @@
+open Printf
+
 type opcode =
   | Plus | Minus | Times | Divide
   | Leq | Geq | Equal | Noteq
@@ -22,7 +24,7 @@ type fundef = string * string list * expression
 
 type program = fundef list
 
-let () = printf "This is a number: %d\n" 1
+let () = printf "Running on file %s\n" Sys.argv.(1)
 
 (*
 

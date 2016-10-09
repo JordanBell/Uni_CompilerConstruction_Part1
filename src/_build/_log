@@ -1,10 +1,10 @@
 ### Starting build.
 # Target: parser.ml.depends, tags: { extension:ml, file:parser.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep -modules parser.ml > parser.ml.depends
+/usr/bin/ocamldep -modules parser.ml > parser.ml.depends # cached
 # Target: parser.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:parser.cmo, file:parser.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc -c -o parser.cmo parser.ml
-+ /usr/bin/ocamlc -c -o parser.cmo parser.ml
-File "parser.ml", line 25, characters 9-15:
-Error: Unbound value printf
-Command exited with code 2.
-# Compilation unsuccessful.
+/usr/bin/ocamlc -c -o parser.cmo parser.ml # cached
+# Target: parser.cmx, tags: { compile, extension:cmx, extension:ml, file:parser.cmx, file:parser.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt -c -o parser.cmx parser.ml # cached
+# Target: parser.native, tags: { dont_link_with, extension:native, file:parser.native, link, native, ocaml, program, quiet }
+/usr/bin/ocamlopt parser.cmx -o parser.native # cached
+# Compilation successful.

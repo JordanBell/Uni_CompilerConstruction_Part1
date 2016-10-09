@@ -1,2 +1,6 @@
-"Rule: ocaml dependencies ml (%=parser )": "\162\255\145\246\2167\br\005pJ8e\255e)"
+"Rule: ocaml: ml & cmi -> cmx & o (%=parser )": "\146L\254\128\138\208\187\001\131\"gNw\235_\182"
+"Rule: ocaml: ml -> cmo & cmi (%=parser )": "\169\216F\181d\204\245\240c\192\173il#|;"
+"Rule: ocaml dependencies ml (%=parser )": "\019\235J\220\b2\175=:\158\1442K\005\250o"
 "Resource: /home/bham/work/Compiler Construction/Exercise 1/parser.ml": "z\165J\143\187p7\203\025\159\175I\211n\215t"
+"Rule: ocaml: cmx* & o* -> native (%=parser )": "\240\227N\190awB\158>\001\031\223\200\253V\129"
+"Resource: /home/bham/work/Compiler Construction/Exercise 1/src/parser.ml": "86\226?\165d7\1872\252\222\130\220l{~"
