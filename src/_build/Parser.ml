@@ -9,6 +9,16 @@ let string_of_opcode = function
 	| Minus -> "Minus"
 	| Times -> "Times"
 	| Divide -> "Divide"
+	| And -> "And"
+	| Or -> "Or"
+	| Geq -> "Geq"
+	| Leq -> "Leq"
+	| Equal -> "Equal"
+	| Noteq -> "Noteq"
+	| _ -> "opcode_str_err"
+
+let string_of_opcode_unary = function	
+	| Not -> "Not"
 	| _ -> "opcode_str_err"
 
 let string_of_token = function
@@ -27,6 +37,12 @@ let rec print_expression expr acc =
 			printf "%s%s" indent_str_next opcode_str; 	printf ",\n";			(* Print opcode *)
 			print_expression e (acc+1); 			printf ",\n"; 			(* Print first expr *)
 			print_expression f (acc+1); 							(* Print second expr *)
+			printf "\n%s)" indent_str
+		| Operator_unary (op, e) -> 
+			let opcode_str = string_of_opcode_unary op in
+			printf "%sOperator_unary\n%s(\n" indent_str indent_str;
+			printf "%s%s" indent_str_next opcode_str; 	printf ",\n";			(* Print opcode *)
+			print_expression e (acc+1); 							(* Print expr *)
 			printf "\n%s)" indent_str
 		| If (b, e, f) -> 
 			printf "%sIf\n%s(\n" indent_str indent_str;

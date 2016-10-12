@@ -74,7 +74,7 @@ exp :
 | e = exp; NOTEQ; f = exp  		{ Operator (Noteq, e, f) }
 | e = exp; AND; f = exp  		{ Operator (And, e, f) }
 | e = exp; OR;  f = exp 		{ Operator (Or, e, f) }
-| e = exp; NOT; f = exp  		{ Operator (Not, e, f) }
+| NOT; e = exp;		  		{ Operator_unary (Not, e) }
 
 (* Misc *)
 | CONST		 			{ Const ($1) }

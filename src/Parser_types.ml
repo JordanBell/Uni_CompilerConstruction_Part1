@@ -1,11 +1,14 @@
 type opcode =
   | Plus | Minus | Times | Divide
   | Leq | Geq | Equal | Noteq
-  | And | Or | Not
+  | And | Or
+
+type opcode_unary = Not
 
 type expression =
   | Const of int (* 7 *)
   | Operator of opcode * expression * expression (* e + e *)
+  | Operator_unary of opcode_unary * expression (* NOT e *)
   | If of expression * expression * expression (* if e do e else e *)
   | Seq of expression * expression (* e; e *)
   | While of expression * expression (* while e do e *)
