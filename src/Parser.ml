@@ -31,7 +31,8 @@ let rec printlines = function
 	| h::tl -> printf "%s\n" h; printlines tl
 
 let do_parse i_str = 
-	printf "*** Starting parse on the following string: \n%s\n" i_str
+	let i_buf = Lexing.from_string i_str in
+	
 	
 
 let () = 

@@ -15,4 +15,4 @@ top :
 exp:
 | i = INT 		    { i }
 | e = exp; PLUS;  f = exp   { e + f }
-| e = exp; TIMES; f = exp 4 { e * f }
+| e = exp; TIMES; f = exp   { e * f }

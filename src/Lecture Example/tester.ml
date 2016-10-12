@@ -1,5 +1,7 @@
+open Test_lex
+
 let rec read_to_empty buf = 
-	let i_str = read_line () in
+	let s = read_line () in
 	if s = "" then buf
 	else (Buffer.add_string buf s;
 	      Buffer.add_string buf "\n";
