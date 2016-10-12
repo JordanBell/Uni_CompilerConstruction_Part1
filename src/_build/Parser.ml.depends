@@ -1,1 +1,1 @@
-Parser.ml: Array Lexing List Parser_lex Parser_par Printf String Sys
+Parser.ml: Array Lexing List Parser_lex Parser_par Parser_types Printf String Sys

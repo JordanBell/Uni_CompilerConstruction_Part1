@@ -1,10 +1,23 @@
+%{
+open Parser_types
+%}
+
+(* Token Declaration *)
+
 %token <int> CONST
 %token PLUS
 %token MINUS	
 %token TIMES
 %token DIVIDE
 
-(*%token SEQ
+%token IF
+%token ELSE
+%token CURLY_OPEN
+%token CURLY_CLOSE
+%token PARENTHESIS_OPEN
+%token PARENTHESIS_CLOSE
+
+%token SEQ
 %token ASG
 
 %token LEQ
@@ -14,42 +27,65 @@
 
 %token AND
 %token OR
-%token NOT*)
+%token NOT
 
 %token EOF
+
+(* Priorities and Associativity *)
+%left IF
+%left ELSE
+
+%left PARENTHESIS_OPEN (* Note: Parenthesis does not currently work to change the order of operations *)
+%left PARENTHESIS_CLOSE
+
+%left SEQ
+%left ASG
+%left LEQ
+%left GEQ
+%left EQUAL
+%left NOTEQ
+%left AND
+%left OR
+%left NOT
+
+%left CURLY_OPEN
+%left CURLY_CLOSE
 
 %left PLUS
 %left MINUS
 %left TIMES
 %left DIVIDE
-(*%left ASG*)
-%start <int> top
-%%
 
-(*type expression =
-  | Seq of expression * expression (* e; e *)
-  | While of expression * expression (* while e do e *)
-  | If of expression * expression * expression (* if e do e else e *)
-  | Asg of expression * expression (* e := e *)
-  | Deref of expression (* !e *)
-  | Operator of opcode * expression * expression (* e + e *)
-  | Application of expression * expression (* e(e) *)
-  | Const of int (* 7 *)
-  | Readint (* read_int () *)
-  | Printint of expression (* print_int (e) *)
-  | Identifier of string (* x *)
-  | Let of string * expression * expression (* let x = e in e *)
-  | New of string * expression * expression (* new x = e in e *)
-type fundef = string * string list * expression
-type program = fundef list*)
+%start <Parser_types.expression> top
+%%
 
 top :
 | e = exp; EOF { e }
 
-exp:
-| CONST		 		{ $1 }
-| e = exp; PLUS;  f = exp   	{ e + f }
-| e = exp; MINUS; f = exp  	{ e - f }
-| e = exp; DIVIDE;  f = exp 	{ e / f }
-| e = exp; TIMES; f = exp  	{ e * f }
-(*| e = exp; SEQ; f = exp		{ [e, f] }*)
+exp : 
+(* Operators *)
+| e = exp; PLUS;  f = exp   		{ Operator (Plus, e, f) }
+| e = exp; MINUS; f = exp  		{ Operator (Minus, e, f) }
+| e = exp; DIVIDE;  f = exp 		{ Operator (Divide, e, f) }
+| e = exp; TIMES; f = exp  		{ Operator (Times, e, f) }
+| e = exp; LEQ;  f = exp   		{ Operator (Leq, e, f) }
+| e = exp; GEQ; f = exp  		{ Operator (Geq, e, f) }
+| e = exp; EQUAL;  f = exp 		{ Operator (Equal, e, f) }
+| e = exp; NOTEQ; f = exp  		{ Operator (Noteq, e, f) }
+| e = exp; AND; f = exp  		{ Operator (And, e, f) }
+| e = exp; OR;  f = exp 		{ Operator (Or, e, f) }
+| e = exp; NOT; f = exp  		{ Operator (Not, e, f) }
+
+(* Misc *)
+| CONST		 			{ Const ($1) }
+| e = exp; SEQ; f = exp			{ Seq (e, f) }
+| e = exp; ASG; f = exp			{ Asg (e, f) }
+| CURLY_OPEN; e = exp; CURLY_CLOSE 	{ Scope (e) }
+
+(* Conditionals *)
+| IF; PARENTHESIS_OPEN; b = exp; PARENTHESIS_CLOSE; 
+	e = exp; 
+	ELSE; 
+	f = exp  			{ Operator (Times, e, f) }
+
+

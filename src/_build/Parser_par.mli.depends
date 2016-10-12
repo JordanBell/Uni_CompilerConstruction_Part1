@@ -1,1 +1,1 @@
-Parser_par.mli: Lexing
+Parser_par.mli: Lexing Parser_types
