@@ -3,6 +3,8 @@
 %token MINUS	
 %token TIMES
 %token DIVIDE
+
+(*%token SEQ
 %token ASG
 
 %token LEQ
@@ -12,7 +14,7 @@
 
 %token AND
 %token OR
-%token NOT
+%token NOT*)
 
 %token EOF
 
@@ -20,11 +22,11 @@
 %left MINUS
 %left TIMES
 %left DIVIDE
-%left ASG
+(*%left ASG*)
 %start <int> top
 %%
 
-type expression =
+(*type expression =
   | Seq of expression * expression (* e; e *)
   | While of expression * expression (* while e do e *)
   | If of expression * expression * expression (* if e do e else e *)
@@ -39,19 +41,15 @@ type expression =
   | Let of string * expression * expression (* let x = e in e *)
   | New of string * expression * expression (* new x = e in e *)
 type fundef = string * string list * expression
-type program = fundef list
-
-
-
+type program = fundef list*)
 
 top :
 | e = exp; EOF { e }
 
 exp:
-| i = INT 		    	{ i }
+| CONST		 		{ $1 }
 | e = exp; PLUS;  f = exp   	{ e + f }
-| e = exp; MINUS; f = exp 4 	{ e - f }
+| e = exp; MINUS; f = exp  	{ e - f }
 | e = exp; DIVIDE;  f = exp 	{ e / f }
-| e = exp; TIMES; f = exp 4 	{ e * f }
-| ASG; e = exp; f = exp		{ ASG e f }
-| e = exp; SEQ; f = exp		{ [e, f] }
+| e = exp; TIMES; f = exp  	{ e * f }
+(*| e = exp; SEQ; f = exp		{ [e, f] }*)
