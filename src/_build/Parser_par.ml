@@ -823,7 +823,7 @@ and _menhir_goto_exp : _menhir_env -> 'ttv_tail -> _menhir_state -> (Parser_type
             let _4 = () in
             let _2 = () in
             let _1 = () in
-            let _v : (Parser_types.expression) =              ( Operator (Times, e, f) ) in
+            let _v : (Parser_types.expression) =              ( If (b, e, f) ) in
             _menhir_goto_exp _menhir_env _menhir_stack _menhir_s _v
         | _ ->
             assert (not _menhir_env._menhir_error);

@@ -86,6 +86,6 @@ exp :
 | IF; PARENTHESIS_OPEN; b = exp; PARENTHESIS_CLOSE; 
 	e = exp; 
 	ELSE; 
-	f = exp  			{ Operator (Times, e, f) }
+	f = exp  			{ If (b, e, f) }
 
 

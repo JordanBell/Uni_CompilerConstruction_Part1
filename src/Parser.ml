@@ -44,6 +44,11 @@ let rec print_expression expr acc =
 			print_expression e (acc+1);			printf ",\n"; 			(* Print first expr *)
 			print_expression e (acc+1);							(* Print second expr *)
 			printf "\n%s)" indent_str
+		| Seq (e, f) ->
+			printf "%sSeq\n%s(\n" indent_str indent_str;
+			print_expression e (acc+1);			printf ",\n"; 			(* Print first expr *)
+			print_expression e (acc+1);							(* Print second expr *)
+			printf "\n%s)" indent_str			
 		| _ -> printf "Unable to print this kind of expression"
 
 let rec printlines = function
