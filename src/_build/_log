@@ -2,60 +2,51 @@
 # Target: Parser.ml.depends, tags: { extension:ml, file:Parser.ml, ocaml, ocamldep, quiet }
 ocamlfind ocamldep -modules Parser.ml > Parser.ml.depends # cached
 # Target: Parser_lex.mll, tags: { extension:mll, file:Parser_lex.mll, lexer, ocaml, ocamllex, quiet }
-/usr/bin/ocamllex -q Parser_lex.mll
+/usr/bin/ocamllex -q Parser_lex.mll # cached
 # Target: Parser_lex.ml.depends, tags: { extension:ml, file:Parser_lex.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules Parser_lex.ml > Parser_lex.ml.depends
+ocamlfind ocamldep -modules Parser_lex.ml > Parser_lex.ml.depends # cached
 # Target: Parser_par.mly.depends, tags: { extension:mly, file:Parser_par.mly, infer, menhir_ocamldep, ocaml, ocamldep, quiet }
-menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' Parser_par.mly > Parser_par.mly.depends
+menhir --raw-depend --ocamldep 'ocamlfind ocamldep -modules' Parser_par.mly > Parser_par.mly.depends # cached
 # Target: Parser_types.ml.depends, tags: { extension:ml, file:Parser_types.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules Parser_types.ml > Parser_types.ml.depends
+ocamlfind ocamldep -modules Parser_types.ml > Parser_types.ml.depends # cached
 # Target: Parser_types.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser_types.cmo, file:Parser_types.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser_types.cmo Parser_types.ml
+ocamlfind ocamlc -c -o Parser_types.cmo Parser_types.ml # cached
 # Target: Parser_par.mly, tags: { byte, compile, extension:ml, extension:mly, file:Parser_par.ml, file:Parser_par.mly, infer, menhir, ocaml, parser, quiet }
-menhir --ocamlc 'ocamlfind ocamlc' --infer Parser_par.mly
-+ menhir --ocamlc 'ocamlfind ocamlc' --infer Parser_par.mly
-File "Parser_par.mly", line 57, characters 0-5:
-Warning: the precedence level assigned to CURLY_CLOSE is never useful.
-File "Parser_par.mly", line 56, characters 0-5:
-Warning: the precedence level assigned to CURLY_OPEN is never useful.
-File "Parser_par.mly", line 38, characters 0-5:
-Warning: the precedence level assigned to IF is never useful.
-File "Parser_par.mly", line 44, characters 0-5:
-Warning: the precedence level assigned to PARENTHESIS_CLOSE is never useful.
-File "Parser_par.mly", line 43, characters 0-5:
-Warning: the precedence level assigned to PARENTHESIS_OPEN is never useful.
-File "Parser_par.mly", line 41, characters 0-5:
-Warning: the precedence level assigned to PRINTINT is never useful.
-File "Parser_par.mly", line 40, characters 0-5:
-Warning: the precedence level assigned to READINT is never useful.
+menhir --ocamlc 'ocamlfind ocamlc' --infer Parser_par.mly # cached
 # Target: Parser_par.mli.depends, tags: { extension:mli, file:Parser_par.mli, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules Parser_par.mli > Parser_par.mli.depends
+ocamlfind ocamldep -modules Parser_par.mli > Parser_par.mli.depends # cached
 # Target: Parser_par.cmi, tags: { byte, compile, extension:mli, file:Parser_par.mli, interf, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser_par.cmi Parser_par.mli
+ocamlfind ocamlc -c -o Parser_par.cmi Parser_par.mli # cached
 # Target: Parser_lex.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser_lex.cmo, file:Parser_lex.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser_lex.cmo Parser_lex.ml
+ocamlfind ocamlc -c -o Parser_lex.cmo Parser_lex.ml # cached
+# Target: Parser_printer.ml.depends, tags: { extension:ml, file:Parser_printer.ml, ocaml, ocamldep, quiet }
+ocamlfind ocamldep -modules Parser_printer.ml > Parser_printer.ml.depends
+# Target: Parser_printer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser_printer.cmo, file:Parser_printer.ml, implem, ocaml, quiet }
+ocamlfind ocamlc -c -o Parser_printer.cmo Parser_printer.ml
++ ocamlfind ocamlc -c -o Parser_printer.cmo Parser_printer.ml
+File "Parser_printer.ml", line 17, characters 3-4:
+Warning 11: this match case is unused.
+File "Parser_printer.ml", line 21, characters 3-4:
+Warning 11: this match case is unused.
 # Target: Parser.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser.cmo, file:Parser.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser.cmo Parser.ml
-+ ocamlfind ocamlc -c -o Parser.cmo Parser.ml
-File "Parser.ml", line 18, characters 3-4:
-Warning 11: this match case is unused.
-File "Parser.ml", line 22, characters 3-4:
-Warning 11: this match case is unused.
+ocamlfind ocamlc -c -o Parser.cmo Parser.ml # cached
 # Target: Parser_par.ml.depends, tags: { extension:ml, file:Parser_par.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules Parser_par.ml > Parser_par.ml.depends
+ocamlfind ocamldep -modules Parser_par.ml > Parser_par.ml.depends # cached
 # Target: Parser_types.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_types.cmx, file:Parser_types.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser_types.cmx Parser_types.ml
+ocamlfind ocamlopt -c -o Parser_types.cmx Parser_types.ml # cached
 # Target: Parser_par.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_par.cmx, file:Parser_par.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser_par.cmx Parser_par.ml
+ocamlfind ocamlopt -c -o Parser_par.cmx Parser_par.ml # cached
 # Target: Parser_lex.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_lex.cmx, file:Parser_lex.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser_lex.cmx Parser_lex.ml
+ocamlfind ocamlopt -c -o Parser_lex.cmx Parser_lex.ml # cached
+# Target: Parser_printer.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_printer.cmx, file:Parser_printer.ml, implem, native, ocaml, quiet }
+ocamlfind ocamlopt -c -o Parser_printer.cmx Parser_printer.ml
++ ocamlfind ocamlopt -c -o Parser_printer.cmx Parser_printer.ml
+File "Parser_printer.ml", line 17, characters 3-4:
+Warning 11: this match case is unused.
+File "Parser_printer.ml", line 21, characters 3-4:
+Warning 11: this match case is unused.
 # Target: Parser.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser.cmx, file:Parser.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser.cmx Parser.ml
-+ ocamlfind ocamlopt -c -o Parser.cmx Parser.ml
-File "Parser.ml", line 18, characters 3-4:
-Warning 11: this match case is unused.
-File "Parser.ml", line 22, characters 3-4:
-Warning 11: this match case is unused.
+ocamlfind ocamlopt -c -o Parser.cmx Parser.ml # cached
 # Target: Parser.native, tags: { dont_link_with, extension:native, file:Parser.native, link, native, ocaml, program, quiet }
-ocamlfind ocamlopt -linkpkg Parser_types.cmx Parser_par.cmx Parser_lex.cmx Parser.cmx -o Parser.native
+ocamlfind ocamlopt -linkpkg Parser_types.cmx Parser_par.cmx Parser_lex.cmx Parser_printer.cmx Parser.cmx -o Parser.native
 # Compilation successful.
