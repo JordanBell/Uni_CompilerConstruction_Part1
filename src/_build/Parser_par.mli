@@ -4,6 +4,8 @@
 type token = 
   | TIMES
   | SEQ
+  | READINT
+  | PRINTINT
   | PLUS
   | PARENTHESIS_OPEN
   | PARENTHESIS_CLOSE

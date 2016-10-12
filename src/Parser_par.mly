@@ -12,6 +12,9 @@ open Parser_types
 
 %token IF
 %token ELSE
+%token READINT
+%token PRINTINT
+
 %token CURLY_OPEN
 %token CURLY_CLOSE
 %token PARENTHESIS_OPEN
@@ -34,6 +37,8 @@ open Parser_types
 (* Priorities and Associativity *)
 %left IF
 %left ELSE
+%left READINT
+%left PRINTINT
 
 %left PARENTHESIS_OPEN (* Note: Parenthesis does not currently work to change the order of operations *)
 %left PARENTHESIS_CLOSE
@@ -64,28 +69,38 @@ top :
 
 exp : 
 (* Operators *)
-| e = exp; PLUS;  f = exp   		{ Operator (Plus, e, f) }
-| e = exp; MINUS; f = exp  		{ Operator (Minus, e, f) }
-| e = exp; DIVIDE;  f = exp 		{ Operator (Divide, e, f) }
-| e = exp; TIMES; f = exp  		{ Operator (Times, e, f) }
-| e = exp; LEQ;  f = exp   		{ Operator (Leq, e, f) }
-| e = exp; GEQ; f = exp  		{ Operator (Geq, e, f) }
-| e = exp; EQUAL;  f = exp 		{ Operator (Equal, e, f) }
-| e = exp; NOTEQ; f = exp  		{ Operator (Noteq, e, f) }
-| e = exp; AND; f = exp  		{ Operator (And, e, f) }
-| e = exp; OR;  f = exp 		{ Operator (Or, e, f) }
-| NOT; e = exp;		  		{ Operator_unary (Not, e) }
+| e = exp; PLUS;  f = exp   			{ Operator (Plus, e, f) }
+| e = exp; MINUS; f = exp  			{ Operator (Minus, e, f) }
+| e = exp; DIVIDE;  f = exp 			{ Operator (Divide, e, f) }
+| e = exp; TIMES; f = exp  			{ Operator (Times, e, f) }
+| e = exp; LEQ;  f = exp   			{ Operator (Leq, e, f) }
+| e = exp; GEQ; f = exp  			{ Operator (Geq, e, f) }
+| e = exp; EQUAL;  f = exp 			{ Operator (Equal, e, f) }
+| e = exp; NOTEQ; f = exp  			{ Operator (Noteq, e, f) }
+| e = exp; AND; f = exp  			{ Operator (And, e, f) }
+| e = exp; OR;  f = exp 			{ Operator (Or, e, f) }
+| NOT; e = exp;		  			{ Operator_unary (Not, e) }
+
+(* I/O *)
+| READINT; PARENTHESIS_OPEN; PARENTHESIS_CLOSE	{ Readint }
+| PRINTINT; 
+	PARENTHESIS_OPEN; 
+	e = exp;
+	PARENTHESIS_CLOSE			{ Printint (e) }
 
 (* Misc *)
-| CONST		 			{ Const ($1) }
-| e = exp; SEQ; f = exp			{ Seq (e, f) }
-| e = exp; ASG; f = exp			{ Asg (e, f) }
-| CURLY_OPEN; e = exp; CURLY_CLOSE 	{ Scope (e) }
+| CONST		 				{ Const ($1) }
+| e = exp; SEQ; f = exp				{ Seq (e, f) }
+| e = exp; ASG; f = exp				{ Asg (e, f) }
+| CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
 
 (* Conditionals *)
-| IF; PARENTHESIS_OPEN; b = exp; PARENTHESIS_CLOSE; 
+| IF; 
+	PARENTHESIS_OPEN; 
+	b = exp; 
+	PARENTHESIS_CLOSE; 
 	e = exp; 
 	ELSE; 
-	f = exp  			{ If (b, e, f) }
+	f = exp  				{ If (b, e, f) }
 
 

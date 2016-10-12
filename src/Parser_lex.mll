@@ -29,6 +29,8 @@ rule read =
 	(* Keywords *) 
 	| "if"		{ IF }
 	| "else"	{ ELSE }
+	| "read_int"	{ READINT }
+	| "print_int"	{ PRINTINT }
 
 	(* Bool ops *)
 	| "<="		{ LEQ }

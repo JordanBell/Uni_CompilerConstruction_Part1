@@ -11,7 +11,7 @@ echo "Git status:"
 git status
 
 #Do the commit, with permission
-read -p "Do you wish to push? " yn
+read -p "Do you wish to commit? " yn
 case $yn in
 	[Yy]* ) echo "Please enter commit details: "
 		read commit_deets 
