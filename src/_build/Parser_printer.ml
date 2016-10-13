@@ -30,8 +30,8 @@ let rec string_of_args = function
 	| h::tl -> h ^ ", " ^ string_of_args tl
 
 let rec print_expression expr acc = 
-	let indent_str = String.make acc '\t' in
-	let indent_str_next = String.make (acc+1) '\t' in
+	let indent_str = String.make (acc * 2) ' ' in
+	let indent_str_next = String.make (2 * (acc+1)) ' ' in
 	match expr with
 		| Operator (op, e, f) -> 
 			let opcode_str = string_of_opcode op in
@@ -46,6 +46,12 @@ let rec print_expression expr acc =
 			printf "%sOperator_unary\n%s(\n" indent_str indent_str;
 			printf "%s%s" indent_str_next opcode_str; 	printf ",\n";			(* Print opcode *)
 			print_expression e (acc+1); 							(* Print expr *)
+			printf "\n%s)" indent_str
+
+		| If (b, e, Empty) -> 
+			printf "%sIf\n%s(\n" indent_str indent_str;
+			print_expression b (acc+1); 		 	printf "\n%sDo\n" indent_str;	(* Print Conditional expr *)
+			print_expression e (acc+1);  							(* Print Do expr *)
 			printf "\n%s)" indent_str
 
 		| If (b, e, f) -> 
@@ -96,6 +102,11 @@ let rec print_expression expr acc =
 			print_expression e (acc+1);
 			printf "\n%s)" indent_str
 
+		| Deref (e) -> 
+			printf "%sDeref\n%s(\n" indent_str indent_str; 
+			print_expression e (acc+1);
+			printf "\n%s)" indent_str
+
 		| Printint (e) -> 
 			printf "%sPrintint\n%s(\n" indent_str indent_str; 
 			print_expression e (acc+1);
@@ -106,8 +117,8 @@ let rec print_expression expr acc =
 		| Const (i) -> printf "%sConst %d" indent_str i
 
 		| Identifier (str) -> printf "%sIdentifier %s" indent_str str
-			
-		| _ -> printf "Unable to print this kind of expression"
+
+		| Empty -> printf "%sEmpty" indent_str
 
 let rec printlines = function
 	| [] -> ()

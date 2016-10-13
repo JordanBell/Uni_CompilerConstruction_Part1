@@ -6,8 +6,7 @@ exception SyntaxError of string
 let int = ['0'-'9'] ['0'-'9']*
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
-let identifier_string = (['a'-'z'] | ['A'-'Z'])+
-let func_def = identifier_string '(' ')'
+let identifier_string = (['a'-'z'] | ['A'-'Z'] | '_')+
 
 rule read =
 	parse
@@ -52,6 +51,7 @@ rule read =
 	| '='			{ ASG }
 	| ';'			{ SEQ }
 	| ','			{ COMMA }
+	| '~'			{ DEREF }
 	| identifier_string	{ IDENTIFIER (Lexing.lexeme lexbuf) }
 
 	(* Meta *)

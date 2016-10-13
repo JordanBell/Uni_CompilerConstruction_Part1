@@ -1,0 +1,14 @@
+foo(x) x+1
+
+main(count)
+{
+	int total = 0;
+	while (~count >= 1)
+	{
+		total = ~total + foo (read_int());
+		count = ~count - 1
+	};
+
+	print_int (~total);
+	~total
+}

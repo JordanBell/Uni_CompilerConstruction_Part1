@@ -1,0 +1,5 @@
+main()
+{
+	int in = read_int ();
+	print_int (10 * ~in)
+}

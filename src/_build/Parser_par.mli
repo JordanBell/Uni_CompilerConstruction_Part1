@@ -23,6 +23,7 @@ type token =
   | EOF
   | ELSE
   | DIVIDE
+  | DEREF
   | CURLY_OPEN
   | CURLY_CLOSE
   | CONST of (int)

@@ -1,13 +1,7 @@
-doub (x)
-{
-	return x + x
-}
-
-main (x, y, z)
+main(x, y)
 {
 	int x = 5;
-	x = doub(x);
-	x(x)
+	x
 }
 
 

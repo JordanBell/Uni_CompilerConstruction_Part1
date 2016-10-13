@@ -36,6 +36,8 @@ open Parser_types
 %token OR
 %token NOT
 
+%token DEREF
+
 %token TYPE_INT
 %token <string> IDENTIFIER
 
@@ -44,10 +46,7 @@ open Parser_types
 %token EOF
 
 (* Priorities and Associativity *)
-%left IF
 %left ELSE
-%right READINT
-%right PRINTINT
 (*%left IN*)
 
 %right PARENTHESIS_OPEN (* Note: Parenthesis does not currently work to change the order of operations *)
@@ -65,10 +64,7 @@ open Parser_types
 %left OR
 %left NOT
 
-%right TYPE_INT
-
-%left CURLY_OPEN
-%left CURLY_CLOSE
+%right DEREF
 
 %left PLUS
 %left MINUS
@@ -88,7 +84,7 @@ prog :
 func : 
 	funcid = IDENTIFIER; 
 	PARENTHESIS_OPEN; args = arglist; PARENTHESIS_CLOSE; 
-	e = exp					{ Myfunc (funcid, args, e) }
+	e = exp						{ Myfunc (funcid, args, e) }
 
 arglist : 
 	args = separated_list(COMMA, IDENTIFIER)	{ args }
@@ -117,13 +113,12 @@ exp :
 	(* Misc *)
 	| CONST		 				{ Const ($1) }
 	| IDENTIFIER	 				{ Identifier ($1) }
+	| DEREF; e = exp;				{ Deref (e) }
 	| CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
 	| e = exp; SEQ; f = exp				{ Seq (e, f) }
 	| e = exp; ASG; f = exp				{ Asg (e, f) }
 	| TYPE_INT; IDENTIFIER; ASG; e = exp;
 		SEQ; f = exp				{ New ($2, e, f) } 
-	(*| LET; e = exp; IN; f = exp;			{ Let (e, f) }*)
-	(*| NEW; e = exp; IN; f = exp;			{ New (e, f) } *)
 	| e = exp; 
 		PARENTHESIS_OPEN; 
 		f = exp; 

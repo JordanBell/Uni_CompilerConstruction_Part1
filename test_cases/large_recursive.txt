@@ -1,0 +1,25 @@
+bisection_find (f, a, b, TOL)
+{
+  	int c = a + b;
+	c = c / 2;
+
+	int diff = b - a;
+	diff = diff / 2;
+
+	int fc_null = f(c) == 0;
+	int within_tol = diff <= TOL;
+  	if (fc_null || within_tol)
+	{
+    		print_int (c);
+		~c
+  	}
+	else
+	{
+		int fc_sign = f(c) >= 0;
+		int fa_sign = f(a) >= 0;
+		if (fc_sign == fa_sign)
+			bisection_find ({f; c; b; TOL}) 
+		else 
+			bisection_find ({f; a; c; TOL})
+	}
+}

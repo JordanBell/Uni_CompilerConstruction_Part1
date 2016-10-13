@@ -1,0 +1,13 @@
+main (x, y, z)
+{
+	int x = 5;
+	if (~x <= 0)
+	{
+		int r = 0;
+		~r - 1
+	}
+	else
+	{
+		~x
+	}
+}
