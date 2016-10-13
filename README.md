@@ -19,6 +19,7 @@ Use the `~` character in place of OCaml's `!` operator.
 * Cannot initialise a variable without a succeeding expression sequence. For example, an expression with just `int i = 0` is invalid. This is because there is no expression for the inferred `new` command to scope it within.
 * Parenthesis are unrecognised in the context of arithmetic. For example `(5 <= 6) || (5 >= 10)` is invalid.
 * Scoping, ie wrapping an expression in curly braces, is superfluous, but I imagine will be used later. Helps keep things clean.
+* It is a known issue that it builds with reduce/reduce warnings. 
 
 ## How to Build
 Entering `bash build.sh` will build all necessary files.
