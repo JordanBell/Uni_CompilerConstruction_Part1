@@ -1,6 +1,13 @@
+doub (x)
+{
+	return x + x
+}
+
 main (x, y, z)
 {
 	int x = 5;
-	x = x + 1;
+	x = doub(x);
 	x(x)
 }
+
+

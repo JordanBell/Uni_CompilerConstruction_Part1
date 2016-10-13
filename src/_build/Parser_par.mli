@@ -36,4 +36,4 @@ exception Error
 
 (* The monolithic API. *)
 
-val top: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Parser_types.fundef)
+val top: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Parser_types.program)

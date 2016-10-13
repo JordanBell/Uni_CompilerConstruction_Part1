@@ -110,8 +110,8 @@ let rec print_expression expr acc =
 		| _ -> printf "Unable to print this kind of expression"
 
 let rec printlines = function
+	| [] -> ()
 	| h::tl -> printf "%s\n" h; printlines tl
-	| _ -> printf ""
 
 let rec print_lex_result = function
 	| [] -> printf ""
@@ -122,4 +122,13 @@ let print_fundef (Myfunc (funcid, args, e)) =
 	print_expression e 0; 
 	printf "\n"
 
-let print_parse_result parse_result = printf "*** Result: \n"; print_fundef parse_result
+let rec print_program = function
+	| [] -> ()
+	| h::tl -> 
+		print_fundef h;
+		printf "\n";
+		print_program tl
+
+let print_parse_result parse_result = printf "*** Result: \n"; print_program parse_result
+
+

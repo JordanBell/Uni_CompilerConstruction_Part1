@@ -75,14 +75,19 @@ open Parser_types
 %left TIMES
 %left DIVIDE
 
-%start <Parser_types.fundef> top
+%start <Parser_types.program> top
 %%
 
 top :
-| f = func; EOF { f }
+| p = prog; EOF 	{ p }
+
+prog : 
+| f = func; EOF 	{ [f] }
+| f = func; p = prog	{ f :: p }
 
 arglist : 
 	args = separated_list(COMMA, IDENTIFIER)	{ args }
+
 func : 
 	funcid = IDENTIFIER; 
 	PARENTHESIS_OPEN; args = arglist; PARENTHESIS_CLOSE; 

@@ -20,11 +20,11 @@ ocamlfind ocamlc -c -o Parser_par.cmi Parser_par.mli # cached
 # Target: Parser_lex.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser_lex.cmo, file:Parser_lex.ml, implem, ocaml, quiet }
 ocamlfind ocamlc -c -o Parser_lex.cmo Parser_lex.ml # cached
 # Target: Parser_printer.ml.depends, tags: { extension:ml, file:Parser_printer.ml, ocaml, ocamldep, quiet }
-ocamlfind ocamldep -modules Parser_printer.ml > Parser_printer.ml.depends
+ocamlfind ocamldep -modules Parser_printer.ml > Parser_printer.ml.depends # cached
 # Target: Parser_printer.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser_printer.cmo, file:Parser_printer.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser_printer.cmo Parser_printer.ml
+ocamlfind ocamlc -c -o Parser_printer.cmo Parser_printer.ml # cached
 # Target: Parser.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:Parser.cmo, file:Parser.ml, implem, ocaml, quiet }
-ocamlfind ocamlc -c -o Parser.cmo Parser.ml
+ocamlfind ocamlc -c -o Parser.cmo Parser.ml # cached
 # Target: Parser_par.ml.depends, tags: { extension:ml, file:Parser_par.ml, ocaml, ocamldep, quiet }
 ocamlfind ocamldep -modules Parser_par.ml > Parser_par.ml.depends # cached
 # Target: Parser_types.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_types.cmx, file:Parser_types.ml, implem, native, ocaml, quiet }
@@ -34,9 +34,9 @@ ocamlfind ocamlopt -c -o Parser_par.cmx Parser_par.ml # cached
 # Target: Parser_lex.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_lex.cmx, file:Parser_lex.ml, implem, native, ocaml, quiet }
 ocamlfind ocamlopt -c -o Parser_lex.cmx Parser_lex.ml # cached
 # Target: Parser_printer.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser_printer.cmx, file:Parser_printer.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser_printer.cmx Parser_printer.ml
+ocamlfind ocamlopt -c -o Parser_printer.cmx Parser_printer.ml # cached
 # Target: Parser.cmx, tags: { compile, extension:cmx, extension:ml, file:Parser.cmx, file:Parser.ml, implem, native, ocaml, quiet }
-ocamlfind ocamlopt -c -o Parser.cmx Parser.ml
+ocamlfind ocamlopt -c -o Parser.cmx Parser.ml # cached
 # Target: Parser.native, tags: { dont_link_with, extension:native, file:Parser.native, link, native, ocaml, program, quiet }
-ocamlfind ocamlopt -linkpkg Parser_types.cmx Parser_par.cmx Parser_lex.cmx Parser_printer.cmx Parser.cmx -o Parser.native
+ocamlfind ocamlopt -linkpkg Parser_types.cmx Parser_par.cmx Parser_lex.cmx Parser_printer.cmx Parser.cmx -o Parser.native # cached
 # Compilation successful.
