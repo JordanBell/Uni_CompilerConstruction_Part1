@@ -2,6 +2,8 @@
 (* The type of tokens. *)
 
 type token = 
+  | WHILE
+  | TYPE_INT
   | TIMES
   | SEQ
   | READINT
@@ -15,6 +17,7 @@ type token =
   | MINUS
   | LEQ
   | IF
+  | IDENTIFIER of (string)
   | GEQ
   | EQUAL
   | EOF
@@ -23,6 +26,7 @@ type token =
   | CURLY_OPEN
   | CURLY_CLOSE
   | CONST of (int)
+  | COMMA
   | ASG
   | AND
 
@@ -32,4 +36,4 @@ exception Error
 
 (* The monolithic API. *)
 
-val top: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Parser_types.expression)
+val top: (Lexing.lexbuf -> token) -> Lexing.lexbuf -> (Parser_types.fundef)

@@ -1,1 +1,1 @@
-Parser_par.ml: Lexing Obj Parser_types
+Parser_par.ml: Lexing Obj Parser_types Pervasives Printf

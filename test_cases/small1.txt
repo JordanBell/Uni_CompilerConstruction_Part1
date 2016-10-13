@@ -1,9 +1,6 @@
-if (!8) 
+main (x, y, z)
 {
-	4 = 8 * 3;
-	print_int (4)
-} 
-else 
-{
-	4 = read_int ()
+	int x = 5;
+	x = x + 1;
+	x(x)
 }
