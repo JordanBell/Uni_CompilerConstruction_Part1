@@ -1,6 +1,7 @@
 main(x, y)
 {
-	int x = 5;
+	// Create a variable and return that value
+	int x = 10;
 	x
 }
 

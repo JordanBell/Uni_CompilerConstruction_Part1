@@ -5,6 +5,7 @@ doub (x)
 
 main (x, y, z)
 {
+	// Evaluate the total of the arguments and print & return its value, doubled
 	int n = ~x * ~y * ~z;
 	n = doub(n);
 	print_int (doub(~n));

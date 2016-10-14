@@ -1,1 +1,8 @@
-main () 1
+// Bad arguments
+main (invalid argument)
+{
+	/ Bad comment
+	
+	// Bad variable
+	var x:int = 5
+}

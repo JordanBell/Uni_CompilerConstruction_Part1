@@ -6,13 +6,15 @@ exception SyntaxError of string
 let int = ['0'-'9'] ['0'-'9']*
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
-let identifier_string = (['a'-'z'] | ['A'-'Z'] | '_')+
+let identifier_string = (['a'-'z'] | ['A'-'Z'] | '_') (['a'-'z'] | ['A'-'Z'] | '_' | ['0'-'9'])*
+let comment = "//" [^'\n']* newline
 
 rule read =
 	parse
 	(* Skip-cases *)
 	| white 		{ read lexbuf }
 	| newline 		{ read lexbuf }
+	| comment 		{ read lexbuf }
 
 	(* Arithmetic *)
 	| int 			{ CONST (int_of_string (Lexing.lexeme lexbuf)) }

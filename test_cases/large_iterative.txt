@@ -1,5 +1,10 @@
+// f = function
+// a = range start
+// b = range end
+// TOL = acceptance range
 bisection_find (f, a, b, TOL)
 {
+	// Find a new midpoint
 	int c = a + b;
 	c = c / 2;
 
@@ -7,20 +12,26 @@ bisection_find (f, a, b, TOL)
 	int count = 1;
 	while (count <= num_iter)
 	{
-		
+		// Find the range between the bounds
 		int diff = b - a;
 		diff = diff / 2;
 
+		// End successfully if f(c) is 0 or we are within the tolerance range
 		int fc_null = f(c) == 0;
 		int within_tol = diff <= TOL;
 	  	if (fc_null || within_tol)
 		{
+			// Success
 	    		print_int (c);
 			~c
 	  	}
 		else
 		{
-		  	count = count + 1;int fc_sign = f(c) >= 0;
+			// Increase the count
+		  	count = count + 1;
+
+			//Reiterate with a new range, depending on whether f(c) zero-crosses against the value of f(a)
+			int fc_sign = f(c) >= 0;
 			int fa_sign = f(a) >= 0;
 			if (fc_sign == fa_sign)
 				a = c 

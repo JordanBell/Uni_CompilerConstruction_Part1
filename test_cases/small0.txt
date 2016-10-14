@@ -1,4 +1,5 @@
 main()
 {
+	// Simple const return value
 	5
 }

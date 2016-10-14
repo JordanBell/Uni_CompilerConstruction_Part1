@@ -2,13 +2,17 @@ foo(x) x+1
 
 main(count)
 {
+	// Test while loop
 	int total = 0;
+
+	// Based on the input argument, add the total of all input ints
 	while (~count >= 1)
 	{
 		total = ~total + foo (read_int());
 		count = ~count - 1
 	};
 
+	// Print and return the total
 	print_int (~total);
 	~total
 }
