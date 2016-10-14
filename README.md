@@ -1,7 +1,6 @@
 # Uni_CompilerConstruction_Part1
 ## Language Syntax
-The syntax is approximately C-style with a few exceptions
-`main () {int x=1; x=x+1; return x}`	
+The syntax is approximately C-style with a few exceptions.
 
 #### Function arguments
 Curly brackets can be used to scope a group of arguments. Both of the following are allowed.
@@ -12,6 +11,9 @@ Curly brackets can be used to scope a group of arguments. Both of the following 
 Use the `~` character in place of OCaml's `!` operator.
 `int i = 0;`
 `i = ~i + 1`
+
+#### Comments
+Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, etc.
 
 #### Notes
 * 'Let' is not supported (sorry), however 'New' is inferred from `int` type keyword.
@@ -24,13 +26,10 @@ Use the `~` character in place of OCaml's `!` operator.
 ## How to Build
 Entering `bash build.sh` will build all necessary files.
 
-#### Notes
-* This may not be necessary, as Parser.native is already built. 
-* When rebuilding, you may need to run `bash build.sh` twice in total, before it works. 
-
 ## How to Test
 ### Batch 
 Entering `bash test.sh` will run all tests and print out the results. `bash test.sh -verbose` will perform the tests and print out a parsed expression structure for the successful files.
 
 ### Individual files
-All *.txt test files are found within the `test_cases` directory. To run the program on a particular test file, for example test\_cases/small0.txt, enter the command: `src/Parser.native test\_cases/small0.txt`. Use the optional `-verbose` argument to the see the parsed expression structure
+All *.txt test files are found within the `test_cases` directory. To run the program on a particular test file, for example test\_cases/small0.txt, enter the command: `src/Parser.native test\_cases/small0.txt`. Use the optional `-verbose` argument to the see the parsed expression structure.
+
