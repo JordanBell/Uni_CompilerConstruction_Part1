@@ -1,0 +1,7 @@
+main(x, y)
+{
+	// Create a variable and return that value
+	10 + 5
+}
+
+

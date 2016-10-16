@@ -1,0 +1,13 @@
+literally_any_string (basically, any, number, of, arguments) 
+{
+	// Do more complex bool ops
+	int b_leq5 = 0 <= 5;
+	int b_geq10 = 15 >= 10;
+	int b_or = b_leq5 || b_geq10;
+
+	int b_noteq4 = 4 != 4;
+	int b_eq8 = 7 == 8;
+	int b_and = b_noteq4 && b_eq8;
+
+	b_and || b_or
+}

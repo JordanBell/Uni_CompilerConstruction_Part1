@@ -1,0 +1,17 @@
+// This is the example given for complex assignment of arbitrary expression on the left side
+
+main(x, y)
+{
+	// The following is the syntactic equivalent of "(let z = !x + !y in if z=0 then x else y):=7;;" 
+	{
+		int z = ~x + ~y;
+		if (z == 0)
+		{
+			~x
+		}
+		else
+		{
+			~y
+		}
+	} = 7
+}

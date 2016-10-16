@@ -1,4 +1,4 @@
-# Uni_CompilerConstruction_Part1
+# Uni_CompilerConstruction_Part2
 ## Language Syntax
 The syntax is approximately C-style with a few exceptions.
 
