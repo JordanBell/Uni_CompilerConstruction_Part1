@@ -93,6 +93,10 @@ scoped_exp_optional :
 	| e = exp					{ e }
 	| e = scoped_exp				{ e }
 
+else_trail :
+	| ELSE; b = exp; 				{ b }
+	| SEQ 						{ Empty }
+
 exp : 
 	(* Operators *)
 	| e = exp; PLUS;  f = exp   			{ Operator (Plus, e, f) }
@@ -134,11 +138,6 @@ exp :
 		e = scoped_exp; 
 		ELSE; 
 		f = scoped_exp			{ If (b, e, f) }
-
-	(*| IF; PARENTHESIS_OPEN;	b = exp; PARENTHESIS_CLOSE; 
-		e = scoped_exp_optional; 
-		SEQ; 
-		f = exp					{ Seq ( If (b, e, Empty), f) }*)
 
 	| WHILE; 
 		PARENTHESIS_OPEN; 
