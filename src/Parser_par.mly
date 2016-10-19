@@ -91,6 +91,10 @@ func :
 arglist : 
 	args = separated_list(COMMA, IDENTIFIER)	{ args }
 
+else_trail :
+	| ELSE; b = exp; 				{ b }
+	| SEQ 						{ Empty }
+
 exp : 
 	(* Operators *)
 	| e = exp; PLUS;  f = exp   			{ Operator (Plus, e, f) }
@@ -133,13 +137,14 @@ exp :
 		b = exp; 
 		PARENTHESIS_CLOSE; 
 		e = exp; 
-		ELSE; 
-		f = exp  				{ If (b, e, f) }
+		f = else_trail 				{ If (b, e, f) }
 
 	| WHILE; 
 		PARENTHESIS_OPEN; 
 		b = exp; 
 		PARENTHESIS_CLOSE; 
-		e = exp;				{ While (b, e) }
+		e = exp;
+		SEQ;
+		f = exp				{ Seq (While (b, e), f) }
 
 
