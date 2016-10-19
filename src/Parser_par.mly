@@ -48,14 +48,11 @@ open Parser_types
 
 (* Priorities and Associativity *)
 %left ELSE
-(*%left IN*)
 
 %right PARENTHESIS_OPEN (* Note: Parenthesis does not currently work to change the order of operations *)
 %left PARENTHESIS_CLOSE
 
 %left SEQ
-(*%right LET
-%right NEW*)
 %left ASG
 %left LEQ
 %left GEQ
@@ -86,10 +83,15 @@ prog :
 func : 
 	funcid = IDENTIFIER; 
 	PARENTHESIS_OPEN; args = arglist; PARENTHESIS_CLOSE; 
-	e = exp						{ Myfunc (funcid, args, e) }
+	e = scoped_exp					{ Myfunc (funcid, args, e) }
 
-arglist : 
-	args = separated_list(COMMA, IDENTIFIER)	{ args }
+arglist : args = separated_list(COMMA, IDENTIFIER)	{ args }
+
+scoped_exp : CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
+
+scoped_exp_optional :
+	| e = exp					{ e }
+	| e = scoped_exp				{ e }
 
 exp : 
 	(* Operators *)
@@ -117,29 +119,31 @@ exp :
 	| IDENTIFIER	 				{ Identifier ($1) }
 	| REF; e = exp;					{ Ref (e) }
 	| DEREF; e = exp;				{ Deref (e) }
-	| CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
 	| e = exp; SEQ; f = exp				{ Seq (e, f) }
+	| e = scoped_exp; f = exp			{ Seq (e, f) }
 	| e = exp; ASG; f = exp				{ Asg (e, f) }
 	| TYPE_INT; IDENTIFIER; ASG; e = exp;
 		SEQ; f = exp				{ New ($2, e, f) } 
-	| e = exp; 
+	| str = IDENTIFIER; 
 		PARENTHESIS_OPEN; 
-		f = exp; 
-		PARENTHESIS_CLOSE			{ Application (e, f) }
+		f = scoped_exp; 
+		PARENTHESIS_CLOSE			{ Application (Identifier(str), f) }
 
 	(* Conditionals *)
-	| IF; 
-		PARENTHESIS_OPEN; 
-		b = exp; 
-		PARENTHESIS_CLOSE; 
-		e = exp; 
+	| IF; PARENTHESIS_OPEN;	b = exp; PARENTHESIS_CLOSE; 
+		e = scoped_exp; 
 		ELSE; 
-		f = exp  				{ If (b, e, f) }
+		f = scoped_exp			{ If (b, e, f) }
+
+	(*| IF; PARENTHESIS_OPEN;	b = exp; PARENTHESIS_CLOSE; 
+		e = scoped_exp_optional; 
+		SEQ; 
+		f = exp					{ Seq ( If (b, e, Empty), f) }*)
 
 	| WHILE; 
 		PARENTHESIS_OPEN; 
 		b = exp; 
 		PARENTHESIS_CLOSE; 
-		e = exp;				{ While (b, e) }
+		e = scoped_exp				{ While (b, e) }
 
 

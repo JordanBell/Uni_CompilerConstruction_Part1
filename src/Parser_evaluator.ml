@@ -27,15 +27,19 @@ let fun_of_opcode_bool = function
 	| Or -> (fun x y -> x || y)
 	| _ -> failwith "Mismatch: Cannot use operator on bool types"
 
+let lookup_identifier store id_str = 
+	try Hashtbl.find store id_str
+	with Not_found -> failwith ("Identifier \'" ^ id_str ^ "\' not declared.")
+
 let rec bool_of_eval_result store e_eval_result =		
 	match e_eval_result with
 		| Bool (b_value) -> b_value
 		| Identifier (str) ->
-			let lookup_result = Hashtbl.find store str in
+			let lookup_result = lookup_identifier store str in
 			bool_of_eval_result store lookup_result (* Recurse with the new identifier *)
 		| _ -> print_eval_result store e_eval_result; failwith "Cannot resolve expression result to bool"
 
-let rec evaluate_expression store e = match e with
+let rec evaluate_expression store i_e = match i_e with
 	| Const (i) -> Int (i)
 	| Operator (opcode, e, f) -> evaluate_operator store opcode e f
 	| Operator_unary (opcode, e) -> evaluate_operator_unary store opcode e
@@ -55,16 +59,24 @@ let rec evaluate_expression store e = match e with
 			Hashtbl.replace store str f_eval_result;
 			Identifier (str) (* An assignment returns a reference to the identifier that was newly assigned *)
 		else		
-			failwith ("Cannot assign a value to identifier" ^ str ^ " as it has not been declared.")
+			failwith ("Cannot assign a value to identifier \'" ^ str ^ "\' as it has not been declared")
 
 	| Asg (e, f) -> 
 		let e_eval_result = evaluate_expression store e in
 		(match e_eval_result with
 			| Identifier (str) -> evaluate_expression store (Asg (Identifier (str), f))
-			| _ -> failwith "Cannot assign a non-identifier expression a value.");
-	| While (e, f) -> failwith "Expression type not implemented: While"
-	| Printint (e) -> evaluate_expression store e (* Return the value of e. Will do more with this later *)
-	| Identifier (str) -> Hashtbl.find store str
+			| _ -> failwith "Cannot assign a non-identifier expression a value");
+	| While (e, f) -> 
+		(* Evaluate the condition, repeat if true *)
+		let e_eval_result = evaluate_expression store e in
+		if (bool_of_eval_result store e_eval_result)
+		then 
+			let _ = evaluate_expression store f in 	(* Evalute f, as this may modify the store*)
+			evaluate_expression store i_e		(* Recurse with the same expression *)
+		else Unit
+
+	| Printint (e) -> evaluate_expression store e 		(* Return the value of e. Will do more with this later *)
+	| Identifier (str) -> lookup_identifier store str
 	| New (str, e, f) -> 
 		if (Hashtbl.mem store str)
 		then 
@@ -74,11 +86,12 @@ let rec evaluate_expression store e = match e with
 			Hashtbl.add store str e_eval_result; (* Add a new eval_result for the str identifier *) 
 			evaluate_expression store f (* Recurse to the next expression *)
 
-	| Deref (Identifier (str)) -> Hashtbl.find store str
-	| Deref _ -> failwith "Invalid expression type upon dereference."
+	| Deref (Identifier (str)) -> lookup_identifier store str
+	| Deref _ -> failwith "Invalid expression type upon dereference"
 
 	| Ref (Identifier (str)) -> Identifier (str) (* Return an eval_result equivalent to a reference to the identifier *)
-	| Ref _ -> failwith "Can only create a reference to an identifier expression."
+	| Ref _ -> failwith "Can only create a reference to an identifier expression"
+
 	| Scope (e) -> evaluate_expression store e (* Recurse into the given scope. Will take scope into account later *)
 	| Empty -> Unit
 	| Application (e, f) -> failwith "Expression type not implemented: Application"

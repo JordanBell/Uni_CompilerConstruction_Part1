@@ -1,6 +1,5 @@
 main()
 {
-	// Create a variable and return the boolean result
 	int x = 5;
 	if (~x <= 0)
 	{

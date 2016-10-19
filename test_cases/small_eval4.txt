@@ -1,8 +1,8 @@
 main (x, y, z)
 {
-	// Reference example
+	// Bonus variable reference example
 	int x = 5;
 	int y = &x; // y is a reference to x
 	x = 20;
-	~y // 20
+	~y // Returns new value of x
 }

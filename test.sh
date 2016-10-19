@@ -1,5 +1,22 @@
 #!/bin/bash
-#Run all small tests
+
+# Function for performing an evaluation test on a file. Note: The file must have a corresponding file in the "Evaluation Results" directory with the same name.
+perform_eval_test()
+{
+	# Get the file we are testing on
+	TEST_FILENAME=$1
+	ARG_1=$2
+
+	# Log the results to a temp file
+	src/Parser.native test_cases/$TEST_FILENAME $ARG_1 > /tmp/eval_result_log.txt
+
+	# Print the result and whether or not they match the expected output
+	printf "$(</tmp/eval_result_log.txt)"
+	cmp --silent test_cases/Evaluation\ Results/$TEST_FILENAME /tmp/eval_result_log.txt && printf " \t(Success)\n" || printf " \t(Mismatch)\n"
+}
+
+# Parse tests
+printf "\nPerforming Parsing Tests\n"
 src/Parser.native test_cases/small0.txt $1
 src/Parser.native test_cases/small1.txt $1
 src/Parser.native test_cases/small2.txt $1
@@ -10,7 +27,19 @@ src/Parser.native test_cases/small6.txt $1
 src/Parser.native test_cases/small7.txt $1
 src/Parser.native test_cases/small8.txt $1
 src/Parser.native test_cases/small9.txt $1
-
-#Run all larger tests
 src/Parser.native test_cases/large_recursive.txt $1
 src/Parser.native test_cases/large_iterative.txt $1
+
+# Evaluation Tests
+printf "\nPerforming Evaluation Tests\n"
+perform_eval_test small_eval0.txt $1
+perform_eval_test small_eval1.txt $1
+perform_eval_test small_eval2.txt $1
+perform_eval_test small_eval3.txt $1
+perform_eval_test small_eval4.txt $1
+perform_eval_test small_eval5.txt $1
+perform_eval_test small_eval6.txt $1
+perform_eval_test small_eval7.txt $1
+perform_eval_test small_eval8.txt $1
+perform_eval_test small_eval9.txt $1
+perform_eval_test large_fib.txt $1

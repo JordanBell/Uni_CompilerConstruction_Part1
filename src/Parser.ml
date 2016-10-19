@@ -12,7 +12,9 @@ let is_verbose = ref false
 let parse_to_program i_str = 
 	let i_buf = Lexing.from_string i_str in
 	try Parser_par.top Parser_lex.read i_buf 
-	with SyntaxError str -> printf "Failed with: %s\n" str; []
+	with 
+		| SyntaxError str -> printf "Parsing Syntax error: %s\n" str; []
+		| Parser_par.Error -> printf "Parser failed\n"; []
 
 let myprint a b = if !is_verbose then printf a b else ()
 
@@ -43,17 +45,20 @@ let () =
 	if !is_verbose then printlines !i_lines;
 	if num_lines > 0 then
 		let lines_as_string = String.concat "\n" !i_lines in
-		let parsed_program = parse_to_program lines_as_string in
+			let parsed_program = parse_to_program lines_as_string in
 
-		if !is_verbose then printf "Result:\n"; 
-		if !is_verbose then print_parse_result parsed_program;
+			if !is_verbose then printf "Result:\n"; 
+			if !is_verbose then print_parse_result parsed_program;
 
-		(* Evaluate the program *)
-		match parsed_program with
-			| [] -> ()
-			| (Myfunc (_, _, e))::tl -> 
-				let evaluated_expression = evaluate_expression store e in
-				print_eval_result store evaluated_expression;
+			(* Evaluate the program *)
+			match parsed_program with
+				| [] -> ()
+				| (Myfunc (_, _, e))::tl -> 
+					try 
+						let evaluated_expression = evaluate_expression store e in
+						print_eval_result store evaluated_expression
+					with Failure str -> print_endline str;
+		
 		
 	myprint "***** Parsing FINISHED on file: %s\n\n" filename
 

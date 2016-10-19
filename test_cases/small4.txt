@@ -1,13 +1,16 @@
 doub (x)
 {
-	~x * ~x
+	x * x
 }
 
 main (x, y, z)
 {
 	// Evaluate the total of the arguments and print & return its value, doubled
-	int n = ~x * ~y * ~z;
-	n = doub(n);
-	print_int (doub(~n));
-	n
+	int x = 0;
+	int y = 0;
+	int z = 0;
+	int n = x * y * z;
+	n = doub({n});
+	print_int (n);
+	~n
 }

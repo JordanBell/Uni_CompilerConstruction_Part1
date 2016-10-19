@@ -1,8 +1,7 @@
-// Bad arguments
-main (invalid argument)
+main ()
 {
-	/ Bad comment
-	
-	// Bad variable
-	var x:int = 5
+	int b_noteq4 = 4 != 4;		// False
+	int b_eq8 = 7 == 7;		// True
+	int b_and = b_noteq4 && b_eq8;	// False
+	!b_and				// True
 }
