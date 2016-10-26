@@ -15,9 +15,9 @@ open Parser_types
 %token ELSE
 %token READINT
 %token PRINTINT
-(*%token LET
+%token LET
 %token NEW
-%token IN*)
+%token IN
 
 %token CURLY_OPEN
 %token CURLY_CLOSE
@@ -39,7 +39,6 @@ open Parser_types
 %token DEREF
 %token REF
 
-%token TYPE_INT
 %token <string> IDENTIFIER
 
 %token COMMA
@@ -87,6 +86,8 @@ func :
 
 arglist : args = separated_list(COMMA, IDENTIFIER)	{ args }
 
+explist : PARENTHESIS_OPEN; args = separated_list(COMMA, exp); PARENTHESIS_CLOSE { args } 
+
 scoped_exp : CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
 
 scoped_exp_optional :
@@ -116,33 +117,32 @@ exp :
 	| PRINTINT; 
 		PARENTHESIS_OPEN; 
 		e = exp;
-		PARENTHESIS_CLOSE			{ Printint (e) }
+		PARENTHESIS_CLOSE					{ Printint (e) }
 
 	(* Misc *)
-	| CONST		 				{ Const ($1) }
-	| IDENTIFIER	 				{ Identifier ($1) }
-	| REF; e = exp;					{ Ref (e) }
-	| DEREF; e = exp;				{ Deref (e) }
-	| e = exp; SEQ; f = exp				{ Seq (e, f) }
-	| e = scoped_exp; f = exp			{ Seq (e, f) }
-	| e = exp; ASG; f = exp				{ Asg (e, f) }
-	| TYPE_INT; IDENTIFIER; ASG; e = exp;
-		SEQ; f = exp				{ New ($2, e, f) } 
-	| str = IDENTIFIER; 
-		PARENTHESIS_OPEN; 
-		f = scoped_exp; 
-		PARENTHESIS_CLOSE			{ Application (Identifier(str), f) }
+	| CONST		 							{ Const ($1) }
+	| IDENTIFIER	 						{ Identifier ($1) }
+	| REF; e = exp;							{ Ref (e) }
+	| DEREF; e = exp;						{ Deref (e) }
+	| e = exp; SEQ; f = exp					{ Seq (e, f) }
+	| e = scoped_exp; f = exp				{ Seq (e, f) }
+	| e = exp; ASG; f = exp					{ Asg (e, f) }
+	| LET; id = IDENTIFIER; ASG; e = exp;
+		IN; f = exp							{ Let (id, e, f) } 
+	| NEW; id = IDENTIFIER; ASG; e = exp;
+		IN; f = exp							{ New (id, e, f) } 
+	| str = IDENTIFIER; args = explist		{ Application (Identifier(str), args) }
 
 	(* Conditionals *)
 	| IF; PARENTHESIS_OPEN;	b = exp; PARENTHESIS_CLOSE; 
 		e = scoped_exp; 
 		ELSE; 
-		f = scoped_exp			{ If (b, e, f) }
+		f = scoped_exp						{ If (b, e, f) }
 
 	| WHILE; 
 		PARENTHESIS_OPEN; 
 		b = exp; 
 		PARENTHESIS_CLOSE; 
-		e = scoped_exp				{ While (b, e) }
+		e = scoped_exp						{ While (b, e) }
 
 

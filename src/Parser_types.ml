@@ -15,9 +15,10 @@ type expression =
 	| While of expression * expression (* while e do e *)
 	| Readint (* read_int () *)
 	| Printint of expression (* print_int (e) *)
-	| Application of expression * expression (* e(e) *)
+	| Application of expression * expression list (* e(e) *)
 	| Identifier of string (* x *)
-	| New of string * expression * expression (* int x = e; e *)
+	| Let of string * expression * expression (* let x = e in e *)
+	| New of string * expression * expression (* new x = e in e *)
 	| Deref of expression (* ~e *)
 	| Ref of expression (* &e *)
 	| Scope of expression (* { e } *)
@@ -33,4 +34,5 @@ type eval_result =
 	| Bool of bool
 	| String of string
 	| Identifier of string (* Note that this is different from the expression type, 'Identifier'. This will allow an identifier to have the value of another identifier (ie int y = 0; int& x = y) *)
+	| VarAddress of int
 	| Unit

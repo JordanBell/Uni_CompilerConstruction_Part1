@@ -1,12 +1,15 @@
 open Parser_types
 open Parser_printer
 
-let string_of_eval_result er = match er with
-	| Int (i) -> string_of_int i
-	| Bool (b) -> if b then "true" else "false"
-	| String (s) -> s
-	| Identifier (s) -> "ID:" ^ s
-	| Unit -> "Unit"
+(*
+
+1. Lookup the identifier in the environment
+2. See if 
+
+*)
+let value_of_identifier env store id_str =
+	let env_result = List.assoc str env in
+	Hashtbl.find store env_result
 
 let fun_of_opcode_int = function
 	| Plus -> (fun x y -> x + y)
@@ -39,7 +42,7 @@ let rec bool_of_eval_result store e_eval_result =
 			bool_of_eval_result store lookup_result (* Recurse with the new identifier *)
 		| _ -> print_eval_result store e_eval_result; failwith "Cannot resolve expression result to bool"
 
-let rec evaluate_expression store i_e = match i_e with
+let rec evaluate_expression env store i_e = match i_e with
 	| Const (i) -> Int (i)
 	| Operator (opcode, e, f) -> evaluate_operator store opcode e f
 	| Operator_unary (opcode, e) -> evaluate_operator_unary store opcode e
@@ -76,17 +79,14 @@ let rec evaluate_expression store i_e = match i_e with
 		else Unit
 
 	| Printint (e) -> evaluate_expression store e 		(* Return the value of e. Will do more with this later *)
-	| Identifier (str) -> lookup_identifier store str
-	| New (str, e, f) -> 
-		if (Hashtbl.mem store str)
-		then 
-			failwith ("Cannot reinstantiate. Variable already exists with identifier: " ^ str)
-		else		
-			let e_eval_result = evaluate_expression store e in
+	| Identifier (str) -> failwith("Cannot implicitly dereference an identifier")
+
+	| New (str, e, f) | Let (str, e, f) -> 
+		let e_eval_result = evaluate_expression store e in
 			Hashtbl.add store str e_eval_result; (* Add a new eval_result for the str identifier *) 
 			evaluate_expression store f (* Recurse to the next expression *)
 
-	| Deref (Identifier (str)) -> lookup_identifier store str
+	| Deref (Identifier (str)) -> lookup_identifier store str  
 	| Deref _ -> failwith "Invalid expression type upon dereference"
 
 	| Ref (Identifier (str)) -> Identifier (str) (* Return an eval_result equivalent to a reference to the identifier *)

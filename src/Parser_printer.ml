@@ -15,6 +15,13 @@ let string_of_opcode = function
 	| Equal -> "Equal"
 	| Noteq -> "Noteq"
 
+let string_of_eval_result er = match er with
+	| Int (i) -> string_of_int i
+	| Bool (b) -> if b then "true" else "false"
+	| String (s) -> s
+	| Identifier (s) -> "ID:" ^ s
+	| Unit -> "Unit"
+
 let string_of_opcode_unary = function	
 	| Not -> "Not"
 
@@ -79,17 +86,17 @@ let rec print_expression expr acc =
 			print_expression f (acc+1);							(* Print second expr *)
 			printf "\n%s)" indent_str
 
-		| Application (e, f) ->
+		| Application (e, f::tl) ->
 			printf "%sApplication\n%s(\n" indent_str indent_str;
 			print_expression e (acc+1);			printf ",\n"; 			(* Print first expr *)
 			print_expression f (acc+1);							(* Print second expr *)
 			printf "\n%s)" indent_str
 
-		(*| Let (str, e, f) ->
+		| Let (str, e, f) ->
 			printf "%sLet\n%s(\n" indent_str indent_str;
 			print_expression e (acc+1);			printf "\n%sIn\n" indent_str; 	(* Print first expr *)
 			print_expression f (acc+1);							(* Print second expr *)
-			printf "\n%s)" indent_str*)
+			printf "\n%s)" indent_str
 
 		| New (str, e, f) ->
 			printf "%sNew %s = \n" indent_str str;

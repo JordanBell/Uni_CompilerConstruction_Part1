@@ -35,10 +35,9 @@ rule read =
 	| "else"		{ ELSE }
 	| "read_int"		{ READINT }
 	| "print_int"		{ PRINTINT }
-(*	| "let"			{ LET }
+	| "let"			{ LET }
 	| "new"			{ NEW }
-	| "in"			{ IN }*)
-	| "int"			{ TYPE_INT }
+	| "in"			{ IN }
 
 	(* Bool ops *)
 	| "<="			{ LEQ }
