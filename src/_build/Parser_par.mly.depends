@@ -1,2 +1,0 @@
-Parser_par.ml: Lexing Parser_types
-Parser_par.mli: Lexing Parser_types
