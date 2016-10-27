@@ -1,0 +1,21 @@
+// Overshadowing
+main()
+{
+	let x = 1 in
+	let y = 99 + x in
+	let x = 10 in
+
+	new z = 0 in
+	if(~z == 0)
+	{
+		// We can overshadow in another scope, but the old value will return when we exit scope
+		let y = 1000 in
+		z = y
+	}
+	else
+	{
+		z = 2000
+	};
+
+	x + y + ~z
+}

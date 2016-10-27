@@ -1,0 +1,14 @@
+// Inline argument evaluations
+foo(x, y, z)
+{
+	~x + ~y + ~z
+}
+
+main()
+{
+	let x = 10 in
+	let y = 20 in
+	let z = 30 in
+
+	foo(x+y, y+z, z+x)
+}

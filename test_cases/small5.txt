@@ -3,14 +3,14 @@ foo(x) {x+1}
 main(count)
 {
 	// Test while loop
-	int total = 0;
-	int input = 0;
+	new total = 0 in
+	new input = 0 in
 
 	// Based on the input argument, add the total of all input ints
 	while (~count >= 1)
 	{
 		input = read_int();
-		total = ~total + foo ({input});
+		total = ~total + foo(input);
 		count = ~count - 1
 	};
 

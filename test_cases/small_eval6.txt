@@ -1,13 +1,13 @@
 main()
 {
-	int x = 5;
-	if (~x <= 0)
+	let x = 5 in
+	if (x <= 0)
 	{
-		int r = 0;
+		let r = 0 in
 		~r - 1
 	}
 	else
 	{
-		~x
+		x
 	}
 }

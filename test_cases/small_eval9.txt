@@ -1,17 +1,17 @@
 // This is the example given for complex assignment of arbitrary expression on the left side. With evaluation, it fails
 main(x, y)
 {
-	// The following is the syntactic equivalent of "(let z = !x + !y in if z=0 then x else y):=7;;" 
-	int x = 1;
-	int y = 2;
-	int z = x + y;
+	// The following is the syntactic equivalent of "(let z = !x + !y in if z=0 then x else y):=7;;"
+	let x = 1 in
+	let y = 2 in
+	let z = x + y in
 	if (z == 0)
 	{
-		~x
+		x
 	}
 	else
 	{
-		~y
+		y
 	} = 7
 
 	// Note: This is meant to fail evaluation due to the invalid assignment of a non-identifier expression

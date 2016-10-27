@@ -1,0 +1,12 @@
+sqr(x)
+{
+	y = ~y + 1; // Intentionally breaks because y was declared earlier in main, but is out of scope now
+	~x * ~x
+}
+
+main ()
+{
+	let y = 10 in
+	let x = 4 in
+	sqr(x)
+}

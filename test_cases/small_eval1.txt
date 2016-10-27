@@ -1,8 +1,6 @@
 main(x, y)
 {
 	// Create a variable and return that value
-	int x = 20 - 5;
-	~x
+	let x = 20 - 5 in
+	x
 }
-
-

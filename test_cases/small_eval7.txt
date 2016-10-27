@@ -1,7 +1,7 @@
-literally_any_string (basically, any, number, of, arguments) 
+main (basically, any, number, of, arguments)
 {
-	int b_leq5 = 0 <= 5;
-	int b_geq10 = 15 >= 10;
-	int b_or = b_leq5 || b_geq10;
-	~b_or
+	let b_leq5 = 0 <= 5 in
+	let b_geq10 = 15 >= 10 in
+	let b_or = b_leq5 || b_geq10 in
+	b_or
 }

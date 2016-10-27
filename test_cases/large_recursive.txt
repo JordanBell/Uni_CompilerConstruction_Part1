@@ -5,34 +5,34 @@
 bisection_find (f, a, b, TOL)
 {
 	// Find a new midpoint
-  	int c = a + b;
+  new c = a + b in
 	c = c / 2;
 
 	// Find the range between the bounds
-	int diff = b - a;
+	new diff = b - a in
 	diff = diff / 2;
 
 	// End successfully if f(c) is 0 or we are within the tolerance range
-	int fc_null = f({c}) == 0;
-	int within_tol = diff <= TOL;
-  	if (fc_null || within_tol)
+	let fc_null = f(c) == 0 in
+	let within_tol = diff <= TOL in
+  if (fc_null || within_tol)
 	{
 		// Success
-    		print_int (c);
+    print_int (~c);
 		~c
   	}
 	else
 	{
 		// Recurse with a new range, depending on whether f(c) zero-crosses against the value of f(a)
-		int fc_sign = f({c}) >= 0;
-		int fa_sign = f({a}) >= 0;
+		let fc_sign = f(c) >= 0 in
+		let fa_sign = f(a) >= 0 in
 		if (fc_sign == fa_sign)
 		{
-			bisection_find ({f; c; b; TOL}) 
+			bisection_find (f, c, b, TOL)
 		}
-		else 
+		else
 		{
-			bisection_find ({f; a; c; TOL})
+			bisection_find (f, a, c, TOL)
 		}
 	}
 }

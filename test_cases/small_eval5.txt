@@ -1,14 +1,14 @@
 main()
 {
 	// Test while loop
-	int total = 0;
-	int count = 5;
+	new total = 0 in
+	new count = 5 in
 
 	// Based on the input argument, add the total of all input ints
-	while (count >= 0)
+	while (~count >= 0)
 	{
-		total = total + 1;
-		count = count - 1
+		total = ~total + 1;
+		count = ~count - 1
 	};
 
 	// Print and return the total

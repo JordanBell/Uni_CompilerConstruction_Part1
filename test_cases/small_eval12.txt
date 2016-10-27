@@ -1,0 +1,6 @@
+main ()
+{
+	// Improper "New" usage
+	new z = 15 in
+	z
+}

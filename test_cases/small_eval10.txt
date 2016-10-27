@@ -1,0 +1,9 @@
+main()
+{
+	// Let example
+	let x = 5 in
+
+	// New example
+	new y = x * 4 in
+	~y
+}

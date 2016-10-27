@@ -1,20 +1,24 @@
-fibo()
+fibo(fib_index)
 {
-	int fib_index = 20;
-	int a = 1;
-	int b = 1;
-	int c = 0;
+	new a = 1 in
+	new b = 1 in
+	new c = 0 in
 
-	while(fib_index >= 2)
+	while(~fib_index >= 2)
 	{
-		c = a + b;
-		a = b;
-		b = c;
+		c = ~a + ~b;
+		a = ~b;
+		b = ~c;
 
 		// Decrement index counter
-		fib_index = fib_index - 1
+		fib_index = ~fib_index - 1
 	};
 
 	// Return the value held in b
 	~b
+}
+
+main()
+{
+	fibo(20)
 }

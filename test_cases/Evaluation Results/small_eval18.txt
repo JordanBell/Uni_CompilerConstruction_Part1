@@ -1,0 +1,1 @@
+test_cases/small_eval18.txt... Argument count mismatch for function "inc": Was expecting 1 arguments but received 2

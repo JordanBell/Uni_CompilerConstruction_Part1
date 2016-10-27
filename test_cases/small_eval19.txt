@@ -1,0 +1,22 @@
+inc(i)
+{
+	~i + 1
+}
+
+// Unconventional (but valid) expressions
+main()
+{
+	new x =
+		new y =
+			new z = 5 in
+			~z * 4
+		in ~y / 2
+	in
+
+	x = inc
+	(
+		let inc_ref = &inc in
+		inc_ref(inc_ref(inc(0)))
+	);
+	~x
+}

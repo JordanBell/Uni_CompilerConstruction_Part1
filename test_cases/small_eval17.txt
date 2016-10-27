@@ -1,0 +1,17 @@
+// Recursion
+factorial(val)
+{
+	if(~val <= 1)
+	{
+		~val
+	}
+	else
+	{
+		~val * factorial (~val - 1)
+	}
+}
+
+main ()
+{
+	factorial(factorial(3))
+}

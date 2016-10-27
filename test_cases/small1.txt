@@ -1,8 +1,6 @@
 main(x, y)
 {
 	// Create a variable and return that value
-	int x = 10;
+	let x = 10 in
 	x
 }
-
-

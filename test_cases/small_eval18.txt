@@ -1,0 +1,11 @@
+// Improper function call
+inc(x)
+{
+	~x
+}
+
+main ()
+{
+	let x = 0 in
+	inc(x, 1) // Wrong number of arguments
+}
