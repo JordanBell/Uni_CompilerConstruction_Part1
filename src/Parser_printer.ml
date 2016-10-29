@@ -27,7 +27,7 @@ let string_of_opcode_unary = function
 
 let string_of_token = function
 	| Parser_par.IF -> "if"
-	| Parser_par.CONST i -> "Const" ^ (string_of_int i)
+	| Parser_par.CONST_INT i -> "Const" ^ (string_of_int i)
 	| Parser_par.TIMES -> "Times"
 	| _ -> "token_str_err"
 
@@ -126,7 +126,9 @@ let rec print_expression expr acc =
 
 		| Readint -> printf "%sReadint" indent_str
 
-		| Const (i) -> printf "%sConst %d" indent_str i
+		| Const_int (i) -> printf "%sConst %d" indent_str i
+		| Const_bool (b) -> printf "%sConst %s" indent_str (if b then "true" else "false")
+		| Const_string (s) -> printf "%sConst \"%s\"" indent_str s
 
 		| Identifier (str) -> printf "%sIdentifier %s" indent_str str
 

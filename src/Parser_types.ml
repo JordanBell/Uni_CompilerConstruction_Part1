@@ -6,7 +6,9 @@ type opcode =
 type opcode_unary = Not
 
 type expression =
-	| Const of int (* 7 *)
+	| Const_int of int (* 7 *)
+	| Const_bool of bool (* true *)
+  | Const_string of string (* "hello world" *)
 	| Operator of opcode * expression * expression (* e + e *)
 	| Operator_unary of opcode_unary * expression (* !e *)
 	| If of expression * expression * expression (* if e { e } else { e } *)

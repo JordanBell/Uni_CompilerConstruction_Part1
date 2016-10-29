@@ -1,0 +1,16 @@
+doub (x)
+{
+	~x * ~x
+}
+
+main ()
+{
+	// Evaluate the total of the arguments and print & return its value, doubled
+	let x = 0 in
+	let y = 0 in
+	let z = 0 in
+	new n = x * y * z in
+	n = doub(~n);
+	print_int (~n);
+	~n
+}

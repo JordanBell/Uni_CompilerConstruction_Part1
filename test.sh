@@ -58,3 +58,16 @@ perform_eval_test small_eval16.txt $1
 perform_eval_test small_eval17.txt $1
 perform_eval_test small_eval18.txt $1
 perform_eval_test small_eval19.txt $1
+
+# Evaluation Tests
+printf "\n\n\t*** Exercise 4 ***\n"
+src/Parser.native test_cases/optimisation/small0.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small1.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small2.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small3.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small4.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small5.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small6.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small7.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small8.txt $1 -oc; echo ""
+src/Parser.native test_cases/optimisation/small9.txt $1 -oc; echo ""

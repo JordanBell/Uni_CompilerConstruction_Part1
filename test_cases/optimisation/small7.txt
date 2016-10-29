@@ -1,0 +1,13 @@
+main (basically, any, number, of, arguments)
+{
+	// Do more complex bool ops
+	let b_leq5 = 0 <= 5 in
+	let b_geq10 = 15 >= 10 in
+	let b_or = b_leq5 || b_geq10 in
+
+	let b_noteq4 = 4 != 4 in
+	let b_eq8 = 7 == 8 in
+	let b_and = b_noteq4 && b_eq8 in
+
+	b_and || b_or
+}

@@ -1,0 +1,26 @@
+main()
+{
+	// Folding operations
+	if(5 + 4)
+	{
+		if(true)
+		{
+			true
+		}
+		else
+		{
+			false
+		}
+	}
+	else
+	{
+		if(false)
+		{
+			false
+		}
+		else
+		{
+			true
+		}
+	}
+}

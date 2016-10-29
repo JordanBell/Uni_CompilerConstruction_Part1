@@ -1,0 +1,6 @@
+main()
+{
+	// Read in and print out
+	let input = read_int () in
+	print_int (10 * input)
+}

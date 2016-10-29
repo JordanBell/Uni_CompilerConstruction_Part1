@@ -1,6 +1,8 @@
 open Parser_types
 open Parser_printer
 
+let op_counter = ref 0
+
 let addr_counter = ref 0
 let new_ref() = addr_counter := !addr_counter + 1; !addr_counter
 
@@ -54,6 +56,7 @@ let fun_of_opcode_bool = function
 let rec bool_of_eval_result store e_eval_result =
 	match e_eval_result with
 		| Bool (b_value) -> b_value
+		| Int (i_value) -> i_value != 0
 		| Identifier (str) ->
 			let lookup_result = value_of_identifier store str in
 			bool_of_eval_result store lookup_result (* Recurse with the new identifier *)
@@ -61,11 +64,15 @@ let rec bool_of_eval_result store e_eval_result =
 
 (******************************************************************************)
 
-let rec eval store i_e = match i_e with
+let rec eval store i_e =
+	op_counter := !op_counter + 1;
+	match i_e with
 
 	| Operator (opcode, e, f) -> evaluate_operator store opcode e f
 
-	| Const (i) -> Int (i)
+	| Const_int (i) -> Int (i)
+	| Const_bool (b) -> Bool (b)
+	| Const_string (str) -> String (str)
 
 	| Operator_unary (opcode, e) -> evaluate_operator_unary store opcode e
 

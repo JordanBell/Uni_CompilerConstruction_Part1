@@ -17,7 +17,7 @@ rule read =
 	| comment 		{ read lexbuf }
 
 	(* Arithmetic *)
-	| int 			{ CONST (int_of_string (Lexing.lexeme lexbuf)) }
+	| int 			{ CONST_INT (int_of_string (Lexing.lexeme lexbuf)) }
 	| '+' 			{ PLUS }
 	| '-' 			{ MINUS }
 	| '*' 			{ TIMES }
@@ -29,7 +29,7 @@ rule read =
 	| '('			{ PARENTHESIS_OPEN }
 	| ')'			{ PARENTHESIS_CLOSE }
 
-	(* Keywords *) 
+	(* Keywords *)
 	| "if"			{ IF }
 	| "while"		{ WHILE }
 	| "else"		{ ELSE }
@@ -38,6 +38,8 @@ rule read =
 	| "let"			{ LET }
 	| "new"			{ NEW }
 	| "in"			{ IN }
+	| "true" 		{ TRUE }
+	| "false"		{ FALSE }
 
 	(* Bool ops *)
 	| "<="			{ LEQ }
@@ -54,10 +56,9 @@ rule read =
 	| ','			{ COMMA }
 	| '&'			{ REF }
 	| '~'			{ DEREF }
+	| '"'			{ QUOTE_DOUBLE }
 	| identifier_string	{ IDENTIFIER (Lexing.lexeme lexbuf) }
 
 	(* Meta *)
 	| _ 			{ raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
 	| eof 			{ EOF }
-
-
