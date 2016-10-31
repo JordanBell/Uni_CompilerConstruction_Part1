@@ -7,7 +7,7 @@ open Parser_evaluator
 
 let filename = Sys.argv.(1)
 let num_args = Array.length Sys.argv
-let optimisation_iterations = 3
+let optimisation_iterations = 10
 let is_verbose = ref false
 let is_optimised = ref false
 let is_optimisation_comparison = ref false
@@ -53,8 +53,6 @@ let parse_to_program i_str =
 		| Parser_par.Error -> printf "Parser failed\n"; []
 
 let myprint a b = if !is_verbose then printf a b else ()
-
-let rec iterate f x n = if (n > 0) then iterate f (f x) (n-1) else x
 
 let () =
 	(* Go through optional arguments *)
@@ -109,7 +107,8 @@ let () =
 							count_optimised
 							num_pruned_exps
 							(percentage_reduction *. 100.);
-							if !is_verbose then print_parse_result optimised_program;;
+							if !is_verbose then print_parse_result optimised_program;
+				store.decl_funcs := optimised_program;
 
 			if !is_optimised
 			then store.decl_funcs := List.map optimise_function !(store.decl_funcs);;
@@ -122,112 +121,3 @@ let () =
 			with Failure str -> print_endline str;
 
 	myprint "***** Parsing FINISHED on file: %s\n\n" filename;
-
-	(*
-
-
-	open Printf
-	open Parser_lex
-	open Parser_types
-	open Parser_printer
-	open Parser_optimisation
-	open Parser_evaluator
-
-	let filename = Sys.argv.(1)
-	let num_args = Array.length Sys.argv
-	let is_verbose = ref false
-	let is_optimised = ref false
-	let store =
-	{
-		decl_funcs = ref [];
-	  decl_ids   = ref [];
-	  tbl_refs   = ref (Hashtbl.create 100);
-	}
-
-	let get_arg arg_name =
-		if num_args >= 3
-		then
-			(* Search through the array *)
-			Array.fold_left (fun x a -> x || a == arg_name) false Sys.argv
-		else false
-
-	let parse_to_program i_str =
-		let i_buf = Lexing.from_string i_str in
-		try Parser_par.top Parser_lex.read i_buf
-		with
-			| SyntaxError str -> printf "Parsing Syntax error: %s\n" str; []
-			| Parser_par.Error -> printf "Parser failed\n"; []
-
-	let myprint a b = if !is_verbose then printf a b else ()
-
-	let run_with args =
-
-
-	let () =
-		(* Go through optional arguments *)
-		is_verbose := get_arg "-verbose";
-		is_optimised := get_arg "-o";
-		is_optimisation_comparison := get_arg "-co";
-
-		(* Print the initial message for processing the file *)
-		if !is_verbose then
-			printf "\n***** Parsing START on file: %s\n" filename
-		else
-			printf "%s... " filename;
-
-		(* Read in all of the lines *)
-		let i_lines = ref [] in
-		let channel = open_in filename in
-		try
-			while true; do
-		 		let this_line = input_line channel in
-		    		i_lines := this_line :: !i_lines
-		  	done;
-		with End_of_file ->
-		  	close_in channel;
-		  	i_lines := List.rev !i_lines;
-
-		let num_lines = List.length !i_lines in
-		myprint "*** Found %d lines\n" num_lines;
-		if !is_verbose then printlines !i_lines;
-		if num_lines > 0 then
-			let lines_as_string = String.concat "\n" !i_lines in
-				store.decl_funcs := (parse_to_program lines_as_string);
-
-				if !is_verbose then printf "Result:\n";
-				if !is_verbose then print_parse_result !(store.decl_funcs);
-
-				(* Optimise the program, if the argument was supplied to do so. *)
-				(*if !is_optimisation_comparison
-				then
-					let optimised_program = List.map optimise_function !(store.decl_funcs) in
-					let count_optimised = count_exp optimised_program in
-					let count_default = count_exp !(store.decl_funcs) in
-					let num_pruned_exps = count_default - count_optimised in
-					let percentage_improvement = num_pruned_exps / count_default in
-					printf "Optimisation results:
-								\n\tOriginal: %d
-								\n\tOptimised: %d
-								\n\tPruned %d expressions
-								\n\tProgram was reduced to %f%% of the original size."
-
-								count_default
-								count_optimised
-								num_pruned_exps
-								percentage_improvement;*)
-
-				if !is_optimised
-				then store.decl_funcs := List.map optimise_function !(store.decl_funcs);
-
-				(* Evaluate the program, starting at the main function *)
-				try
-					let evaluated_expression = eval store (get_func_exp !(store.decl_funcs) "main") in
-					print_eval_result store evaluated_expression
-				with Failure str -> print_endline str
-
-		myprint "***** Parsing FINISHED on file: %s\n\n" filename
-
-
-
-
-	*)

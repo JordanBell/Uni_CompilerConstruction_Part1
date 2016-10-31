@@ -1,6 +1,20 @@
-main(x, y)
+// Infinite loop - If optimisation is enabled, this will create an error
+
+main()
 {
-	// Create a variable and return that value
-	let x = 10 in
-	x
+	// Uncomment any of the while conditions to see how their infinite nature is detected.
+	new px = true in
+	new py = false in
+
+	let cx = true in
+	let cy = false in
+
+	//while(true)
+	//while(1 <= 5 + 3 + 37 + 8 * 10)
+	//while(cx || cy)
+	while(px || py)
+	{
+		5
+		//px = false // Uncomment to remove the warning for the while condition containing "px"
+	}
 }

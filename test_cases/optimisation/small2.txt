@@ -1,5 +1,8 @@
+// Let-bound identifiers reduced
 main (x, y, z)
 {
-	// Return a boolean result
-	~x <= 0
+	let x = 5 + 3 in
+	let y = x + 2 in
+	let z = x * y in
+	z
 }

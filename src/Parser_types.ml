@@ -48,3 +48,6 @@ type tstore =
   decl_ids   : (string * identifier_definition) list ref;
   tbl_refs  : (int, eval_result) Hashtbl.t ref; 						(* int is the address, eval_result is the value *)
 }
+
+(*    GENERAL FUNCTIONS     *)
+let rec iterate f x n = if (n > 0) then iterate f (f x) (n-1) else x (* Apply a function to an argument a given number of times. *)

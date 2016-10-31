@@ -1,6 +1,21 @@
-main()
+// New-bound identifiers reduced iff they are NOT modified before they are accessed
+main (x, y, z)
 {
-	// Read in and print out
-	let input = read_int () in
-	print_int (10 * input)
+	new x = 5 + 3 in
+	new y = ~x + 2 in
+
+	if(~x >= 0)
+	{
+		x = 15
+	}
+	else
+	{
+		new k = ~x * 20 + ~y / 2 in
+		~k
+	};
+
+	new z = ~x * ~y in
+	~z
+
+	// Expected results: X is reduced up until its calulation for
 }
