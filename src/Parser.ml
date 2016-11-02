@@ -7,7 +7,6 @@ open Parser_evaluator
 
 let filename = Sys.argv.(1)
 let num_args = Array.length Sys.argv
-let optimisation_iterations = 10
 let is_verbose = ref false
 let is_optimised = ref false
 let is_optimisation_comparison = ref false
@@ -84,16 +83,16 @@ let () =
 	if num_lines > 0 then
 		let lines_as_string = String.concat "\n" !i_lines in
 			store.decl_funcs := (parse_to_program lines_as_string);
+			let eval_start_exp = ref Empty in
 
-			if !is_verbose then printf "Result:\n";
-			if !is_verbose then print_parse_result !(store.decl_funcs);
+			(if !is_verbose then printf "Result:\n");
+			(if !is_verbose then print_parse_result !(store.decl_funcs));
 
 			(* Optimise the program, if the argument was supplied to do so. *)
-			if !is_optimisation_comparison
+			(if !is_optimisation_comparison
 			then
-				(*iterate (fun x -> printf "%d\n" x; x) 0 optimisation_iterations;*)
-				let optimised_program = iterate (List.map optimise_function) !(store.decl_funcs) optimisation_iterations in
-				(*let optimised_program = List.map optimise_function !(store.decl_funcs) in*)
+				let optimised_program = iterate optimise_program !(store.decl_funcs) optimisation_iterations in
+				if !is_verbose then print_parse_result optimised_program;
 				let count_optimised = List.fold_left (fun acc fd -> match fd with Myfunc(_, _, e) -> acc + (count_exp e)) 0 optimised_program in
 				let count_default = List.fold_left (fun acc fd -> match fd with Myfunc(_, _, e) -> acc + (count_exp e)) 0 !(store.decl_funcs) in
 				let num_pruned_exps = count_default - count_optimised in
@@ -107,15 +106,18 @@ let () =
 							count_optimised
 							num_pruned_exps
 							(percentage_reduction *. 100.);
-							if !is_verbose then print_parse_result optimised_program;
-				store.decl_funcs := optimised_program;
+				store.decl_funcs := optimised_program);
 
-			if !is_optimised
-			then store.decl_funcs := List.map optimise_function !(store.decl_funcs);;
+			(if !is_optimised
+			then
+				let optimised_program = iterate optimise_program !(store.decl_funcs) optimisation_iterations in
+			  store.decl_funcs := optimised_program);
+
+			eval_start_exp := (get_func_exp !(store.decl_funcs) "main");
 
 			(* Evaluate the program, starting at the main function *)
 			try
-				let evaluated_expression = eval store (get_func_exp !(store.decl_funcs) "main") in
+				let evaluated_expression = eval store !eval_start_exp in
 				printf "Evaluates to: ";
 				print_eval_result store evaluated_expression
 			with Failure str -> print_endline str;

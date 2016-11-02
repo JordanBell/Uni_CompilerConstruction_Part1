@@ -1,24 +1,11 @@
 open Parser_types
 open Parser_printer
+open Printf
 
 let op_counter = ref 0
 
 let addr_counter = ref 0
 let new_ref() = addr_counter := !addr_counter + 1; !addr_counter
-
-let rec get_func_def program with_name = match program with
-	| h::tl ->
-		(match h with (Myfunc (func_name, _, _)) ->
-		if func_name = with_name
-		then h
-		else get_func_def tl with_name)
-	| [] -> raise (Failure ("Function \"" ^ with_name ^ "\" undeclared"))
-
-let rec get_func_exp program with_name = match program with
-	| (Myfunc (func_name, _, e))::tl ->
-		if func_name = with_name then e
-		else get_func_exp tl with_name
-	| [] -> raise (Failure ("Function \"" ^ with_name ^ "\" undeclared"))
 
 (* List.assoc wrapped within an error check *)
 let lookup_definition str store =
@@ -237,10 +224,10 @@ and evaluate_operator_unary store opcode e =
 
 and build_function_store store func_store arg_names arg_values = match arg_names, arg_values with
 | n::ns, e::es ->
-	let this_ref = new_ref() in
-	(!func_store).decl_ids := ((n, Var (this_ref))::!((!func_store).decl_ids));
+	(* Add a constant identifier for the parameter/argument matchup *)
 	let e_eval_result = eval store e in
-	Hashtbl.add !((!func_store).tbl_refs) this_ref e_eval_result; (* Add a corresponding eval_result to the store for the new reference *)
+	(!func_store).decl_ids := ((n, Const (e_eval_result))::!((!func_store).decl_ids));
+	(* Recurse through the rest of the parameters/arguments *)
 	build_function_store store func_store ns es
 | [], [] -> ()
 | _ -> failwith "Mismatch between arg_names and arg_values"

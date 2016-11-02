@@ -178,3 +178,17 @@ let rec print_eval_result store e_eval_result =
 						with Not_found -> failwith ("Identifier \'" ^ str ^ "\' not declared."))
 			with Not_found -> failwith (str ^ " not found. This may because the environment has been destroyed before printing, and the new-bound identifier's reference is therefore lost."))
 		| Unit -> printf "Unit\n"
+
+let rec print_args arg_pairs = match arg_pairs with
+	| h::tl ->
+		printf "%s = " (fst h);
+		let definition = snd h in
+		(match definition with
+			| Const (er) -> (match er with
+				| Int (i) -> printf "%d\n" i
+				| Bool (b) -> if b then printf "true\n" else printf "false\n"
+				| String (s) -> printf "%s\n" s
+				| _ -> ())
+			| _ -> ());
+		print_args tl
+	| [] -> ()

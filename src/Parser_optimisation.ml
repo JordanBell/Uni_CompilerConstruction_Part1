@@ -72,7 +72,7 @@ let rec foldf_is_modified_in search_str acc = function
 let is_modified_in id_str = fold_exp (foldf_is_modified_in id_str) false
 
 let rec do_until_modified id_str f es = match es with
-| h::tl -> if(is_modified_in id_str h) then (f h)::tl else (f h)::(do_until_modified id_str f es)
+| h::tl -> if(is_modified_in id_str h) then (f h)::tl else (f h)::(do_until_modified id_str f tl)
 | [] -> []
 
 let rec replace_exp_until_modification_of id_str e_newval e_in =
@@ -130,15 +130,23 @@ let rec replace_exp_until_modification_of id_str e_newval e_in =
 		-> e_in
 
 	(* Flexible-length Sub Expressions *)
-	| Application (e, fs)
-		-> Application(e, do_until_modified id_str frec fs)
+	| Application (e, fs) ->
+    Application(e, do_until_modified id_str frec fs)
 
 let rec replace_constant_with_value id_str e_val e_in = match e_in with
 	| Empty -> e_in
 	| Identifier (id_str') -> if (id_str = id_str') then e_val else e_in
 	| _ -> apply_to_subexpressions (replace_constant_with_value id_str e_val) e_in
 
-let rec optimise_exp e =
+let rec exp_with_inline_args e_in arg_names arg_values = match arg_names, arg_values with
+  | n::ns, e::es ->
+    let after_replacement = replace_constant_with_value n e e_in in
+    exp_with_inline_args after_replacement ns es
+  | [], [] -> e_in
+  | _ -> failwith "Mismatch between arg_names and arg_values"
+
+let rec optimise_exp program_context e =
+  let frec = optimise_exp program_context in (* "frec" = "f"unction "rec"ursion *)
 	match e with
 	| Operator(opcode, Const_int i, Const_int j) ->
     let reduced_evaluation = evaluate_operator dummy_store opcode (Const_int (i)) (Const_int (j)) in
@@ -152,24 +160,30 @@ let rec optimise_exp e =
       | Bool (eb) -> Const_bool (eb)
       | _ -> failwith "A boolean operation somehow returned a non-boolean result.")
 
+  | Operator_unary(opcode, Const_bool b) ->
+    let reduced_evaluation = evaluate_operator_unary dummy_store opcode (Const_bool (b)) in
+    (match reduced_evaluation with
+      | Bool (eb) -> Const_bool (eb)
+      | _ -> failwith "A boolean operation somehow returned a non-boolean result.")
+
 	| Let (id_str, e_def, e_in) ->
 		(* Replace all occurrances of the id in the e_in expression IFF its definition is a constant value *)
 		(match e_def with
 			| Const_int _ | Const_bool _ | Const_string _ ->
 				let replaced_in = replace_constant_with_value id_str e_def e_in in
-				optimise_exp replaced_in
-			| _ -> Let (id_str, optimise_exp e_def, optimise_exp e_in))
+				frec replaced_in
+			| _ -> Let (id_str, frec e_def, frec e_in))
 
 	| New (id_str, e_def, e_in) ->
 		(* Replace instances of the variable up until its first assignment to a new value, or declaration of an over-shadowing identifier. *)
 		(match e_def with
 			| Const_int _ | Const_bool _ | Const_string _ ->
 				let replaced_in = replace_exp_until_modification_of id_str e_def e_in in
-				New (id_str, e_def, optimise_exp replaced_in)
-			| _ -> New (id_str, optimise_exp e_def, optimise_exp e_in)) (* Do nothing if the definition is non-const, as its evaluation may modify the store, etc. *)
+				New (id_str, e_def, frec replaced_in)
+			| _ -> New (id_str, frec e_def, frec e_in)) (* Do nothing if the definition is non-const, as its evaluation may modify the store, etc. *)
 
-	| If(Const_bool b, e, f) -> if b then optimise_exp e else optimise_exp f
-  | If(Const_int i, e, f) -> if (i != 0) then optimise_exp e else optimise_exp f
+	| If(Const_bool b, e, f) -> if b then frec e else frec f
+  | If(Const_int i, e, f) -> if (i != 0) then frec e else frec f
 
   | While(b, e) ->
     (match b with
@@ -182,25 +196,59 @@ let rec optimise_exp e =
         then failwith "Infinite loop detected. Language does not currently support breaking loops with a constant expression."
         else Empty
       | _ ->
-        let optim_b = iterate optimise_exp b 3 in
+        let optim_b = iterate frec b 3 in
         let condition_identifiers = fold_exp get_id_strings [] optim_b in
         if List.length condition_identifiers = 0
         then
           (* The condition is too complicated at the moment. Just recurse. *)
-          While (optim_b, optimise_exp e)
+          While (optim_b, frec e)
         else
           (* TODO Check if the condition is constant. Only check for the identifier's presence in the main body if the identifier is variable. No need if it is constnat, as we already know it will never change. In that case, immediately throw an error if it evaluates to true. *)
           let e_contains_condition_identifiers = List.fold_left (fun acc id_str -> acc || (fold_exp (contains_id_string id_str) false e)) false condition_identifiers in
           if (not e_contains_condition_identifiers)
           then failwith "Infinite loop detected: The while loop's condition contains identifiers that are not accessed within the loop itself."
           (* TODO If there are none of the identifiers in the body, only throw the error if the condition (which is now considered to be constant) evaluates to true. *)
-          else While (optim_b, optimise_exp e)) (* Recurse to expression *)
+          else While (optim_b, frec e)) (* Recurse to expression *)
 
-	(*| Application (e, f) ->*)
+	| Application (Identifier (func_id), fs) ->
+    (* Perform constant inlining if each argument is constant *)
+    let is_f_const_arg =
+      (fun acc arg ->
+      (match arg with
+        | Const_int _ | Const_bool _ | Const_string _ -> acc && true
+        | _ -> false))
+    in
+    let all_args_constant = (List.fold_left is_f_const_arg true fs) in
+    if all_args_constant = false
+    then Application(Identifier (func_id), List.map frec fs) (* Do nothing here, just recurse through the argument expressions *)
+    else
+		(* Find the definition of the function we are calling *)
+		(match get_func_def program_context func_id with Myfunc (_, arg_names, func_exp) ->
+			(* Check if the arg list matches in size *)
+			if (List.length arg_names) != (List.length fs) then failwith ("Argument count mismatch for function \"" ^ func_id ^ "\": Was expecting " ^ string_of_int (List.length arg_names) ^ " arguments but received " ^ string_of_int (List.length fs));
+      (* Find what the expression looks like with its parameter identifiers replaced with the const values. *)
+      let func_exp_with_replaced_args = exp_with_inline_args func_exp arg_names fs in
+      (* Replace this application with the function's optimised expression with constant arguments. *)
+      let optimised_func_exp = iterate (optimise_exp program_context) func_exp_with_replaced_args optimisation_iterations in
+      optimised_func_exp)
 
 
-  | _ -> apply_to_subexpressions optimise_exp e
+  | Application (e, fs) -> Application (frec e, List.map frec fs)
 
-let optimise_function func =
+  | _ -> apply_to_subexpressions frec e
+
+and optimise_function program_context func =
   match func with Myfunc (str, args, e) ->
-    Myfunc (str, args, optimise_exp e)
+    Myfunc (str, args, optimise_exp program_context e)
+
+(* Optimise a program, function by function, with an updated program context for each optimisation. Note that the updated context is needed for constant function inlining *)
+and optimise_program_with_updating_program os uos = match uos with
+	(* Note - os are optimised functions. uos are un-optimised functions *)
+	| h::tl ->
+    let program_context = os @ uos in (* The optimised program thus far *)
+		let h_o = optimise_function program_context h in (* Optimise the head *)
+    let os' = (os @ [h_o]) in (* Add the optimised head to the end of the list of already-optimised functions *)
+    h_o::(optimise_program_with_updating_program os' tl) (* Recurse with the tail, adding that to the end of the optimised functions. *)
+	| [] -> []
+
+and optimise_program i_program = optimise_program_with_updating_program [] i_program

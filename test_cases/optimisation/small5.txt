@@ -1,20 +1,40 @@
-foo(x) {x+1}
+// Constant function inlining (more advanced functions)
+bool_op(a, b, y, z)
+{
+	// Do more complex bool ops
+	let b_leq5 = a <= 5 in
+	let b_geq10 = b >= 10 in
+	let b_or = b_leq5 || b_geq10 in
+
+	let b_noteq4 = y != 4 in
+	let b_eq8 = z == 8 in
+	let b_and = b_noteq4 && b_eq8 in
+
+	b_and && b_or
+}
+
+// A non-variabled version of the above function
+bool_op_const()
+{
+	// Do more complex bool ops
+	let b_leq5 = 0 <= 5 in
+	let b_geq10 = 15 >= 10 in
+	let b_or = b_leq5 || b_geq10 in
+
+	let b_noteq4 = 5 != 4 in
+	let b_eq8 = 8 == 8 in
+	let b_and = b_noteq4 && b_eq8 in
+
+	b_and && b_or
+}
 
 main(count)
 {
-	// Test while loop
-	new total = 0 in
-	new input = 0 in
+	let _a = 0 in
+	let _b = 15 in
 
-	// Based on the input argument, add the total of all input ints
-	while (~count >= 1)
-	{
-		input = read_int();
-		total = ~total + foo(input);
-		count = ~count - 1
-	};
+	new _y = 5 in
+	new _z = 8 in
 
-	// Print and return the total
-	print_int (5);
-	~total
+	bool_op(_a, _b, ~_y, ~_z)
 }

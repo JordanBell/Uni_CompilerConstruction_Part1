@@ -51,3 +51,19 @@ type tstore =
 
 (*    GENERAL FUNCTIONS     *)
 let rec iterate f x n = if (n > 0) then iterate f (f x) (n-1) else x (* Apply a function to an argument a given number of times. *)
+
+let rec get_func_def program with_name = match program with
+	| h::tl ->
+		(match h with (Myfunc (func_name, _, _)) ->
+		if func_name = with_name
+		then h
+		else get_func_def tl with_name)
+	| [] -> raise (Failure ("Function \"" ^ with_name ^ "\" undeclared"))
+
+let rec get_func_exp program with_name = match program with
+	| (Myfunc (func_name, _, e))::tl ->
+		if func_name = with_name then e
+		else get_func_exp tl with_name
+	| [] -> raise (Failure ("Function \"" ^ with_name ^ "\" undeclared"))
+
+let optimisation_iterations = 10
