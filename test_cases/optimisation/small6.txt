@@ -1,6 +1,10 @@
-main(count)
+// Infinite loop - basic
+
+main()
 {
-	new x = true in
-	new y = false in
-	~x && !~y
+	// Infinite loops are detected and disallowed
+	while(true)
+	{
+		5
+	}
 }

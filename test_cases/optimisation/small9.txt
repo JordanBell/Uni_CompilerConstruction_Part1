@@ -1,17 +1,17 @@
-// This is the example given for complex assignment of arbitrary expression on the left side
-
-main(x, y)
+// Constant inlining of a recursive function. Note: This increases the number of expressions, but removes function call overhead
+inc_rec(value, inc_amount)
 {
-	// The following is the syntactic equivalent of "(let z = !x + !y in if z=0 then x else y):=7;;"
-	let x = 1 in
-	let y = 2 in
-	let z = x + y in
-	if (z == 0)
+	if(inc_amount == 0)
 	{
-		x
+		value
 	}
 	else
 	{
-		y
-	} = 7
+		1 + inc_rec(value, inc_amount - 1)
+	}
+}
+
+main()
+{
+	inc_rec(5, 5)
 }

@@ -1,26 +1,8 @@
 main()
 {
 	// Folding operations
-	if(5 + 4)
-	{
-		if(true)
-		{
-			true
-		}
-		else
-		{
-			false
-		}
-	}
-	else
-	{
-		if(false)
-		{
-			false
-		}
-		else
-		{
-			true
-		}
-	}
+	let x = 4 + 5 in
+	let y = true || false in
+	let z = 4 - 5 <= 8 / 2 in
+	z
 }

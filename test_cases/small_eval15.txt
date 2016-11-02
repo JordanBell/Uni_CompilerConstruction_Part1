@@ -1,7 +1,7 @@
 // Inline argument evaluations
 foo(x, y, z)
 {
-	~x + ~y + ~z
+	x + y + z
 }
 
 main()

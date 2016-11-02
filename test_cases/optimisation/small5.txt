@@ -1,4 +1,4 @@
-// Constant function inlining (more advanced functions)
+// Constant function inlining (more advanced)
 bool_op(a, b, y, z)
 {
 	// Do more complex bool ops
@@ -13,7 +13,7 @@ bool_op(a, b, y, z)
 	b_and && b_or
 }
 
-// A non-variabled version of the above function
+// A non-variabled version of the above function (should reduce to a single constant)
 bool_op_const()
 {
 	// Do more complex bool ops

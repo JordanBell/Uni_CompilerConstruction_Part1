@@ -31,6 +31,13 @@ Use the `~` character in place of OCaml's `!` operator.
 `int i = 0;`
 `i = ~i + 1`
 
+#### Referencing
+Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name.
+`let x = 5 in
+let y = &x in
+x = 10
+y // Now equals 10`
+
 #### Function calls
 Examples:
 `foo(x)`
@@ -76,7 +83,7 @@ Propagation will also occur for new-bound variables up until they are first modi
 2.  `new x = 5 in new y = ~x in x = ~y * 2; ~y / ~x` WILL propagate when defining y, but will NOT propagate in the final evaluation, AFTER its modification. y will propagate fully as it is never modified. Both as still declared and stored in case they are used later.
 
 #### Constant Inlining
-When functions are supplied with constant arguments, either explicitly (ie `f(5)`), or after applying constant folding or propagation (`let x = 1 in let y = 2 in f(x + y)`), a function will be folded using those values and replaced inline after a further 10 optimisation iterations on that inline expression chunk. 
+When functions are supplied with constant arguments, either explicitly (ie `f(5)`), or after applying constant folding or propagation (`let x = 1 in let y = 2 in f(x + y)`), a function will be folded using those values and replaced inline after a further 10 optimisation iterations on that inline expression chunk.
 
 #### Infinite Loop detection
 When optimisation is enabled, the build will fail if it detects as infinite loop. This occurs when either its condition is evaluated as constantly true, or when condition contains variables that are never modified within the body of the while loop. This makes two assumptions which are as of writing always true: The program cannot break from within a loop (no "return", "continue" or "break" keywords exist), and no concurrency will modify the conditional variables.

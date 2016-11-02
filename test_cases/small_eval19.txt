@@ -1,6 +1,6 @@
 inc(i)
 {
-	~i + 1
+	i + 1
 }
 
 // Unconventional (but valid) expressions

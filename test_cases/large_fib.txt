@@ -1,8 +1,9 @@
-fibo(fib_index)
+fibo(fib_index_start)
 {
 	new a = 1 in
 	new b = 1 in
 	new c = 0 in
+	new fib_index = fib_index_start in
 
 	while(~fib_index >= 2)
 	{

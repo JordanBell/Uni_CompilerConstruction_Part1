@@ -1,13 +1,18 @@
-main (basically, any, number, of, arguments)
+// Infinite loop - checking for modification of condition constants and conditional variables
+
+main()
 {
-	// Do more complex bool ops
-	let b_leq5 = 0 <= 5 in
-	let b_geq10 = 15 >= 10 in
-	let b_or = b_leq5 || b_geq10 in
+	// Uncomment any of the while conditions to see how their infinite nature is detected.
+	new px = true in
+	new py = false in
 
-	let b_noteq4 = 4 != 4 in
-	let b_eq8 = 7 == 8 in
-	let b_and = b_noteq4 && b_eq8 in
+	let cx = true in
+	let cy = false in
 
-	b_and || b_or
+	//while(cx || cy)
+	while(px || py)
+	{
+		5
+		//px = false // Uncomment to remove the warning for the while condition containing "px"
+	}
 }

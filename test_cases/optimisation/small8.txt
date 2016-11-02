@@ -1,8 +1,21 @@
-// Bad arguments
-main (invalid argument)
+// A combination of optimisation use cases.
+main (x, y, z)
 {
-	/ Bad comment
-	
-	// Bad variable
-	var x:int = 5
+	new x = 5 + 3 in
+	new y = ~x + 2 in
+
+	if(~x >= 0)
+	{
+		x = 15
+	}
+	else
+	{
+		new k = ~x * 20 + ~y / 2 in
+		~k
+	};
+
+	new z = ~x * ~y in
+	~z
+
+	// Expected results: X is reduced up until its calculation for z
 }

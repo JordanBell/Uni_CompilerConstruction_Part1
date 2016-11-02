@@ -1,13 +1,13 @@
 // Recursion
 factorial(val)
 {
-	if(~val <= 1)
+	if(val <= 1)
 	{
-		~val
+		val
 	}
 	else
 	{
-		~val * factorial (~val - 1)
+		val * factorial (val - 1)
 	}
 }
 

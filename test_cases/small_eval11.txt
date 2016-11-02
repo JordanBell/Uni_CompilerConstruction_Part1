@@ -1,9 +1,9 @@
 // Function pointer example
 pow(x, p)
 {
-	if(~p >= 1)
+	if(p >= 1)
 	{
-		~x * pow(~x, ~p - 1)
+		x * pow(x, p - 1)
 	}
 	else
 	{
@@ -13,17 +13,17 @@ pow(x, p)
 
 foo(x)
 {
-	~x
+	x
 }
 
 apply_one(f, x)
 {
-	f(~x)
+	f(x)
 }
 
 apply_two(f, x, y)
 {
-	f(~x, ~y)
+	f(x, y)
 }
 
 main()
