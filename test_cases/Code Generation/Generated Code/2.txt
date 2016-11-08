@@ -1,0 +1,14 @@
+ld 5
+st r1
+ld 2
+st r2
+mul r1, r2
+st r3
+ld 5
+st r4
+ld 2
+st r5
+mul r4, r5
+st r6
+add r3, r6
+st r7

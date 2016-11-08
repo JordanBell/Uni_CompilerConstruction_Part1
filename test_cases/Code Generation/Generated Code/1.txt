@@ -1,0 +1,6 @@
+ld 5
+st r1
+ld 10
+st r2
+add r1, r2
+st r3

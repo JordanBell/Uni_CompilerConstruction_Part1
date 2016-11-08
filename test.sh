@@ -8,7 +8,7 @@ perform_eval_test()
 	ARG_1=$2
 
 	# Log the results to a temp file
-	src/Parser.native test_cases/$TEST_FILENAME $ARG_1 > /tmp/eval_result_log.txt
+	src/Main.native test_cases/$TEST_FILENAME $ARG_1 > /tmp/eval_result_log.txt
 
 	# Print the result and whether or not they match the expected output
 	printf "$(</tmp/eval_result_log.txt)"
@@ -19,18 +19,18 @@ clear
 
 # Parse tests
 printf "\n\t*** Exercise 1 ***\n"
-src/Parser.native test_cases/small0.txt $1
-src/Parser.native test_cases/small1.txt $1
-src/Parser.native test_cases/small2.txt $1
-src/Parser.native test_cases/small3.txt $1
-src/Parser.native test_cases/small4.txt $1
-src/Parser.native test_cases/small5.txt $1
-src/Parser.native test_cases/small6.txt $1
-src/Parser.native test_cases/small7.txt $1
-src/Parser.native test_cases/small8.txt $1
-src/Parser.native test_cases/small9.txt $1
-src/Parser.native test_cases/large_recursive.txt $1
-src/Parser.native test_cases/large_iterative.txt $1
+src/Main.native test_cases/small0.txt $1
+src/Main.native test_cases/small1.txt $1
+src/Main.native test_cases/small2.txt $1
+src/Main.native test_cases/small3.txt $1
+src/Main.native test_cases/small4.txt $1
+src/Main.native test_cases/small5.txt $1
+src/Main.native test_cases/small6.txt $1
+src/Main.native test_cases/small7.txt $1
+src/Main.native test_cases/small8.txt $1
+src/Main.native test_cases/small9.txt $1
+src/Main.native test_cases/large_recursive.txt $1
+src/Main.native test_cases/large_iterative.txt $1
 
 # Evaluation Tests
 printf "\n\n\t*** Exercise 2 ***\n"
@@ -61,13 +61,27 @@ perform_eval_test small_eval19.txt $1
 
 # Evaluation Tests
 printf "\n\n\t*** Exercise 4 ***\n"
-src/Parser.native test_cases/optimisation/small0.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small1.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small2.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small3.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small4.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small5.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small6.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small7.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small8.txt $1 -oc; echo ""
-src/Parser.native test_cases/optimisation/small9.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small0.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small1.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small2.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small3.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small4.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small5.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small6.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small7.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small8.txt $1 -oc; echo ""
+src/Main.native test_cases/optimisation/small9.txt $1 -oc; echo ""
+
+# Interpreter Tests
+printf "\n\n\t*** Exercise 5 - Interpretation and Code Generation ***\n"
+printf "* Interpretation *\n"
+src/Interpreter.native test_cases/Code\ Generation/0.txt $1
+src/Interpreter.native test_cases/Code\ Generation/1.txt $1
+src/Interpreter.native test_cases/Code\ Generation/2.txt $1
+src/Interpreter.native test_cases/Code\ Generation/3.txt $1
+
+printf "\n* Code Generation *\n"
+src/CodeGenerator.native test_cases/Code\ Generation/0.txt test_cases/Code\ Generation/Generated\ Code/0.txt $1
+src/CodeGenerator.native test_cases/Code\ Generation/1.txt test_cases/Code\ Generation/Generated\ Code/1.txt $1
+src/CodeGenerator.native test_cases/Code\ Generation/2.txt test_cases/Code\ Generation/Generated\ Code/2.txt $1
+src/CodeGenerator.native test_cases/Code\ Generation/3.txt test_cases/Code\ Generation/Generated\ Code/3.txt $1
