@@ -42,9 +42,9 @@ main:
 
 	# Generated code START
 	push	$10
-	pop	%rax
 	push	$2
 	pop	%rbx
+	pop	%rax
 	mov	$0, %rdx
 	cqto
 	idivq	%rbx

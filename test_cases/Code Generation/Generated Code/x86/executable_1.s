@@ -46,11 +46,11 @@ main:
 	# offset 2
 	mov	-32(%rbp), %rax
 	push	%rax
-	pop	%rax
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
 	pop	%rbx
+	pop	%rax
 	mov	$0, %rdx
 	cqto
 	idivq	%rbx

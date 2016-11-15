@@ -41,20 +41,19 @@ let rec codegenx86 symt e_in =
     (match op with
       | Divide ->
         frec e1;
-        "\tpop\t%rax\n" |> Buffer.add_string code;
-
         frec e2;
-        "\tpop\t%rbx\n" |> Buffer.add_string code;
-
+        "\tpop\t%rbx\n" ^
+        "\tpop\t%rax\n" ^
         "\tmov\t$0, %rdx\n" ^
         "\tcqto\n" ^
         "\tidivq\t%rbx\n" ^
-        "\tpush\t%rax\n" |> Buffer.add_string code
+        "\tpush\t%rax\n" |> Buffer.add_string code;
+        sp := !sp + 1
       | _ ->
         frec e1;
         frec e2;
-        codegenx86_op op);
-    sp := !sp + 1
+        codegenx86_op op;
+        sp := !sp + 1)
 
   | Identifier (id_str) ->
     let addr = List.assoc id_str symt in
