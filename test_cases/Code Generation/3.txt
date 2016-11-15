@@ -1,6 +1,6 @@
 main ()
 {
   let five = 5 in
-  let result = five * 2 - five * 2 in
+  let result = 0 in
   result + 10 / five
 }

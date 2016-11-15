@@ -4,6 +4,8 @@ open Parser_printer
 open Printf
 open Parser
 
+let code = Buffer.create 100
+
 let string_of_opcode_instruction opc = match opc with
   | Plus -> "add"
   | Minus -> "sub"
@@ -11,7 +13,6 @@ let string_of_opcode_instruction opc = match opc with
   | Divide -> "div"
   | _ -> failwith ("Binary operator instruction not supported: " ^ (string_of_opcode opc))
 
-let code = Buffer.create 100
 let codegen_op (opc, addr1, addr2) =
   (string_of_opcode_instruction opc)
   ^ " r" ^ (string_of_int addr1)
