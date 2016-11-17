@@ -166,7 +166,7 @@ let rec codegenx86 symt e_in =
 
     (* Jump to the start of the loop, where we recalculate the condition *)
     "\tjmp\t" ^ str_label_loop ^ "\n" |> Buffer.add_string code;
-    str_label_continue ^ ":\n" |> Buffer.add_string code;
+    str_label_continue   ^ ":\n" |> Buffer.add_string code;
 
     (* Increase while loop count *)
     while_count := 1 + !while_count
