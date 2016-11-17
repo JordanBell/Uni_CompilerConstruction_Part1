@@ -5,6 +5,8 @@ open Parser
 
 let code = Buffer.create 100
 let sp = ref 0
+let ifelse_count = ref 0
+let bool_op_count = ref 0
 
 let string_of_opcode_x86 opc = match opc with
   | Plus -> "add"
@@ -14,6 +16,38 @@ let string_of_opcode_x86 opc = match opc with
   | _ -> failwith ("Binary operator instruction not supported: " ^ (string_of_opcode opc))
 
 let codegenx86_op opc =
+  match opc with
+  | Equal | Noteq | Geq | Leq ->
+    let s_lbl_true = ".BOP" ^ (string_of_int !bool_op_count) in
+    let s_lbl_continue = ".CONT_BOP" ^ (string_of_int !bool_op_count) in
+    "\tpop\t%rax\n" ^
+    "\tpop\t%rbx\n" ^
+    "\tsub\t%rax, %rbx\n" ^
+    "\tmov\t$0, %rax\n" ^
+    "\tcmp\t%rax, %rbx\n" |> Buffer.add_string code;
+
+    (match opc with
+      | Noteq -> "\tjne\t" ^ s_lbl_true ^ "\n" |> Buffer.add_string code;
+      | Equal -> "\tje\t" ^ s_lbl_true ^ "\n" |> Buffer.add_string code;
+      | Geq -> "\tjge\t" ^ s_lbl_true ^ "\n" |> Buffer.add_string code;
+      | Leq -> "\tjle\t" ^ s_lbl_true ^ "\n" |> Buffer.add_string code;
+      | _ -> failwith "opc mismatch: check the match condition this is nested in"
+    );
+
+    (* If FALSE *)
+    "\tpush\t$0\n" ^
+    ("\tjmp\t" ^ s_lbl_continue ^ "\n") |> Buffer.add_string code;
+
+    (* If TRUE *)
+    s_lbl_true ^ ":\n" ^
+    "\tpush\t$1\n" |> Buffer.add_string code;
+
+    (* Continue *)
+    s_lbl_continue ^ ":\n" |> Buffer.add_string code;
+
+    (* Increment Bool-op count *)
+    bool_op_count := !bool_op_count + 1
+  | _ ->
   "\tpop\t%rax\n" ^
   "\tpop\t%rbx\n" ^
   "\t" ^ (string_of_opcode_x86 opc) ^ "\t%rax, %rbx\n" ^
@@ -55,15 +89,25 @@ let rec codegenx86 symt e_in =
         codegenx86_op op;
         sp := !sp + 1)
 
-  | Identifier (id_str) ->
+  | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
     codegenx86_id (addr);
     sp := !sp + 1
 
-  | Let (x, e1, e2) ->
+  | Let (x, e1, e2) | New (x, e1, e2) ->
     frec e1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_let ()
+
+  | Asg (Identifier (id_str), e) ->
+    frec e;
+    let addr = List.assoc id_str symt in
+    let str_var_reg = (-16 - 8 * addr |> string_of_int) ^ "(%rbp)" in
+    "\t# write offset " ^ (string_of_int addr) ^ "\n" ^
+    "\tpop\t%rax\n" ^
+    "\tmov\t%rax, " ^ str_var_reg ^ "\n" ^
+    "\tpush\t" ^ str_var_reg ^ "\n"
+    |> Buffer.add_string code
 
   | Seq (e, f) ->
     let _ = frec e in
@@ -80,13 +124,34 @@ let rec codegenx86 symt e_in =
 
   | Scope (e) -> frec e
 
+  | If (b, e_iftrue, e_iffalse) ->
+    (* Generate code for calculating the condition *)
+    frec b;
+
+    let str_label_if_nonzero = ".IE" ^ (string_of_int !ifelse_count) in
+    let str_label_continue = ".CONT_IE" ^ (string_of_int !ifelse_count) in
+    "\tpop\t%rax\n" ^       (* Move the condition value into rax *)
+    "\tmov\t$0, %rbx\n" ^   (* Move 0 into rbx for comparison *)
+    "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
+    "\tjne\t" ^ str_label_if_nonzero ^ "\n"
+    |> Buffer.add_string code;
+
+    (* If not jumping, just execute the else code (where the condition equals 0, ie FALSE) *)
+    frec e_iffalse;
+    ("\tjmp\t" ^ str_label_continue ^ "\n") |> Buffer.add_string code;
+
+    str_label_if_nonzero ^ ":\n" |> Buffer.add_string code;
+    frec e_iftrue;
+
+    str_label_continue ^ ":\n" |> Buffer.add_string code;
+    (* Increase the counter of if statement labels *)
+    ifelse_count := !ifelse_count + 1
+
+  | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."
-  | Empty -> failwith "Expression not implemented: Empty"
+  | Asg (_, _) -> failwith "Expression not implemented: Asg (with a non-simple-identifier on the left)"
   | Operator_unary (opcode, e) -> failwith "Expression not implemented: Unary Operator (NOT)"
-  | If (b, e, f) -> failwith "Expression not implemented: If"
   | While (e, f) -> failwith "Expression not implemented: While"
-  | Asg (e, f) -> failwith "Expression not implemented: Asg"
-  | New (str, e, f) -> failwith "Expression type not implemented: New"
   | Printint (e) -> failwith "Expression not implemented: Printint"
   | Deref _ ->	failwith "Expression not implemented: Deref"
   | Ref _ -> failwith "Expression type not implemented: Ref"

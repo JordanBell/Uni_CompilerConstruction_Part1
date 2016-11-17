@@ -2,24 +2,23 @@
 
 	# Generated code START
 	push	$5
-	push	$0
-	# offset 2
-	mov	-32(%rbp), %rax
-	push	%rax
 	push	$10
+	# write offset 1
+	pop	%rax
+	mov	%rax, -24(%rbp)
+	push	-24(%rbp)
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-	pop	%rbx
-	pop	%rax
-	mov	$0, %rdx
-	cqto
-	idivq	%rbx
+	# offset 3
+	mov	-40(%rbp), %rax
+	push	%rax
+	# offset 4
+	mov	-48(%rbp), %rax
 	push	%rax
 	pop	%rax
 	pop	%rbx
-	add	%rax, %rbx
-	push	%rbx
+	push	%rax
 	pop	%rax
 	pop	%rbx
 	push	%rax

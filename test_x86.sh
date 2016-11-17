@@ -23,3 +23,5 @@ perform_test 0
 perform_test 1
 perform_test 2
 perform_test 3
+perform_test 4
+perform_test 5

@@ -1,0 +1,14 @@
+main ()
+{
+  let five = 5 in
+  let result = 20 in
+
+  if(result >= 10)
+  {
+    1
+  }
+  else
+  {
+    0
+  }
+}

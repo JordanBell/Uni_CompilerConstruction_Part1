@@ -1,0 +1,8 @@
+main ()
+{
+  new p = 5 in
+  p = 10;
+  let x = ~p in
+  new y = x in
+  ~y
+}
