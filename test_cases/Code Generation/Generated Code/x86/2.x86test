@@ -1,26 +1,43 @@
 
 
 	# Generated code START
-	push	$5
-	push	$10
+	push	$6
+.W0:
+	# offset 1
+	mov	-24(%rbp), %rax
+	push	%rax
+	push	$0
+	pop	%rax
+	pop	%rbx
+	sub	%rax, %rbx
+	mov	$0, %rax
+	cmp	%rax, %rbx
+	jge	.BOP0
+	push	$0
+	jmp	.CONT_BOP0
+.BOP0:
+	push	$1
+.CONT_BOP0:
+	pop	%rax
+	mov	$0, %rbx
+	cmp	%rax, %rbx
+	je	.CONT_W0
+	# offset 1
+	mov	-24(%rbp), %rax
+	push	%rax
+	push	$1
+	pop	%rax
+	pop	%rbx
+	sub	%rax, %rbx
+	push	%rbx
 	# write offset 1
 	pop	%rax
 	mov	%rax, -24(%rbp)
 	push	-24(%rbp)
+	jmp	.W0
+.CONT_W0:
 	# offset 1
 	mov	-24(%rbp), %rax
-	push	%rax
-	# offset 3
-	mov	-40(%rbp), %rax
-	push	%rax
-	# offset 4
-	mov	-48(%rbp), %rax
-	push	%rax
-	pop	%rax
-	pop	%rbx
-	push	%rax
-	pop	%rax
-	pop	%rbx
 	push	%rax
 	pop	%rax
 	pop	%rbx

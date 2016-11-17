@@ -6,6 +6,7 @@ open Parser
 let code = Buffer.create 100
 let sp = ref 0
 let ifelse_count = ref 0
+let while_count = ref 0
 let bool_op_count = ref 0
 
 let string_of_opcode_x86 opc = match opc with
@@ -147,11 +148,33 @@ let rec codegenx86 symt e_in =
     (* Increase the counter of if statement labels *)
     ifelse_count := !ifelse_count + 1
 
+  | While (e, f) ->
+    let str_label_loop = ".W" ^ (string_of_int !while_count) in
+    let str_label_continue = ".CONT_W" ^ (string_of_int !while_count) in
+
+    (* Place the loop label at the start, which will intiate a condition check and will skip the main expression if false *)
+    str_label_loop ^ ":\n" |> Buffer.add_string code;
+    frec e;
+    "\tpop\t%rax\n" ^       (* Move the condition value into rax *)
+    "\tmov\t$0, %rbx\n" ^   (* Move 0 into rbx for comparison *)
+    "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
+    "\tje\t" ^ str_label_continue ^ "\n" (* If the condition is 0, exit the loop and continue *)
+    |> Buffer.add_string code;
+
+    (* Generate code for the loop expression *)
+    frec f;
+
+    (* Jump to the start of the loop, where we recalculate the condition *)
+    "\tjmp\t" ^ str_label_loop ^ "\n" |> Buffer.add_string code;
+    str_label_continue ^ ":\n" |> Buffer.add_string code;
+
+    (* Increase while loop count *)
+    while_count := 1 + !while_count
+
   | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."
   | Asg (_, _) -> failwith "Expression not implemented: Asg (with a non-simple-identifier on the left)"
   | Operator_unary (opcode, e) -> failwith "Expression not implemented: Unary Operator (NOT)"
-  | While (e, f) -> failwith "Expression not implemented: While"
   | Printint (e) -> failwith "Expression not implemented: Printint"
   | Deref _ ->	failwith "Expression not implemented: Deref"
   | Ref _ -> failwith "Expression type not implemented: Ref"
