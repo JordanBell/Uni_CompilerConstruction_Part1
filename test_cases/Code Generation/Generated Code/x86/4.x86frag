@@ -1,9 +1,27 @@
 
 
 	# Generated code START
-	push	$5
+	push	$1
 ### Incrementing Stack Pointer: 1
-	call	factorial
+	push	$2
+### Incrementing Stack Pointer: 2
+	push	$3
+### Incrementing Stack Pointer: 3
+	push	$4
+### Incrementing Stack Pointer: 4
+	push	$5
+### Incrementing Stack Pointer: 5
+	push	$6
+### Incrementing Stack Pointer: 6
+	push	$7
+### Incrementing Stack Pointer: 7
+	push	$8
+### Incrementing Stack Pointer: 8
+	push	$9
+### Incrementing Stack Pointer: 9
+	push	$10
+### Incrementing Stack Pointer: 10
+	call	sum_10
 	push	%rax
 
 	# Push the top of the stack onto the output register

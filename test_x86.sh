@@ -19,7 +19,7 @@ perform_test()
   cd ../../../../
 }
 
-for i in {0..9}
+for i in {0..8}
 do
 	perform_test $i
 done
