@@ -1,0 +1,14 @@
+
+
+	# Generated code START
+	push	$5
+### Incrementing Stack Pointer: 1
+	call	factorial
+	push	%rax
+
+	# Push the top of the stack onto the output register
+	pop	-4(%rbp)
+	movl	-4(%rbp), %eax
+	movl	%eax, %edi
+	# Generated code END
+

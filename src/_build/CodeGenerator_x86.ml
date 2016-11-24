@@ -2,12 +2,20 @@ open Parser_types
 open Parser_printer
 open Printf
 open Parser
+open String
 
+(* String Buffers *)
+let code_functions = Buffer.create 100
 let code = Buffer.create 100
+
+(* Counters *)
 let sp = ref 0
 let ifelse_count = ref 0
 let while_count = ref 0
 let bool_op_count = ref 0
+
+let stack_offset_default = -16
+let stack_offset = ref stack_offset_default
 
 let string_of_opcode_x86 opc = match opc with
   | Plus -> "add"
@@ -36,12 +44,12 @@ let codegenx86_op opc =
     );
 
     (* If FALSE *)
-    "\tpush\t$0\n" ^
-    ("\tjmp\t" ^ s_lbl_continue ^ "\n") |> Buffer.add_string code;
+    "\tpush\t$0\n" ^ (* Push a value of FALSE *)
+    "\tjmp\t" ^ s_lbl_continue ^ "\n" |> Buffer.add_string code;
 
     (* If TRUE *)
     s_lbl_true ^ ":\n" ^
-    "\tpush\t$1\n" |> Buffer.add_string code;
+    "\tpush\t$1\n" |> Buffer.add_string code; (* Push a value of TRUE *)
 
     (* Continue *)
     s_lbl_continue ^ ":\n" |> Buffer.add_string code;
@@ -56,7 +64,7 @@ let codegenx86_op opc =
 
 let codegenx86_id addr =
   "\t# offset " ^ (string_of_int addr) ^ "\n" ^
-  "\tmov\t" ^ (-16 - 8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
+  "\tmov\t" ^ (!stack_offset - (8 * addr) |> string_of_int) ^ "(%rbp), %rax\n" ^
   "\tpush\t%rax\n"
   |> Buffer.add_string code
 
@@ -83,16 +91,19 @@ let rec codegenx86 symt e_in =
         "\tcqto\n" ^
         "\tidivq\t%rbx\n" ^
         "\tpush\t%rax\n" |> Buffer.add_string code;
+        "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
         sp := !sp + 1
       | _ ->
         frec e1;
         frec e2;
         codegenx86_op op;
+        "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
         sp := !sp + 1)
 
   | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
     codegenx86_id (addr);
+    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
   | Let (x, e1, e2) | New (x, e1, e2) ->
@@ -116,6 +127,7 @@ let rec codegenx86 symt e_in =
 
   | Const_int n ->
     codegenx86_st n;
+    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
   | Const_bool b ->
@@ -172,29 +184,76 @@ let rec codegenx86 symt e_in =
     "\tjmp\t" ^ str_label_loop ^ "\n" |> Buffer.add_string code;
     str_label_continue   ^ ":\n" |> Buffer.add_string code
 
+  | Application (Identifier (str_func), args) ->
+    (* Push all of the args onto the stack *)
+    let rec frec_all = function
+      | h::tl -> frec h; frec_all tl
+      | _ -> ()
+    in
+    frec_all args;
+    "\tcall\t" ^ str_func ^ "\n" ^
+    "\tpush\t%rax\n"
+    |> Buffer.add_string code
+
   | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."
   | Asg (_, _) -> failwith "Expression not implemented: Asg (with a non-simple-identifier on the left)"
   | Operator_unary (opcode, e) -> failwith "Expression not implemented: Unary Operator (NOT)"
+  | Application (_, _) -> failwith "Expression not implemented: Assignment without explicit function name to be called"
   | Printint (e) -> failwith "Expression not implemented: Printint"
   | Deref _ ->	failwith "Expression not implemented: Deref"
   | Ref _ -> failwith "Expression type not implemented: Ref"
-  | Application (_, _) -> failwith "Expression type not implemented: Application"
   | Readint -> failwith "Expression type not implemented: Readint"
-
 
 (* Code for running *)
 let filein = Sys.argv.(1)
 let fileout = Sys.argv.(2)
+let fileout_funcs = Sys.argv.(3)
 let num_args = Array.length Sys.argv
 let is_verbose = ref false
 
 let get_arg arg_name =
-	if num_args >= 4
+	if num_args >= 5
 	then
 		(* Search through the array *)
 		Array.fold_left (fun x a -> x || a = arg_name) false Sys.argv
 	else false
+
+let generate_function f = match f with Myfunc (str_func, args, e) ->
+    if (String.compare str_func "main" != 0)
+    then
+    (
+      (* Function name Label stack pointer operations *)
+      str_func ^ ":\n" ^
+      "\tpushq\t%rbp\n" ^
+      "\tmovq %rsp, %rbp\n"
+      |> Buffer.add_string code;
+
+      (* Build the symbol table from the args *)
+      let symt = ref [] in
+      stack_offset := 8 + (List.length args) * 8; (* Note: The constant 8 at the start accounts for the pushed rbp value *)
+      sp := 0;
+      List.iter (fun arg_name -> symt := (arg_name, !sp)::!symt; sp := !sp + 1) args;
+      codegenx86 (!symt) e; (* Generate function code *)
+      stack_offset := stack_offset_default;
+      sp := 0;
+
+      (* Footer stack pointer and return operations *)
+      "\tpopq\t%rax\n" ^
+      "\tmovq %rbp, %rsp\n" ^ (* Move the stack pointer to the function-relative base position; leave the local variables in the red zone *)
+      "\tpopq\t%rbp\n" ^
+      "\tret\n"
+      |> Buffer.add_string code
+    )
+
+let generate_functions parsed_program =
+  Buffer.clear code; (* Clear the buffer *)
+  List.iter generate_function parsed_program;
+
+  (* Write the code buffer to the functions' output file *)
+  let out_channel = open_out fileout_funcs in
+  Buffer.output_buffer out_channel code;
+  Buffer.clear code (* Clear the buffer to be re-used later *)
 
 let () =
 	(* Go through optional arguments *)
@@ -227,6 +286,8 @@ let () =
 		(if !is_verbose then print_parse_result parsed_program);
 
     try
+      generate_functions parsed_program;
+
       (* Perform Code generation *)
       let eval_start_exp = get_func_exp parsed_program "main" in
       Buffer.add_string code "\n\n\t# Generated code START\n";

@@ -27,6 +27,71 @@ print:
 	.size	print, .-print
 	.globl	main
 	.type	main, @function
+factorial:
+	pushq	%rbp
+	movq %rsp, %rbp
+	# offset 0
+	mov	16(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 2
+	push	$2
+### Incrementing Stack Pointer: 3
+	pop	%rax
+	pop	%rbx
+	sub	%rax, %rbx
+	mov	$0, %rax
+	cmp	%rax, %rbx
+	jle	.BOP0
+	push	$0
+	jmp	.CONT_BOP0
+.BOP0:
+	push	$1
+.CONT_BOP0:
+### Incrementing Stack Pointer: 4
+	pop	%rax
+	mov	$0, %rbx
+	cmp	%rax, %rbx
+	jne	.IE0
+	# offset 0
+	mov	16(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 5
+	push	$1
+### Incrementing Stack Pointer: 6
+	pop	%rax
+	pop	%rbx
+	sub	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 7
+	# offset 0
+	mov	16(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 8
+	# offset 7
+	mov	-40(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 9
+	call	factorial
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	imul	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 10
+	pop	%rax
+	pop	%rbx
+	push	%rax
+	jmp	.CONT_IE0
+.IE0:
+	# offset 0
+	mov	16(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 11
+.CONT_IE0:
+	popq	%rax
+	movq %rbp, %rsp
+	popq	%rbp
+	ret
 main:
 .LFB3:
 	.cfi_startproc
@@ -43,35 +108,7 @@ main:
 	# Generated code START
 	push	$5
 ### Incrementing Stack Pointer: 1
-	push	$0
-### Incrementing Stack Pointer: 2
-	# offset 2
-	mov	-32(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 3
-	push	$10
-### Incrementing Stack Pointer: 4
-	# offset 1
-	mov	-24(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 5
-	pop	%rbx
-	pop	%rax
-	mov	$0, %rdx
-	cqto
-	idivq	%rbx
-	push	%rax
-### Incrementing Stack Pointer: 6
-	pop	%rax
-	pop	%rbx
-	add	%rax, %rbx
-	push	%rbx
-### Incrementing Stack Pointer: 7
-	pop	%rax
-	pop	%rbx
-	push	%rax
-	pop	%rax
-	pop	%rbx
+	call	factorial
 	push	%rax
 
 	# Push the top of the stack onto the output register

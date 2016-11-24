@@ -1,0 +1,10 @@
+// Recursion
+doub(val)
+{
+  val * 2
+}
+
+main ()
+{
+  doub(3)
+}

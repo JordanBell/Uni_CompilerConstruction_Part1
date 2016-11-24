@@ -1,0 +1,19 @@
+// Recursion
+factorial(val)
+{
+	if(val <= 2)
+	{
+		val
+	}
+	else
+	{
+    let y = val - 1 in
+		val * factorial (y)
+	}
+}
+
+main ()
+{
+  factorial(5)
+	//factorial(factorial(3))
+}

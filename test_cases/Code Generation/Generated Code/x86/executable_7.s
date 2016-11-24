@@ -27,6 +27,24 @@ print:
 	.size	print, .-print
 	.globl	main
 	.type	main, @function
+doub:
+	pushq	%rbp
+	movq %rsp, %rbp
+	# offset 0
+	mov	16(%rbp), %rax
+	push	%rax
+### Incrementing Stack Pointer: 2
+	push	$2
+### Incrementing Stack Pointer: 3
+	pop	%rax
+	pop	%rbx
+	imul	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 4
+	popq	%rax
+	movq %rbp, %rsp
+	popq	%rbp
+	ret
 main:
 .LFB3:
 	.cfi_startproc
@@ -41,37 +59,9 @@ main:
 
 
 	# Generated code START
-	push	$5
+	push	$3
 ### Incrementing Stack Pointer: 1
-	push	$0
-### Incrementing Stack Pointer: 2
-	# offset 2
-	mov	-32(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 3
-	push	$10
-### Incrementing Stack Pointer: 4
-	# offset 1
-	mov	-24(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 5
-	pop	%rbx
-	pop	%rax
-	mov	$0, %rdx
-	cqto
-	idivq	%rbx
-	push	%rax
-### Incrementing Stack Pointer: 6
-	pop	%rax
-	pop	%rbx
-	add	%rax, %rbx
-	push	%rbx
-### Incrementing Stack Pointer: 7
-	pop	%rax
-	pop	%rbx
-	push	%rax
-	pop	%rax
-	pop	%rbx
+	call	doub
 	push	%rax
 
 	# Push the top of the stack onto the output register

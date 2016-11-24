@@ -42,13 +42,16 @@ main:
 
 	# Generated code START
 	push	$10
+### Incrementing Stack Pointer: 1
 	push	$2
+### Incrementing Stack Pointer: 2
 	pop	%rbx
 	pop	%rax
 	mov	$0, %rdx
 	cqto
 	idivq	%rbx
 	push	%rax
+### Incrementing Stack Pointer: 3
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)
