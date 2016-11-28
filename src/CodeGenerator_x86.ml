@@ -71,6 +71,9 @@ let codegenx86_id addr =
 let codegenx86_st n =
   "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code
 
+let codegenx86_st_struct s_data =
+  "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code
+
 let codegenx86_let _ =
   "\tpop\t%rax\n" ^
   "\tpop\t%rbx\n" ^
@@ -103,7 +106,6 @@ let rec codegenx86 symt e_in =
   | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
     codegenx86_id (addr);
-    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
   | Let (x, e1, e2) | New (x, e1, e2) ->
@@ -127,8 +129,12 @@ let rec codegenx86 symt e_in =
 
   | Const_int n ->
     codegenx86_st n;
-    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
+
+  | Const_struct (s_data) ->
+    codegenx86_st_struct s_data;
+    sp := !sp + (Hashtbl.length s_data);
+
 
   | Const_bool b ->
     (* Run the bool as an int *)

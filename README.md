@@ -26,6 +26,71 @@ Invalid Usage:
 x = x + 1;
 x`
 
+## Data types
+The datatype of an identifier does not need to be declared. The available types are integers, booleans, strings, identifier pointers and user-defined types (structs).
+
+Variables may be reassigned with values of different data types, and can have their types changed freely. Example:
+`new x = 0 in
+x = "Hello world"
+~x`
+
+#### Type: integer
+`let x = 10 in
+x`
+
+#### Type: Boolean
+`let is_true = true in
+new is_false = false in`
+
+####
+
+#### Structs
+A structure of data may be declared for use as a data type.
+
+Declaration:
+Declarations are placed throughout the program amongst function declarations.
+`struct pair
+{
+  x = 0;
+  y = 0 // Note how there is no semicolon after the last member declaration
+}`
+
+Usage:
+`new my_pair = struct pair in
+my_pair.x = 10;
+my_pair.y = 15
+my_pair.x + my_pair.y`
+
+Warnings:
+* It is important to note that let-bound structs may not have their members modified. Therefore they will adopt the default values.
+* Self-referential struct members will cause an infinite loop due to infinite instantiation of default values. To avoid this, initialise self-referential variables with another data type, since the type can be changed later when modified. For example, for a linked list:
+`struct linked_list
+{
+    data = 0; // Note: This type can be changed to anything, so linked_lists do not need to be of integers (can be any supported types, including other structs, or lists even)
+    p_next = false
+}
+
+main()
+{
+    new my_list = struct linked_list in
+    new next_node = struct linked_list in
+
+    my_list.data = 0;
+    next_node.data = 0;
+
+    // Link the two nodes together
+    my_list.p_next = next_node;
+
+    if(my_list.p_next)
+    {
+      true // Return success
+    }
+    else
+    {
+      false // Return failure
+    }
+}`
+
 #### Dereferencing
 Use the `~` character in place of OCaml's `!` operator.
 `int i = 0;`
@@ -40,8 +105,10 @@ y // Now equals 10`
 
 #### Function calls
 Examples:
-`foo(x)`
-`bar(x, y, z)`
+`foo(x);
+bar(x, y, z);
+let foo_ref = &foo in
+foo_ref(18)`
 
 #### Comments
 Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, etc.
@@ -88,4 +155,6 @@ Propagation will also occur for new-bound variables up until they are first modi
 When functions are supplied with constant arguments, either explicitly (ie `f(5)`), or after applying constant folding or propagation (`let x = 1 in let y = 2 in f(x + y)`), a function will be folded using those values and replaced inline after a further 10 optimisation iterations on that inline expression chunk.
 
 #### Infinite Loop detection
-When optimisation is enabled, the build will fail if it detects as infinite loop. This occurs when either its condition is evaluated as constantly true, or when condition contains variables that are never modified within the body of the while loop. This makes two assumptions which are as of writing always true: The program cannot break from within a loop (no "return", "continue" or "break" keywords exist), and no concurrency will modify the conditional variables.
+When optimisation is enabled, the build will fail if it detects an infinite loop. This occurs when either its condition is evaluated as constantly true, or when condition contains variables that are never modified within the body of the while loop. This makes two assumptions which are, currently, always true:
+1.  The program cannot break from within a loop (no "return", "continue" or "break" keywords exist, and user input is not implemented)
+2.  No concurrency exists which could modify the conditional variables.

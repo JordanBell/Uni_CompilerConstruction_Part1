@@ -1,0 +1,29 @@
+struct linked_list
+{
+    data = 0; // Note: This type can be changed to anything, so linked_lists do not need to be of integers (can be any supported types, including other structs, or lists even)
+    p_next = false
+}
+
+main()
+{
+  new my_list = struct linked_list in
+  new next_node = struct linked_list in
+
+  my_list.data = 0;
+  next_node.data = 0;
+
+  // Link the two nodes together
+  my_list.p_next = ~next_node;
+  //my_list.p_next = true;
+
+  if(my_list.p_next)
+  {
+    "Success! Data: " +
+    if(next_node.data == 0) { "0" }
+    else { "err" }
+  }
+  else
+  {
+    "Failed to link nodes" // Return failure
+  }
+}

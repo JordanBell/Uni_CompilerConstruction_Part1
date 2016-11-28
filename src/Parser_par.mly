@@ -14,7 +14,7 @@ open Parser_types
 %token IF
 %token ELSE
 %token READINT
-%token PRINTINT
+%token PRINT
 %token LET
 %token NEW
 %token IN
@@ -119,7 +119,7 @@ exp :
 
 	(* I/O *)
 	| READINT; PARENTHESIS_OPEN; PARENTHESIS_CLOSE	{ Readint }
-	| PRINTINT;
+	| PRINT;
 		PARENTHESIS_OPEN;
 		e = exp;
 		PARENTHESIS_CLOSE							{ Printint (e) }

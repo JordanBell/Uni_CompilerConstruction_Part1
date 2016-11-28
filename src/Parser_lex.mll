@@ -35,7 +35,7 @@ rule read =
 	| "while"		{ WHILE }
 	| "else"		{ ELSE }
 	| "read_int"		{ READINT }
-	| "print_int"		{ PRINTINT }
+	| "print"		{ PRINT }
 	| "let"			{ LET }
 	| "new"			{ NEW }
 	| "in"			{ IN }

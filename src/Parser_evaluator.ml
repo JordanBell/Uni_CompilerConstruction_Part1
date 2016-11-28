@@ -48,6 +48,7 @@ let rec bool_of_eval_result store e_eval_result =
 	match e_eval_result with
 		| Bool (b_value) -> b_value
 		| Int (i_value) -> i_value != 0
+		| String (_) | Struct_data (_) -> true
 		| Identifier (str) ->
 			let lookup_result = value_of_identifier store str in
 			bool_of_eval_result store lookup_result (* Recurse with the new identifier *)
@@ -171,7 +172,14 @@ let rec eval store i_e =
 
 	| Memaccess (_, _) -> eval store (Deref (i_e))
 
-	| Printint (e) -> eval store e 		(* Return the value of e. May do more with this later *)
+	| Printint (e) ->
+		let e_eval_result = eval store e in
+		(match e_eval_result with
+			| String (msg) -> printf "%s\n" msg
+			| Int (i) -> printf "%d\n" i
+			| Bool (b) -> printf "%s\n" (if b then "true" else "false")
+			| _ -> failwith "Cannot print that kind of expression");
+		e_eval_result
 
 	| Deref (Identifier (str)) ->
 	 	let definition = lookup_definition str store in
@@ -189,8 +197,8 @@ let rec eval store i_e =
 		(match e_result with
 			| Struct_data (s_data) ->
 				(try Hashtbl.find s_data child_lookup_id (* Get the value assigned to that child variable *)
-				with Not_found -> failwith "Invalid struct data identifier upon dereference")
-			| _ -> failwith "Cannot access the memory of a non-struct type")
+				with Not_found -> failwith ("Error on dereference: There is no member \"" ^ child_lookup_id ^ "\" in the struct identifier, \"" ^ id_parent ^ "\""))
+			| _ -> failwith ("Cannot access the memory of a non-struct identifier with id, \"" ^ id_parent ^ "\" (When accessing data with id, \"" ^ child_lookup_id ^ "\")"))
 
 	| Deref _ -> failwith "Invalid expression type upon dereference"
 
@@ -277,7 +285,10 @@ and evaluate_operator store opcode e f =
 					let string_result = opcode_as_fun res rfs in
 					String (string_result)
 				| _ -> failwith "Cannot perform non-bool operations on bool values")
-		| _, _ -> failwith ("Evaluation mismatch for operator: " ^ (string_of_opcode opcode))
+		| _, _ ->
+			(match opcode with
+				| Noteq -> Bool (true) (* If there is a type mismatch, they are therefore not equal *)
+				| _ 		-> Bool (false)) (* By default, just return false for invalid operation *)
 
 and evaluate_operator_unary store opcode e =
 	let result_e = eval store e in
