@@ -1,7 +1,7 @@
 # Uni_CompilerConstruction_Part2
 ## Language Syntax
 
-#### Let
+### Let
 "let" creates a constant identifier for a value, which may NOT be changed later.
 
 Valid Usage:
@@ -17,7 +17,7 @@ x = 15
 x
 ```
 
-#### New
+### New
 "new" creates a variable identifier for a value, which may be changed later. It must be dereferenced to access the value. Implicit dereferencing is not allowed.
 
 Valid Usage:
@@ -34,7 +34,7 @@ x = x + 1;
 x
 ```
 
-## Data types
+### Data types
 The datatype of an identifier does not need to be declared. The available types are integers, booleans, strings, identifier pointers and user-defined types (structs).
 
 Variables may be reassigned with values of different data types, and can have their types changed freely. Example:
@@ -55,6 +55,7 @@ x
 ```
 let is_true = true in
 new is_false = false in
+is_true || ~is_false
 ```
 
 #### Type: String
@@ -148,18 +149,18 @@ main()
 }
 ```
 
-#### Dereferencing
+### Dereferencing
 Use the `~` character in place of OCaml's `!` operator.
 ```
 new i = 0 in;
 i = ~i + 1
 ```
 
-#### Referencing
+### Referencing
 See Types: Identifier References
 
-#### Function calls
-Examples:
+### Function calls
+Arguments are supplied similarly to C-style languages. Partial application is not supported.
 ```
 foo(x);
 bar(x, y, z);
@@ -167,10 +168,28 @@ let foo_ref = &foo in
 foo_ref(18)
 ```
 
-#### Comments
-Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, etc.
+### Printing
+Integers, strings and booleans can all be printed by the `print` keyword. For example:
+```
+// Direct and evaluated integers
+print(5);
+print(10 + 18)
 
-#### Notes
+// Direct and evaluated booleans
+print(true);
+print(true && false);
+
+// Direct and concatenated strings
+print("Hello world!");
+print("Hello " + "world");
+
+// etc.
+```
+
+### Comments
+Commented text is ignored by the parser, and can be marked by `//`, just as in C, Java, etc.
+
+## Notes
 * Cannot have an if statement without a corresponding else expression
 * Cannot initialise a variable without a succeeding expression sequence. For example, an expression with just `new i = 0` is invalid. This is because there is no expression for the `new` command to scope it within.
 * Parenthesis are NOT recognised in the context of arithmetic or boolean logic. For example `(5 <= 6) || (5 >= 10)` is invalid.
