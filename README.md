@@ -5,96 +5,122 @@
 "let" creates a constant identifier for a value, which may NOT be changed later.
 
 Valid Usage:
-`let x = 0 in
-x`
+```
+let x = 0 in
+x
+```
 
 Invalid Usage
-`let x = 0 in
+```
+let x = 0 in
 x = 15
-x`
+x
+```
 
 #### New
 "new" creates a variable identifier for a value, which may be changed later. It must be dereferenced to access the value. Implicit dereferencing is not allowed.
 
 Valid Usage:
-`new x = 0 in
+```
+new x = 0 in
 x = 2;
-~x`
+~x
+```
 
 Invalid Usage:
-`new x = 0 in
+```
+new x = 0 in
 x = x + 1;
-x`
+x
+```
 
 ## Data types
 The datatype of an identifier does not need to be declared. The available types are integers, booleans, strings, identifier pointers and user-defined types (structs).
 
 Variables may be reassigned with values of different data types, and can have their types changed freely. Example:
 
-`new x = 0 in
+```
+new x = 0 in
 x = "Hello world"
-~x`
+~x
+```
 
 #### Type: Integer
-
-`let x = 10 in
-x`
+```
+let x = 10 in
+x
+```
 
 #### Type: Boolean
-
-`let is_true = true in
-new is_false = false in`
+```
+let is_true = true in
+new is_false = false in
+```
 
 #### Type: String
-
-`let helloworld = "Hello world" in
-print(helloworld)`
+```
+let helloworld = "Hello world" in
+print(helloworld)
+```
 
 ##### Concatenation
 Strings can be concatenated using the (+) operator. For example:
-`let forename = "John " in
+```
+let forename = "John " in
 let surname = "Smith" in
-print(forename + surname)`
+print(forename + surname)
+```
 
 However, due to lexing issues, the concatenation of multiple _rvalue_ strings can cause issues. For example, the following will not work due to the rvalue strings `"Mr. "` and `" is his name"`:
-`let name = "John Smith" in
-print("Mr. " + name + " is his name")`
+```
+let name = "John Smith" in
+print("Mr. " + name + " is his name")
+```
 
 The following is a valid fix:
-`let name = "John Smith" in
+```
+let name = "John Smith" in
 let prefix = "Mr. " in
 let suffix = " is his name" in
-prefix + name + suffix`
+prefix + name + suffix
+```
 
 #### Type: Identifier reference
 Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name.
 
-`let x = 5 in
+```
+let x = 5 in
 let y = &x in
 x = 10
-y // Now equals 10`
+y // Now equals 10
+```
 
 #### Type: Defined Struct
 A structure of data may be declared for use as a data type.
 
 Declaration:
 Declarations are placed throughout the program amongst function declarations.
-`struct pair
+```
+struct pair
 {
   x = 0;
   y = 0 // Note how there is no semicolon after the last member declaration
-}`
+}
+```
 
 Usage:
-`new my_pair = struct pair in
+```
+new my_pair = struct pair in
 my_pair.x = 10;
 my_pair.y = 15
-my_pair.x + my_pair.y`
+my_pair.x + my_pair.y
+```
 
 Warnings:
 * It is important to note that let-bound structs may not have their members modified. Therefore they will adopt the default values.
 * Self-referential struct members will cause an infinite loop due to infinite instantiation of default values. To avoid this, initialise self-referential variables with another data type, since the type can be changed later when modified. For example, for a linked list:
-`struct linked_list
+```
+struct linked_list
 {
     data = 0; // Note: This type can be changed to anything, so linked_lists do not need to be of integers (can be any supported types, including other structs, or lists even)
     p_next = false
@@ -119,22 +145,27 @@ main()
     {
       false // Return failure
     }
-}`
+}
+```
 
 #### Dereferencing
 Use the `~` character in place of OCaml's `!` operator.
-`int i = 0;`
-`i = ~i + 1`
+```
+new i = 0 in;
+i = ~i + 1
+```
 
 #### Referencing
 See Types: Identifier References
 
 #### Function calls
 Examples:
-`foo(x);
+```
+foo(x);
 bar(x, y, z);
 let foo_ref = &foo in
-foo_ref(18)`
+foo_ref(18)
+```
 
 #### Comments
 Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, etc.
