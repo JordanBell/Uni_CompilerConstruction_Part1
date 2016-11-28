@@ -118,12 +118,6 @@ ll_map(ll, f)
   ~r_ll
 }
 
-print_int(i)
-{
-  print(i);
-  i
-}
-
 main()
 {
   print(""); // Newline
@@ -133,10 +127,9 @@ main()
   my_list = ll_add(~my_list, 2);
   my_list = ll_add(~my_list, 3);
 
-  print("Before: " + ll_to_string(~my_list));
-
   let size = ll_size(~my_list) in
   print("Num elements: " + string_of_int(size));
+  print("ll_to_string(~my_list));
 
   my_list = ll_map(~my_list, &square);
   print("Squared: " + ll_to_string(~my_list));

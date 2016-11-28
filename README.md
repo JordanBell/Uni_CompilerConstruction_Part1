@@ -34,7 +34,7 @@ Variables may be reassigned with values of different data types, and can have th
 x = "Hello world"
 ~x`
 
-#### Type: integer
+#### Type: Integer
 `let x = 10 in
 x`
 
@@ -42,9 +42,35 @@ x`
 `let is_true = true in
 new is_false = false in`
 
-####
+#### Type: String
+`let helloworld = "Hello world" in
+print(helloworld)`
 
-#### Structs
+##### Concatenation
+Strings can be concatenated using the (+) operator. For example:
+`let forename = "John " in
+let surname = "Smith" in
+print(forename + surname)`
+
+However, due to lexing issues, the concatenation of multiple _rvalue_ strings can cause issues. For example, the following will not work due to the rvalue strings `"Mr. "` and `" is his name"`:
+`let name = "John Smith" in
+print("Mr. " + name + " is his name")`
+
+The following is a valid fix:
+`let name = "John Smith" in
+let prefix = "Mr. " in
+let suffix = " is his name" in
+prefix + name + suffix`
+
+#### Type: Identifier reference
+Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name.
+
+`let x = 5 in
+let y = &x in
+x = 10
+y // Now equals 10`
+
+#### Type: Defined Struct
 A structure of data may be declared for use as a data type.
 
 Declaration:
@@ -97,11 +123,7 @@ Use the `~` character in place of OCaml's `!` operator.
 `i = ~i + 1`
 
 #### Referencing
-Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name.
-`let x = 5 in
-let y = &x in
-x = 10
-y // Now equals 10`
+See Types: Identifier References
 
 #### Function calls
 Examples:
@@ -124,11 +146,13 @@ Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, e
 * Struct types must be create with new, instead of let (because accessing their members will essentially modify their value, making them non-const)
 
 ## How to Build
-Entering `bash build.sh` will build all necessary files.
+Entering `bash build.sh` will build all necessary files. It will create a number of native files which can be run on text files
 
 ## How to Test
 ### Batch
 Entering `bash test.sh` will run all tests and print out the results. `bash test.sh -verbose` will perform the tests and print out a parsed expression structure for the successful files.
+
+Entering `bash test_x86.sh` will run tests and print out the results of a select few compatible files.
 
 ### Individual files
 All \*.txt test files are found within the `test_cases` directory. To run the program on a particular test file, for example test\_cases/small0.txt, enter the command: `src/Parser.native test\_cases/small0.txt`. Use the optional `-verbose` argument to the see the parsed expression structure.
