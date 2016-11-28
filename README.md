@@ -53,6 +53,8 @@ Comments are ignored by the lexer, and are marked by `//`, just as in C, Java, e
 * Scoping, ie wrapping an expression in curly braces, is superfluous, but I imagine will be used later. Helps keep things clean.
 * It is a known issue that the grammar builds with reduce/reduce warnings.
 * Function argument values are immutable. (ie `foo(x) { x = 1; ~x }` is invalid, as X is assumed to be a constant value. )
+* Currently supports int, bool, string and struct types (where struct values are defined)
+* Struct types must be create with new, instead of let (because accessing their members will essentially modify their value, making them non-const)
 
 ## How to Build
 Entering `bash build.sh` will build all necessary files.

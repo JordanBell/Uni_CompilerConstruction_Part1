@@ -16,6 +16,7 @@ let is_optimisation_comparison = ref false
 let store =
 {
 	decl_funcs = ref [];
+	decl_structs = ref [];
   decl_ids   = ref [];
   tbl_refs   = ref (Hashtbl.create 100);
 }
@@ -56,7 +57,10 @@ let () =
 	if !is_verbose then printlines !i_lines;
 	if num_lines > 0 then
 		let lines_as_string = String.concat "\n" !i_lines in
-			store.decl_funcs := (parse_to_program lines_as_string);
+			let parsed_program = (parse_to_program lines_as_string) in
+			(match parsed_program with (fundefs, structdefs) ->
+				store.decl_funcs := fundefs;
+				store.decl_structs := structdefs);
 			let eval_start_exp = ref Empty in
 
 			(if !is_verbose then printf "Result:\n");

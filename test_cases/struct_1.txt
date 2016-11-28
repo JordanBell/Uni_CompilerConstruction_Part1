@@ -1,0 +1,104 @@
+struct value_message
+{
+  val = 0;
+  msg = ""
+}
+
+struct assert_data
+{
+  // ibs = int, bool, string
+  type = 0;
+  val1 = 0;
+  val2 = 0;
+  suppress = false
+}
+
+// Note: Only does 0-3
+string_of_int(i)
+{
+  if(i == 0)
+  {
+    "0"
+  }
+  else
+  {
+    if(i == 1)
+    {
+      "1"
+    }
+    else
+    {
+      if(i == 2)
+      {
+        "2"
+      }
+      else
+      {
+        "3"
+      }
+    }
+  }
+}
+
+noteq(x, y)
+{
+  x != y
+}
+
+eq(x, y)
+{
+  x == y
+}
+
+get_op_by_type(type)
+{
+  if(type == 0)
+  {
+    &eq
+  }
+  else
+  {
+    &noteq
+  }
+}
+
+assert(ad_obj)
+{
+  // The result data will be filled with the results
+  new result = struct value_message in
+
+  let comp_op = get_op_by_type(ad_obj.type) in
+
+  if(ad_obj.suppress || comp_op(ad_obj.val1, ad_obj.val2))
+  {
+    result.val = 0;
+    result.msg = "All is well :)";
+    ~result
+  }
+  else
+  {
+    result.val = 1;
+    result.msg = "Assert triggered!";
+    ~result
+  }
+}
+
+string_of_assert_result(res)
+{
+  let code_as_string = string_of_int(res.val) in
+  let prefix = "Assert code: [" + code_as_string in
+  let suffix = "]: " + res.msg in
+  prefix + suffix
+}
+
+main()
+{
+  let assert_data1 = struct assert_data in
+  assert_data1.val1 = 10;
+  assert_data1.val2 = 20;
+  assert_data1.type = 0;
+  assert_data1.suppress = true;
+
+  new assert_result = assert(assert_data1) in
+  string_of_assert_result(~assert_result)
+}

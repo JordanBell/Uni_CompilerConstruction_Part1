@@ -6,6 +6,7 @@ open Printf
 let dummy_store =
 {
 	decl_funcs = ref [];
+	decl_structs = ref [];
   decl_ids   = ref [];
   tbl_refs   = ref (Hashtbl.create 1);
 }
@@ -22,7 +23,7 @@ let rec fold_exp f acc exp =
   | Scope (e) | Deref (e) | Ref (e) | Operator_unary (_, e) | Printint (e)
     -> fold_exp f (f acc exp) e
   (* 0 Sub Expressions *)
-  | Const_int _ | Const_bool _ | Const_string _ | Readint | Identifier _ | Empty
+  | Const_int _ | Const_bool _ | Const_string _ | Const_struct _ | Readint | Identifier _ | Memaccess (_, _) | Empty
     -> (f acc exp)
   (* Flexible-length Sub Expressions *)
   | Application (e, fs)
@@ -44,9 +45,11 @@ let apply_to_subexpressions p e = match e with
   | Ref (e) -> Ref (p e)
   | Printint (e) -> Printint (p e)
   | Readint -> e
-  | Const_int _ | Const_bool _ | Const_string _ -> e
+  | Const_int _ | Const_bool _ | Const_string _ | Const_struct _ -> e
   | Identifier _ -> e
   | Empty -> e
+	| Memaccess (e, f) -> Memaccess (p e, p f)
+
 
 let contains_id_string search_str acc = function
   | Empty -> acc
@@ -126,12 +129,14 @@ let rec replace_exp_until_modification_of id_str e_newval e_in =
 	| Printint (e) -> Printint (frec e)
 
 	(* 0 Sub Expressions *)
-	| Const_int _ | Const_bool _ | Const_string _ | Readint | Identifier _ | Empty
+	| Const_int _ | Const_bool _ | Const_string _ | Const_struct _ | Readint | Identifier _ | Empty
 		-> e_in
 
 	(* Flexible-length Sub Expressions *)
 	| Application (e, fs) ->
     Application(e, do_until_modified id_str frec fs)
+
+	| Memaccess (e, f) -> Memaccess (frec e, frec f)
 
 let rec replace_constant_with_value id_str e_val e_in = match e_in with
 	| Empty -> e_in

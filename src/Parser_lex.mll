@@ -4,6 +4,7 @@ exception SyntaxError of string
 }
 
 let int = ['0'-'9'] ['0'-'9']*
+let string_value = '"' [^'\n']* '"'
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
 let identifier_string = (['a'-'z'] | ['A'-'Z'] | '_') (['a'-'z'] | ['A'-'Z'] | '_' | ['0'-'9'])*
@@ -40,6 +41,7 @@ rule read =
 	| "in"			{ IN }
 	| "true" 		{ TRUE }
 	| "false"		{ FALSE }
+	| "struct"	{ STRUCT }
 
 	(* Bool ops *)
 	| "<="			{ LEQ }
@@ -52,12 +54,16 @@ rule read =
 
 	(* Misc *)
 	| '='			{ ASG }
+	| '.'			{ DOT }
 	| ';'			{ SEQ }
 	| ','			{ COMMA }
 	| '&'			{ REF }
 	| '~'			{ DEREF }
-	| '"'			{ QUOTE_DOUBLE }
 	| identifier_string	{ IDENTIFIER (Lexing.lexeme lexbuf) }
+	| string_value	{
+			let full_str = Lexing.lexeme lexbuf in
+			let str_len = String.length full_str in
+			STRING_VALUE (String.sub full_str 1 (str_len-2)) }
 
 	(* Meta *)
 	| _ 			{ raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }

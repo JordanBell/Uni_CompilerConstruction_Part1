@@ -1,0 +1,18 @@
+struct Pair
+{
+  x = 0;
+  y = 0
+}
+
+pair_total(p)
+{
+  p.x + p.y
+}
+
+main()
+{
+  new p0 = struct Pair in
+  p0.x = 10;
+  p0.y = 15;
+  pair_total(~p0)
+}

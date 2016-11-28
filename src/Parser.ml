@@ -19,13 +19,14 @@ let rec count_exp e = match e with
 	| Ref (e) -> 1 + count_exp e
 	| Printint (e) -> 1 + count_exp e
 	| Readint ->  1
-	| Const_int (_) | Const_bool (_) | Const_string (_) -> 1
+	| Const_int (_) | Const_bool (_) | Const_string (_) | Const_struct (_) -> 1
 	| Identifier (str) -> 1
+	| Memaccess (e, f) -> 1
 	| Empty -> 0
 
 let parse_to_program i_str =
 	let i_buf = Lexing.from_string i_str in
 	try Parser_par.top Parser_lex.read i_buf
 	with
-		| SyntaxError str -> printf "Parsing Syntax error: %s\n" str; []
-		| Parser_par.Error -> printf "Parser failed\n"; []
+		| SyntaxError str -> printf "Parsing Syntax error: %s\n" str; ([], [])
+		| Parser_par.Error -> printf "Parser failed\n"; ([], [])

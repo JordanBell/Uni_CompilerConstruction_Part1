@@ -30,6 +30,8 @@ open Parser_types
 %token SEQ
 %token ASG
 
+%token DOT
+
 %token LEQ
 %token GEQ
 %token EQUAL
@@ -38,11 +40,13 @@ open Parser_types
 %token AND
 %token OR
 %token NOT
-%token QUOTE_DOUBLE
 
 %token DEREF
 %token REF
 
+%token STRUCT
+
+%token <string> STRING_VALUE
 %token <string> IDENTIFIER
 
 %token COMMA
@@ -75,19 +79,29 @@ top :
 | p = prog; EOF 	{ p }
 
 prog :
-| f = func; EOF 	{ [f] }
-| f = func; p = prog	{ f :: p }
+| f = func; EOF 	{ ([f], []) }
+| s = strct; EOF 	{ ([], [s]) }
+| f = func; p	= prog	{ match p with (fs, ss) -> (f :: fs, ss) }
+| s = strct; p = prog	{ match p with (fs, ss) -> (fs, s :: ss) }
 
 func :
 	funcid = IDENTIFIER;
 	PARENTHESIS_OPEN; args = arglist; PARENTHESIS_CLOSE;
 	e = scoped_exp					{ Myfunc (funcid, args, e) }
 
+strct : STRUCT; IDENTIFIER; CURLY_OPEN; ms = memlist; CURLY_CLOSE		{ ($2, ms) }
+
 arglist : args = separated_list(COMMA, IDENTIFIER)	{ args }
 
 explist : PARENTHESIS_OPEN; args = separated_list(COMMA, exp); PARENTHESIS_CLOSE { args }
 
 scoped_exp : CURLY_OPEN; e = exp; CURLY_CLOSE 		{ Scope (e) }
+
+memlist :
+	| md = memdef											{ [md] }
+	| md = memdef; SEQ; ml = memlist	{	md :: ml }
+
+memdef : IDENTIFIER; ASG; e = exp		{ ($1, e) }
 
 exp :
 	(* Operators *)
@@ -114,9 +128,9 @@ exp :
 	| CONST_INT		 									{ Const_int ($1) }
 	| TRUE		 											{ Const_bool (true) }
 	| FALSE		 											{ Const_bool (false) }
-	| QUOTE_DOUBLE;
-		IDENTIFIER;
-		QUOTE_DOUBLE									{ Const_string ($2) }
+	| STRING_VALUE									{ Const_string ($1) }
+	| STRUCT; IDENTIFIER						{ Const_struct ($2) }
+	| IDENTIFIER; DOT; IDENTIFIER		{ Memaccess (Identifier ($1), Identifier($3)) }
 	| IDENTIFIER		 								{ Identifier ($1) }
 	| REF; e = exp;									{ Ref (e) }
 	| DEREF; e = exp;								{ Deref (e) }

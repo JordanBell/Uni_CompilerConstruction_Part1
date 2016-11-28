@@ -15,21 +15,23 @@ let string_of_opcode = function
 	| Equal -> "Equal"
 	| Noteq -> "Noteq"
 
-let string_of_eval_result er = match er with
+let rec string_of_eval_result er = match er with
 	| Int (i) -> string_of_int i
 	| Bool (b) -> if b then "true" else "false"
 	| String (s) -> s
+	| Struct_data (data_tbl) ->
+		(* let accumulate_data_strings id val acc = acc ^ ", " in *)
+		"["
+
+		(* id ^ ":" ^ (string_of_eval_result val) ^
+		"[struct: " ^
+		(Hashtbl.fold accumulate_data_strings data_tbl "") ^
+		"]" *)
 	| Identifier (s) -> "ID:" ^ s
 	| Unit -> "Unit"
 
 let string_of_opcode_unary = function
 	| Not -> "Not"
-
-let string_of_token = function
-	| Parser_par.IF -> "if"
-	| Parser_par.CONST_INT i -> "Const" ^ (string_of_int i)
-	| Parser_par.TIMES -> "Times"
-	| _ -> "token_str_err"
 
 let rec string_of_args = function
 	| [] -> "void"
@@ -129,8 +131,15 @@ let rec print_expression expr acc =
 		| Const_int (i) -> printf "%sConst %d" indent_str i
 		| Const_bool (b) -> printf "%sConst %s" indent_str (if b then "true" else "false")
 		| Const_string (s) -> printf "%sConst \"%s\"" indent_str s
+		| Const_struct (s) -> printf "%sConst Struct \"%s\"" indent_str s
 
 		| Identifier (str) -> printf "%sIdentifier %s" indent_str str
+
+		| Memaccess (e, f) ->
+			printf "%sMemaccess\n%s(\n" indent_str indent_str;
+			print_expression e (acc+1);			printf ",\n"; 			(* Print first expr *)
+			print_expression f (acc+1);							(* Print second expr *)
+			printf "\n%s)" indent_str
 
 		| Empty -> printf "%sEmpty" indent_str
 and print_expression_list es acc =
@@ -143,10 +152,6 @@ and print_expression_list es acc =
 let rec printlines = function
 	| [] -> ()
 	| h::tl -> printf "%s\n" h; printlines tl
-
-let rec print_lex_result = function
-	| [] -> printf ""
-	| h::tl -> printf "%s" (string_of_token h); print_lex_result tl
 
 let print_fundef (Myfunc (funcid, args, e)) =
 	printf "%s (%s)\n" funcid (string_of_args args);
@@ -168,6 +173,7 @@ let rec print_eval_result store e_eval_result =
 		| Int (i) -> printf "%d\n" i
 		| Bool (b) -> if b then printf "true\n" else printf "false\n"
 		| String (s) -> printf "%s\n" s
+		| Struct_data (s) -> printf "%s\n" (string_of_eval_result e_eval_result)
 		| Identifier (str) -> (*failwith "Evaluated to an identifier reference. Suggested that any reference is dereferenced when printing"*)
 			(try
 				let definition = List.assoc str !(store.decl_ids) in

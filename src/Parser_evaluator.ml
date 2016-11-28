@@ -28,6 +28,10 @@ let fun_of_opcode_int = function
 	| Divide -> (fun x y -> x / y)
 	| _ -> failwith "Mismatch: Cannot use operator on int types"
 
+let fun_of_opcode_string = function
+| Plus -> (fun x y -> x ^ y)
+| _ -> failwith "Mismatch: Cannot use operator on string types"
+
 let fun_of_opcode_comp = function
 	| Geq -> (fun x y -> x >= y)
 	| Leq -> (fun x y -> x <= y)
@@ -60,6 +64,9 @@ let rec eval store i_e =
 	| Const_int (i) -> Int (i)
 	| Const_bool (b) -> Bool (b)
 	| Const_string (str) -> String (str)
+	| Const_struct (str) ->
+		(* Construct new data for that struct type *)
+		Struct_data (get_default_construction store str)
 
 	| Operator_unary (opcode, e) -> evaluate_operator_unary store opcode e
 
@@ -90,6 +97,45 @@ let rec eval store i_e =
 					Identifier (str) (* An assignment returns a reference to the identifier that was newly assigned *)
 		else
 			failwith ("Cannot assign a value to identifier \'" ^ str ^ "\' as it has not been declared")
+	| Asg (Memaccess (Identifier(id_parent), Identifier(id_child)), f) ->
+		if List.mem_assoc id_parent !(store.decl_ids)
+		then
+			let definition = lookup_definition id_parent store in
+			match definition with
+				| Const (er) ->
+					(match er with
+						| Struct_data (s_data) ->
+							(* Make sure the child ID is a part of the struct *)
+							if not (Hashtbl.mem s_data id_child) then failwith ("Struct-child identifier \'" ^ id_child ^ "\' not within the struct's declaration.");
+
+							(* Set the value of the child to the evaluation result of f *)
+							let f_eval_result = eval store f in
+							Hashtbl.replace s_data id_child f_eval_result;
+
+							(* An assignment returns an Empty expression for child assignments *)
+							Unit
+						| _ -> failwith "Cannot access child identifiers of a non-struct type")
+					(* failwith ("Cannot re-assign a new value to a child in a let-bound struct. Note: It is recommended to ALWAYS create struct variables using the \"new\" keyword, instead of \"let\".") *)
+				| Var (addr) ->
+					try
+						(let struct_value = Hashtbl.find !(store.tbl_refs) addr in
+
+						(match struct_value with
+							| Struct_data (s_data) ->
+								(* Make sure the child ID is a part of the struct *)
+								if not (Hashtbl.mem s_data id_child) then failwith ("Struct-child identifier \'" ^ id_child ^ "\' not within the struct's declaration.");
+
+								(* Set the value of the child to the evaluation result of f *)
+								let f_eval_result = eval store f in
+								Hashtbl.replace s_data id_child f_eval_result;
+
+								(* An assignment returns an Empty expression for child assignments *)
+								Unit
+							| _ -> failwith "Cannot access child identifiers of a non-struct type"))
+					with Not_found -> failwith ("Struct identifier \'" ^ id_parent ^ "\' not declared.")
+		else
+			failwith ("Cannot assign a value to struct identifier \'" ^ id_parent ^ "\' as it has not been declared")
+	| Asg (Memaccess (_, _), _) -> failwith "Must directly access a struct's data by it and its parent's identifer"
 	| Asg (e, f) ->
 		let e_eval_result = eval store e in
 		(match e_eval_result with
@@ -123,6 +169,8 @@ let rec eval store i_e =
 		 	| Const (er) -> er
 			| Var (_) -> failwith ("Cannot implicitly dereference variable \"" ^ str ^ "\""))
 
+	| Memaccess (_, _) -> eval store (Deref (i_e))
+
 	| Printint (e) -> eval store e 		(* Return the value of e. May do more with this later *)
 
 	| Deref (Identifier (str)) ->
@@ -132,10 +180,18 @@ let rec eval store i_e =
 				(* Dereferencing a let-bound identifier is only allowed if that identifier, in itself, is a reference. *)
 				(match er with
 					| Identifier (ref_str) -> eval store (Deref (Identifier (ref_str)))
-					| _ -> failwith "Cannot dereference a let-bound constant identifier.")
+					| _ -> failwith ("Cannot dereference a let-bound constant identifier: " ^ str))
 			| Var (addr) ->
 				try Hashtbl.find !(store.tbl_refs) addr
 				with Not_found -> failwith ("Identifier \'" ^ str ^ "\' not declared."))
+	| Deref (Memaccess (Identifier (id_parent), Identifier (child_lookup_id))) ->
+		let e_result = value_of_identifier store id_parent in
+		(match e_result with
+			| Struct_data (s_data) ->
+				(try Hashtbl.find s_data child_lookup_id (* Get the value assigned to that child variable *)
+				with Not_found -> failwith "Invalid struct data identifier upon dereference")
+			| _ -> failwith "Cannot access the memory of a non-struct type")
+
 	| Deref _ -> failwith "Invalid expression type upon dereference"
 
 	| Ref (Identifier (str)) -> Identifier (str) (* Return an eval_result equivalent to a reference to the identifier *)
@@ -177,6 +233,7 @@ let rec eval store i_e =
 			let func_store =
 			{
 				decl_funcs = store.decl_funcs;
+				decl_structs = store.decl_structs;
 			  decl_ids   = ref [];
 			  tbl_refs   = ref (Hashtbl.create 100);
 			}
@@ -213,6 +270,13 @@ and evaluate_operator store opcode e f =
 					let bool_result = opcode_as_fun rei rfi in
 					Bool (bool_result)
 				| _ -> failwith "Cannot perform non-bool operations on bool values")
+		| String (res), String (rfs) ->
+			(let opcode_as_fun = fun_of_opcode_string opcode in
+			match opcode with
+				| Plus ->
+					let string_result = opcode_as_fun res rfs in
+					String (string_result)
+				| _ -> failwith "Cannot perform non-bool operations on bool values")
 		| _, _ -> failwith ("Evaluation mismatch for operator: " ^ (string_of_opcode opcode))
 
 and evaluate_operator_unary store opcode e =
@@ -231,3 +295,16 @@ and build_function_store store func_store arg_names arg_values = match arg_names
 	build_function_store store func_store ns es
 | [], [] -> ()
 | _ -> failwith "Mismatch between arg_names and arg_values"
+
+and get_default_construction store struct_type_id =
+	(* Lookup the struct_type_id's declaration in the store *)
+	let object_data = Hashtbl.create 8 in (* This will be filled with data for the struct object *)
+	let member_list = List.assoc struct_type_id !(store.decl_structs) in
+	(* For each member of the struct definition, create an initialised variable to be put into the struct object *)
+	let init_data memdef = match memdef with (mem_id, initial_e) ->
+		(* Determine the initial value *)
+		let initial_value = eval store initial_e in
+		Hashtbl.add object_data mem_id initial_value
+	in
+	List.iter init_data member_list;
+	object_data
