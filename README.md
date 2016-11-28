@@ -30,19 +30,23 @@ x`
 The datatype of an identifier does not need to be declared. The available types are integers, booleans, strings, identifier pointers and user-defined types (structs).
 
 Variables may be reassigned with values of different data types, and can have their types changed freely. Example:
+
 `new x = 0 in
 x = "Hello world"
 ~x`
 
 #### Type: Integer
+
 `let x = 10 in
 x`
 
 #### Type: Boolean
+
 `let is_true = true in
 new is_false = false in`
 
 #### Type: String
+
 `let helloworld = "Hello world" in
 print(helloworld)`
 
