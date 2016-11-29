@@ -71,8 +71,8 @@ let codegenx86_id addr =
 let codegenx86_st n =
   "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code
 
-let codegenx86_st_struct s_data =
-  "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code
+(* let codegenx86_st_struct s_data =
+  "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code *)
 
 let codegenx86_let _ =
   "\tpop\t%rax\n" ^
@@ -132,8 +132,11 @@ let rec codegenx86 symt e_in =
     sp := !sp + 1
 
   | Const_struct (s_data) ->
-    codegenx86_st_struct s_data;
-    sp := !sp + (Hashtbl.length s_data);
+    failwith "Unsupported expression: Const_struct"
+    (* codegenx86_st_struct s_data;
+    sp := !sp + (Hashtbl.length s_data); *)
+
+  | Memaccess (_, _) -> failwith "Unsupported expression: Memaccess"
 
 
   | Const_bool b ->
@@ -214,12 +217,11 @@ let rec codegenx86 symt e_in =
 (* Code for running *)
 let filein = Sys.argv.(1)
 let fileout = Sys.argv.(2)
-let fileout_funcs = Sys.argv.(3)
 let num_args = Array.length Sys.argv
 let is_verbose = ref false
 
 let get_arg arg_name =
-	if num_args >= 5
+	if num_args >= 4
 	then
 		(* Search through the array *)
 		Array.fold_left (fun x a -> x || a = arg_name) false Sys.argv
@@ -252,7 +254,7 @@ let generate_function f = match f with Myfunc (str_func, args, e) ->
       |> Buffer.add_string code
     )
 
-let generate_functions parsed_program =
+let generate_functions parsed_program fileout_funcs =
   Buffer.clear code; (* Clear the buffer *)
   List.iter generate_function parsed_program;
 
@@ -264,47 +266,48 @@ let generate_functions parsed_program =
 let () =
 	(* Go through optional arguments *)
 	is_verbose := (get_arg "-verbose") || (get_arg "-v");
-  is_verbose := false;
-	(* Print the initial message for processing the file *)
-	if !is_verbose then
-		printf "\n***** START on file: %s\n" filein
-	else
-		printf "%s... " filein;
 
-	(* Read in all of the lines *)
-	let i_lines = ref [] in
-	let channel = open_in filein in
-	try
-		while true; do
-	 		let this_line = input_line channel in
-	    		i_lines := this_line :: !i_lines
-	  	done;
-	with End_of_file ->
-	  	close_in channel;
-	  	i_lines := List.rev !i_lines;
+	let parsed_program = (parse_file filein !is_verbose) in
 
-	let num_lines = List.length !i_lines in
-	(if !is_verbose then (printf "*** Found %d lines\n" num_lines; printlines !i_lines));
-	if num_lines > 0 then
-		let lines_as_string = String.concat "\n" !i_lines in
-		let parsed_program = (parse_to_program lines_as_string) in
+  try
+  match parsed_program with (funcdefs, struct_defs) ->
 
-		(if !is_verbose then print_parse_result parsed_program);
+    let file_frag_dir = "test_cases/CodeGeneration/GeneratedCode/x86/" in
+    let file_frag_1 = file_frag_dir ^ "1.x86frag" in
+    (* x86 function code will be concatenated here *)
+    let file_frag_2 = file_frag_dir ^ "3.x86frag" in
+    (* main function code will be concatenated here *)
+    let file_frag_3 = file_frag_dir ^ "5.x86frag" in
 
-    try
-      generate_functions parsed_program;
+    Buffer.clear code; (* Clear the buffer *)
+    (* Add function code for each function definition in the parsed program *)
+    List.iter generate_function funcdefs;
 
-      (* Perform Code generation *)
-      let eval_start_exp = get_func_exp parsed_program "main" in
-      Buffer.add_string code "\n\n\t# Generated code START\n";
-      let _ = codegenx86 [] eval_start_exp in
-      Buffer.add_string code "\n\t# Push the top of the stack onto the output register\n";
-      Buffer.add_string code ("\tpop\t-4(%rbp)\n" ^
-                              "\tmovl\t-4(%rbp), %eax\n" ^
-                              "\tmovl\t%eax, %edi\n" ^
-                              "\t# Generated code END\n\n");
-      let out_channel = open_out fileout in
-    	Buffer.output_buffer out_channel code;
-		with Failure str -> print_endline str;
+    (* Copy over the generated code to a new function, so the general purpose code buffer can be reused. *)
+    let code_funcs = Buffer.create 100 in
+    Buffer.add_bytes code_funcs (Buffer.to_bytes code);
+    Buffer.clear code; (* Clear the buffer to be re-used for the main code *)
 
-	if !is_verbose then (printf "***** Code Generation FINISHED on file: %s\n\n" filein)
+    (* Perform main Code generation *)
+    let eval_start_exp = get_func_exp funcdefs "main" in
+    Buffer.add_string code "\n\n\t# Generated code START\n";
+    let _ = codegenx86 [] eval_start_exp in
+    Buffer.add_string code "\n\t# Push the top of the stack onto the output register\n";
+    Buffer.add_string code ("\tpop\t-4(%rbp)\n" ^
+                            "\tmovl\t-4(%rbp), %eax\n" ^
+                            "\tmovl\t%eax, %edi\n" ^
+                            "\t# Generated code END\n\n");
+
+    (* Build the buffer for the entire x86 code output file (with our functions and main code sandwiched between template code) *)
+    let all_x86 = Buffer.create 1024 in
+    let add_fragment frag_file = List.iter (fun line -> Buffer.add_string all_x86 (line ^ "\n")) (read_all frag_file) in
+    add_fragment file_frag_1;
+    Buffer.add_buffer all_x86 code_funcs;
+    add_fragment file_frag_2;
+    Buffer.add_buffer all_x86 code;
+    add_fragment file_frag_3;
+
+    (* Write the x86 code to the output filepath *)
+    let out_channel = open_out fileout in
+  	Buffer.output_buffer out_channel all_x86;
+	with Failure str -> print_endline str;

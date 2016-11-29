@@ -3,23 +3,23 @@
 perform_test()
 {
 	# Get the file we are testing on
-	TEST_ID=$1
-	BASH_ARG_1=$2
+	TEST_FILE_IN=$1.txt
+	TEST_FILE_OUT=$1.s
+	TEST_FILE_EXE=$1
 
   #Generate the x86 code
-  src/CodeGenerator_x86.native test_cases/Code\ Generation/$TEST_ID.txt test_cases/Code\ Generation/Generated\ Code/x86/4.x86frag test_cases/Code\ Generation/Generated\ Code/x86/2.x86frag $BASH_ARG_1
+  src/CodeGenerator_x86.native $TEST_FILE_IN $TEST_FILE_OUT
 
-  #Sandwich the generated x86 code between the template prefix and suffix
-  cd test_cases/Code\ Generation/Generated\ Code/x86
-  cat *.x86frag > executable_$TEST_ID.s
-  #cat executable.s
-  gcc executable_$TEST_ID.s -o executable_$TEST_ID
-  #rm executable.s
-  ./executable_$TEST_ID
-  cd ../../../../
+	# Assemble into an executable
+	gcc $TEST_FILE_OUT -o $TEST_FILE_EXE
+
+	$TEST_FILE_EXE
 }
 
+# Perform tests written specifically for x86
 for i in {0..8}
 do
-	perform_test $i
+	perform_test test_cases/CodeGeneration/$i
 done
+
+# Perform regression tests

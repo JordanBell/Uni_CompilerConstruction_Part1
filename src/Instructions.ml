@@ -64,3 +64,5 @@ let rec run_with opset symt exp =
     | Ref _ -> failwith "Expression type not implemented: Ref"
     | Application (_, _) -> failwith "Expression type not implemented: Application"
     | Readint -> failwith "Expression type not implemented: Readint"
+    | Const_struct _ -> failwith "Expression type not implemented: Const_struct"
+    | Memaccess (_, _) -> failwith "Expression type not implemented: Memaccess"

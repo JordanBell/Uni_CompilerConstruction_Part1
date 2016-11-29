@@ -33,11 +33,9 @@ sum_10:
 	# offset 0
 	mov	88(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 11
 	# offset 1
 	mov	80(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -46,7 +44,6 @@ sum_10:
 	# offset 2
 	mov	72(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 14
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -55,7 +52,6 @@ sum_10:
 	# offset 3
 	mov	64(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 16
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -64,7 +60,6 @@ sum_10:
 	# offset 4
 	mov	56(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 18
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -73,7 +68,6 @@ sum_10:
 	# offset 5
 	mov	48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 20
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -82,7 +76,6 @@ sum_10:
 	# offset 6
 	mov	40(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 22
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -91,7 +84,6 @@ sum_10:
 	# offset 7
 	mov	32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 24
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -100,7 +92,6 @@ sum_10:
 	# offset 8
 	mov	24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 26
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -109,7 +100,6 @@ sum_10:
 	# offset 9
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 28
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
@@ -134,25 +124,15 @@ main:
 
 	# Generated code START
 	push	$1
-### Incrementing Stack Pointer: 1
 	push	$2
-### Incrementing Stack Pointer: 2
 	push	$3
-### Incrementing Stack Pointer: 3
 	push	$4
-### Incrementing Stack Pointer: 4
 	push	$5
-### Incrementing Stack Pointer: 5
 	push	$6
-### Incrementing Stack Pointer: 6
 	push	$7
-### Incrementing Stack Pointer: 7
 	push	$8
-### Incrementing Stack Pointer: 8
 	push	$9
-### Incrementing Stack Pointer: 9
 	push	$10
-### Incrementing Stack Pointer: 10
 	call	sum_10
 	push	%rax
 

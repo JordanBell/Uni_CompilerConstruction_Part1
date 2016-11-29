@@ -1,0 +1,22 @@
+
+
+	# Generated code START
+	push	$1
+	push	$2
+	push	$3
+	push	$4
+	push	$5
+	push	$6
+	push	$7
+	push	$8
+	push	$9
+	push	$10
+	call	sum_10
+	push	%rax
+
+	# Push the top of the stack onto the output register
+	pop	-4(%rbp)
+	movl	-4(%rbp), %eax
+	movl	%eax, %edi
+	# Generated code END
+

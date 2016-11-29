@@ -42,15 +42,11 @@ main:
 
 	# Generated code START
 	push	$5
-### Incrementing Stack Pointer: 1
 	push	$20
-### Incrementing Stack Pointer: 2
 	# offset 2
 	mov	-32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
 	push	$10
-### Incrementing Stack Pointer: 4
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -68,11 +64,9 @@ main:
 	cmp	%rax, %rbx
 	jne	.IE0
 	push	$0
-### Incrementing Stack Pointer: 6
 	jmp	.CONT_IE0
 .IE0:
 	push	$1
-### Incrementing Stack Pointer: 7
 .CONT_IE0:
 	pop	%rax
 	pop	%rbx

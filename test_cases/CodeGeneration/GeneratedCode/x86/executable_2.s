@@ -42,18 +42,14 @@ main:
 
 	# Generated code START
 	push	$5
-### Incrementing Stack Pointer: 1
 	push	$2
-### Incrementing Stack Pointer: 2
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
 ### Incrementing Stack Pointer: 3
 	push	$5
-### Incrementing Stack Pointer: 4
 	push	$2
-### Incrementing Stack Pointer: 5
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx

@@ -27,20 +27,84 @@ print:
 	.size	print, .-print
 	.globl	main
 	.type	main, @function
-doub:
+sum_10:
 	pushq	%rbp
 	movq %rsp, %rbp
 	# offset 0
-	mov	16(%rbp), %rax
+	mov	88(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
-	push	$2
-### Incrementing Stack Pointer: 3
+	# offset 1
+	mov	80(%rbp), %rax
+	push	%rax
 	pop	%rax
 	pop	%rbx
-	imul	%rax, %rbx
+	add	%rax, %rbx
 	push	%rbx
-### Incrementing Stack Pointer: 4
+### Incrementing Stack Pointer: 13
+	# offset 2
+	mov	72(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 15
+	# offset 3
+	mov	64(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 17
+	# offset 4
+	mov	56(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 19
+	# offset 5
+	mov	48(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 21
+	# offset 6
+	mov	40(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 23
+	# offset 7
+	mov	32(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 25
+	# offset 8
+	mov	24(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 27
+	# offset 9
+	mov	16(%rbp), %rax
+	push	%rax
+	pop	%rax
+	pop	%rbx
+	add	%rax, %rbx
+	push	%rbx
+### Incrementing Stack Pointer: 29
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -59,9 +123,17 @@ main:
 
 
 	# Generated code START
+	push	$1
+	push	$2
 	push	$3
-### Incrementing Stack Pointer: 1
-	call	doub
+	push	$4
+	push	$5
+	push	$6
+	push	$7
+	push	$8
+	push	$9
+	push	$10
+	call	sum_10
 	push	%rax
 
 	# Push the top of the stack onto the output register

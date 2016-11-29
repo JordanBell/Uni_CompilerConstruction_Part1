@@ -42,35 +42,13 @@ let () =
 	(* Go through optional arguments *)
 	is_verbose := (get_arg "-verbose") || (get_arg "-v");
   is_verbose := false;
-	(* Print the initial message for processing the file *)
-	(if !is_verbose then
-		printf "\n***** START on file: %s\n" filein);
 
-	(* Read in all of the lines *)
-	let i_lines = ref [] in
-	let channel = open_in filein in
+	let parsed_program = (parse_file filein !is_verbose) in
+
 	try
-		while true; do
-	 		let this_line = input_line channel in
-	    		i_lines := this_line :: !i_lines
-	  	done;
-	with End_of_file ->
-	  	close_in channel;
-	  	i_lines := List.rev !i_lines;
-
-	let num_lines = List.length !i_lines in
-	(if !is_verbose then (printf "*** Found %d lines\n" num_lines; printlines !i_lines));
-	if num_lines > 0 then
-		let lines_as_string = String.concat "\n" !i_lines in
-		let parsed_program = (parse_to_program lines_as_string) in
-
-		(if !is_verbose then print_parse_result parsed_program);
-
-		try
-      (* Perform Interpretation *)
-      let eval_start_exp = get_func_exp parsed_program "main" in
-      let interpreter_result = interpret eval_start_exp in
-      printf "Interpreter result: %d\n" (find ram interpreter_result);
-		with Failure str -> print_endline str;
-
-	if !is_verbose then printf "***** Parsing FINISHED on file: %s\n\n" filein
+    (* Perform Interpretation *)
+    match parsed_program with (funcdefs, struct_defs) ->
+    let eval_start_exp = get_func_exp funcdefs "main" in
+    let interpreter_result = interpret eval_start_exp in
+    printf "Interpreter result: %d\n" (find ram interpreter_result);
+	with Failure str -> print_endline str;

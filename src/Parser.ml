@@ -35,27 +35,18 @@ let rec parse_file filename is_verbose =
     printf "%s... " filename);
 
   (* Read in all of the lines *)
-  let i_lines = ref [] in
-  let channel = open_in filename in
-  (try
-    while true; do
-      let this_line = input_line channel in
-          i_lines := this_line :: !i_lines
-      done;
-  with End_of_file ->
-      close_in channel;
-      i_lines := List.rev !i_lines);
+  let i_lines = read_all filename in
 
-  let num_lines = List.length !i_lines in
+  let num_lines = List.length i_lines in
   (if is_verbose then printf "*** Found %d lines\n" num_lines);
-  (if is_verbose then printlines !i_lines);
+  (if is_verbose then printlines i_lines);
   if num_lines = 0 then ([], [])
   else
     (* Determine the diretory filepath this is within (used for calculating relative filepaths for included files)*)
     let slash_index = String.rindex filename '/' in
     let directory_filepath = String.sub filename 0 (slash_index + 1) in
 
-    let lines_as_string = String.concat "\n" !i_lines in
+    let lines_as_string = String.concat "\n" i_lines in
     let parsed_program = (parse_lines lines_as_string directory_filepath) in
 
     (if is_verbose then printf "Result:\n");

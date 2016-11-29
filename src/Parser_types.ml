@@ -77,3 +77,16 @@ let rec get_func_exp program with_name = match program with
 	| [] -> raise (Failure ("Function \"" ^ with_name ^ "\" undeclared"))
 
 let optimisation_iterations = 10
+
+let read_all filename =
+  let i_lines = ref [] in
+  let channel = open_in filename in
+  (try
+    while true; do
+      let this_line = input_line channel in
+          i_lines := this_line :: !i_lines
+      done;
+  with End_of_file ->
+      close_in channel;
+      i_lines := List.rev !i_lines);
+      !i_lines 
