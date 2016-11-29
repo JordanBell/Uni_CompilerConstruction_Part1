@@ -1,0 +1,46 @@
+// Mapping functions
+square(val)
+{
+  val * val
+}
+
+mod(i, divisor)
+{
+  new remainder = i in
+  while(~remainder >= divisor)
+  {
+    remainder = ~remainder - divisor
+  };
+
+  ~remainder
+}
+
+string_of_int(i)
+{
+          if(i == 0) { "0" }
+  else {  if(i == 1) { "1" }
+  else {  if(i == 2) { "2" }
+  else {  if(i == 3) { "3" }
+  else {  if(i == 4) { "4" }
+  else {  if(i == 5) { "5" }
+  else {  if(i == 6) { "6" }
+  else {  if(i == 7) { "7" }
+  else {  if(i == 8) { "8" }
+  else {  if(i == 9) { "9" }
+  else
+  {
+    // Recurse for the different digits
+    let upper_digits = i / 10 in
+    let str_upper_digits = string_of_int(upper_digits) in
+
+    let last_digit = mod(i, 10) in
+    let str_last_digit = string_of_int(last_digit) in
+    str_upper_digits + str_last_digit
+  }}}}}}}}}}
+}
+
+string_of_bool(b)
+{
+  if(b) { "true" }
+  else  { "false" }
+}

@@ -165,7 +165,7 @@ let rec print_program = function
 		printf "\n";
 		print_program tl
 
-let print_parse_result parse_result = printf "*** Result: \n"; print_program parse_result
+let print_parse_result parse_result = printf "*** Result: \n"; print_program parse_result (* NOTE: This actually only prints the functions, not the struct definitions *)
 
 let rec print_eval_result store e_eval_result =
 	(* Print the resulting eval_result *)

@@ -46,6 +46,7 @@ open Parser_types
 
 %token STRUCT
 
+%token INCLUDE
 %token <string> STRING_VALUE
 %token <string> IDENTIFIER
 
@@ -72,17 +73,18 @@ open Parser_types
 %nonassoc REF
 %nonassoc DEREF
 
-%start <Parser_types.program> top
+%start <Parser_types.program * (string list)> top
 %%
 
 top :
 | p = prog; EOF 	{ p }
 
 prog :
-| f = func; EOF 	{ ([f], []) }
-| s = strct; EOF 	{ ([], [s]) }
-| f = func; p	= prog	{ match p with (fs, ss) -> (f :: fs, ss) }
-| s = strct; p = prog	{ match p with (fs, ss) -> (fs, s :: ss) }
+| INCLUDE; i = STRING_VALUE; p = prog { match p with ((fs, ss), is) -> ((fs, ss), i::is)}
+| f = func;     EOF 	                     {                                (([f], []), []) }
+| s = strct;    EOF 	                     {                                (([], [s]), []) }
+| f = func;     p	= prog	                 { match p with ((fs, ss), is) -> ((f::fs, ss), is) }
+| s = strct;    p = prog	                 { match p with ((fs, ss), is) -> ((fs, s::ss), is) }
 
 func :
 	funcid = IDENTIFIER;

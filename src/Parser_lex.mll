@@ -34,7 +34,7 @@ rule read =
 	| "if"			{ IF }
 	| "while"		{ WHILE }
 	| "else"		{ ELSE }
-	| "read_int"		{ READINT }
+	| "read_int"	{ READINT }
 	| "print"		{ PRINT }
 	| "let"			{ LET }
 	| "new"			{ NEW }
@@ -42,6 +42,7 @@ rule read =
 	| "true" 		{ TRUE }
 	| "false"		{ FALSE }
 	| "struct"	{ STRUCT }
+	| "include"	{ INCLUDE }
 
 	(* Bool ops *)
 	| "<="			{ LEQ }

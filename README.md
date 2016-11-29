@@ -168,6 +168,28 @@ let foo_ref = &foo in
 foo_ref(18)
 ```
 
+### Including other files
+Another file's code can be included by placing include declarations at the top of the file, before any struct or function definitions. The main function declared in the file being run will be executed, and other main functions from the included files will be ignored (unless the primary file is missing its main function, in which case the first included main will be run)
+```
+include "linked_list.txt"
+
+foo(x)
+{
+  x
+}
+
+bar(y)
+{
+  y
+}
+
+main()
+{
+  let my_list = struct linked_list in
+  // Etc, etc.
+}
+```
+
 ### Printing
 Integers, strings and booleans can all be printed by the `print` keyword. For example:
 ```
@@ -193,11 +215,10 @@ Commented text is ignored by the parser, and can be marked by `//`, just as in C
 * Cannot have an if statement without a corresponding else expression
 * Cannot initialise a variable without a succeeding expression sequence. For example, an expression with just `new i = 0` is invalid. This is because there is no expression for the `new` command to scope it within.
 * Parenthesis are NOT recognised in the context of arithmetic or boolean logic. For example `(5 <= 6) || (5 >= 10)` is invalid.
-* Scoping, ie wrapping an expression in curly braces, is superfluous, but I imagine will be used later. Helps keep things clean.
+* Scoping, ie wrapping an expression in curly braces, can be used to keep clean code.
 * It is a known issue that the grammar builds with reduce/reduce warnings.
 * Function argument values are immutable. (ie `foo(x) { x = 1; ~x }` is invalid, as X is assumed to be a constant value. )
-* Currently supports int, bool, string and struct types (where struct values are defined)
-* Struct types must be create with new, instead of let (because accessing their members will essentially modify their value, making them non-const)
+* It is recommended that struct types are created with `new`, instead of `let`, in order to modify their member data beyond their initial values
 
 ## How to Build
 Entering `bash build.sh` will build all necessary files. It will create a number of native files which can be run on text files
