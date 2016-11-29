@@ -57,6 +57,8 @@ let rec bool_of_eval_result store e_eval_result =
 (******************************************************************************)
 
 let rec eval store i_e =
+	(*printf "\nEvaluating new expression: \n";
+	print_expression i_e 0;*)
 	op_counter := !op_counter + 1;
 	match i_e with
 
@@ -115,7 +117,7 @@ let rec eval store i_e =
 
 							(* An assignment returns an Empty expression for child assignments *)
 							Unit
-						| _ -> failwith "Cannot access child identifiers of a non-struct type")
+						| _ -> failwith ("Cannot assign child identifiers of a non-struct type " ^ (string_of_eval_result_type er) ^", in the expression \"" ^ id_parent ^ "." ^ id_child ^ "\""))
 					(* failwith ("Cannot re-assign a new value to a child in a let-bound struct. Note: It is recommended to ALWAYS create struct variables using the \"new\" keyword, instead of \"let\".") *)
 				| Var (addr) ->
 					try
@@ -178,6 +180,7 @@ let rec eval store i_e =
 			| String (msg) -> printf "%s\n" msg
 			| Int (i) -> printf "%d\n" i
 			| Bool (b) -> printf "%s\n" (if b then "true" else "false")
+			| Struct_data _ -> failwith "Cannot print struct data"
 			| _ -> failwith "Cannot print that kind of expression");
 		e_eval_result
 
@@ -198,7 +201,7 @@ let rec eval store i_e =
 			| Struct_data (s_data) ->
 				(try Hashtbl.find s_data child_lookup_id (* Get the value assigned to that child variable *)
 				with Not_found -> failwith ("Error on dereference: There is no member \"" ^ child_lookup_id ^ "\" in the struct identifier, \"" ^ id_parent ^ "\""))
-			| _ -> failwith ("Cannot access the memory of a non-struct identifier with id, \"" ^ id_parent ^ "\" (When accessing data with id, \"" ^ child_lookup_id ^ "\")"))
+			| _ -> failwith ("Cannot access the memory of a non-struct identifier of type " ^ (string_of_eval_result_type e_result) ^ " with id, \"" ^ id_parent ^ "\" (When accessing data with id, \"" ^ child_lookup_id ^ "\")"))
 
 	| Deref _ -> failwith "Invalid expression type upon dereference"
 

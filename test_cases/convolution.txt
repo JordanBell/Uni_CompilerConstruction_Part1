@@ -1,0 +1,200 @@
+include "linked_list.txt"
+
+struct test_data
+{
+  name = "Test";
+  f = 0;      // Will become a list of values
+  g = 0;      // Will become a list of values
+  result = 0  // Will become a list of values
+}
+
+test_data_print(td)
+{
+  let str_f = ll_to_string(td.f) in
+  let str_g = ll_to_string(td.g) in
+  let str_res = ll_to_string(td.result) in
+
+  let stars_right = " ***" in
+  new str_banner = "*** " in
+  str_banner = ~str_banner + td.name;
+  str_banner = ~str_banner + stars_right;
+
+  print(~str_banner);
+  print("Input 1: " + str_f);
+  print("Input 2: " + str_g);
+  print("Convolution: " + str_res);
+  print("");
+  "" // Unit return
+}
+
+get_test1()
+{
+  new test = struct test_data in
+  test.name = "Uniform linear";
+
+  test.f = struct linked_list;
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 1);
+
+  test.g = struct linked_list;
+  test.g = ll_add(test.g, 1);
+  test.g = ll_add(test.g, 1);
+  test.g = ll_add(test.g, 1);
+  test.g = ll_add(test.g, 1);
+  test.g = ll_add(test.g, 1);
+
+  test.result = struct linked_list;
+
+  ~test
+}
+
+get_test2()
+{
+  new test = struct test_data in
+  test.name = "Ascending/Descending";
+
+  test.f = struct linked_list;
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 2);
+  test.f = ll_add(test.f, 3);
+  test.f = ll_add(test.f, 4);
+  test.f = ll_add(test.f, 5);
+
+  test.g = struct linked_list;
+  test.g = ll_add(test.g, 5);
+  test.g = ll_add(test.g, 4);
+  test.g = ll_add(test.g, 3);
+  test.g = ll_add(test.g, 2);
+  test.g = ll_add(test.g, 1);
+
+  test.result = struct linked_list;
+
+  ~test
+}
+
+get_test3()
+{
+  new test = struct test_data in
+  test.name = "Long + Short #1";
+
+  test.f = struct linked_list;
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 2);
+  test.f = ll_add(test.f, 3);
+  test.f = ll_add(test.f, 4);
+  test.f = ll_add(test.f, 5);
+  test.f = ll_add(test.f, 6);
+  test.f = ll_add(test.f, 7);
+  test.f = ll_add(test.f, 8);
+  test.f = ll_add(test.f, 9);
+  test.f = ll_add(test.f, 10);
+
+  test.g = struct linked_list;
+  test.g = ll_add(test.g, 0);
+  test.g = ll_add(test.g, 1);
+
+  test.result = struct linked_list;
+
+  ~test
+}
+
+get_test4()
+{
+  new test = struct test_data in
+  test.name = "Long + Short #2";
+
+  test.f = struct linked_list;
+  test.f = ll_add(test.f, 1);
+  test.f = ll_add(test.f, 2);
+  test.f = ll_add(test.f, 3);
+  test.f = ll_add(test.f, 4);
+  test.f = ll_add(test.f, 5);
+  test.f = ll_add(test.f, 6);
+  test.f = ll_add(test.f, 7);
+  test.f = ll_add(test.f, 8);
+  test.f = ll_add(test.f, 9);
+  test.f = ll_add(test.f, 10);
+
+  test.g = struct linked_list;
+  test.g = ll_add(test.g, 10);
+  test.g = ll_add(test.g, 20);
+
+  test.result = struct linked_list;
+
+  ~test
+}
+
+convolve(data)
+{
+  let f_len = ll_size(data.f) in
+  let g_len = ll_size(data.g) in
+
+  new n = 0 in
+  while(~n <= f_len + g_len - 2)
+  {
+    new n_result = 0 in
+
+    new kmin = 0 in
+    new kmax = 0 in
+
+    // Calculate kmin
+    if(~n >= g_len - 1)
+    {
+      let a = g_len - 1 in
+      kmin = ~n - a
+    }
+    else
+    {
+      kmin = 0
+    };
+
+    // Calculate kmax
+    if(~n <= f_len - 2)
+    {
+      kmax = ~n
+    }
+    else
+    {
+      kmax = f_len - 1
+    };
+
+    new k = ~kmin in
+    while(~k <= ~kmax)
+    {
+      let f_val = ll_get(data.f, ~k) in
+      let g_val = ll_get(data.g, ~n - ~k) in
+      n_result = ~n_result + f_val * g_val;
+      k = ~k + 1
+    };
+    data.result = ll_add(data.result, ~n_result);
+
+    n = ~n + 1
+  };
+
+  data
+}
+
+main()
+{
+  print(""); // Newline
+
+  // Create the test cases
+  new test_case1 = get_test1() in
+  new test_case2 = get_test2() in
+  new test_case3 = get_test3() in
+  new test_case4 = get_test4() in
+
+  // Process the test cases
+  test_case1 = convolve(~test_case1);
+  test_case2 = convolve(~test_case2);
+  test_case3 = convolve(~test_case3);
+  test_case4 = convolve(~test_case4);
+
+  test_data_print(~test_case1);
+  test_data_print(~test_case2);
+  test_data_print(~test_case3);
+  test_data_print(~test_case4)
+}

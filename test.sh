@@ -75,13 +75,13 @@ src/Main.native test_cases/optimisation/small9.txt $1 -oc; echo ""
 # Interpreter Tests
 printf "\n\n\t*** Exercise 5 - Interpretation and Code Generation ***\n"
 printf "* Interpretation *\n"
-src/Interpreter.native test_cases/Code\ Generation/0.txt $1
-src/Interpreter.native test_cases/Code\ Generation/1.txt $1
-src/Interpreter.native test_cases/Code\ Generation/2.txt $1
-src/Interpreter.native test_cases/Code\ Generation/3.txt $1
+src/Interpreter.native test_cases/CodeGeneration/0.txt $1
+src/Interpreter.native test_cases/CodeGeneration/1.txt $1
+src/Interpreter.native test_cases/CodeGeneration/2.txt $1
+src/Interpreter.native test_cases/CodeGeneration/3.txt $1
 
 printf "\n* Code Generation *\n"
-src/CodeGenerator.native test_cases/Code\ Generation/0.txt test_cases/Code\ Generation/Generated\ Code/0.txt $1
-src/CodeGenerator.native test_cases/Code\ Generation/1.txt test_cases/Code\ Generation/Generated\ Code/1.txt $1
-src/CodeGenerator.native test_cases/Code\ Generation/2.txt test_cases/Code\ Generation/Generated\ Code/2.txt $1
-src/CodeGenerator.native test_cases/Code\ Generation/3.txt test_cases/Code\ Generation/Generated\ Code/3.txt $1
+src/CodeGenerator.native test_cases/CodeGeneration/0.txt test_cases/CodeGeneration/GeneratedCode/0.txt $1
+src/CodeGenerator.native test_cases/CodeGeneration/1.txt test_cases/CodeGeneration/GeneratedCode/1.txt $1
+src/CodeGenerator.native test_cases/CodeGeneration/2.txt test_cases/CodeGeneration/GeneratedCode/2.txt $1
+src/CodeGenerator.native test_cases/CodeGeneration/3.txt test_cases/CodeGeneration/GeneratedCode/3.txt $1

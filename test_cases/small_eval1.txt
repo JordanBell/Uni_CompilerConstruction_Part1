@@ -1,4 +1,4 @@
-main(x, y)
+main()
 {
 	// Create a variable and return that value
 	let x = 20 - 5 in

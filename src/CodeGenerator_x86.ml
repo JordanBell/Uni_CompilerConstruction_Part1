@@ -94,18 +94,19 @@ let rec codegenx86 symt e_in =
         "\tcqto\n" ^
         "\tidivq\t%rbx\n" ^
         "\tpush\t%rax\n" |> Buffer.add_string code;
-        "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
-        sp := !sp + 1
+        "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
+        sp := !sp - 1
       | _ ->
         frec e1;
         frec e2;
         codegenx86_op op;
-        "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
-        sp := !sp + 1)
+        "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
+        sp := !sp - 1)
 
   | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
     codegenx86_id (addr);
+    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
   | Let (x, e1, e2) | New (x, e1, e2) ->
@@ -129,6 +130,7 @@ let rec codegenx86 symt e_in =
 
   | Const_int n ->
     codegenx86_st n;
+    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
   | Const_struct (s_data) ->

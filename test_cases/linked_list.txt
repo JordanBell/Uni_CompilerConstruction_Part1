@@ -25,6 +25,59 @@ ll_add(ll, val)
   }
 }
 
+ll_print_err_oob(ll, i)
+{
+  new errmsg = "Index out of bounds. Index: " in
+  errmsg = ~errmsg + string_of_int(i);
+  let s = ", size: " in
+  errmsg = ~errmsg + s;
+  errmsg = ~errmsg + string_of_int(ll_size(ll));
+  print(~errmsg)
+}
+
+ll_get(ll, i)
+{
+  if(i >= ll_size(ll))
+  {
+    ll_print_err_oob(ll, i);
+    ll.data
+  }
+  else
+  {
+    if(i <= 0)
+    {
+      ll.data
+    }
+    else
+    {
+      ll_get(ll.p_next, i - 1)
+    }
+  }
+}
+
+ll_set(ll, i, x)
+{
+  if(i >= ll_size(ll))
+  {
+    ll_print_err_oob(ll, i);
+    ll
+  }
+  else
+  {
+    if(i <= 0)
+    {
+      print(i);
+      ll.data = x;
+      ll
+    }
+    else
+    {
+      ll.p_next = ll_set(ll.p_next, i - 1, x);
+      ll
+    }
+  }
+}
+
 ll_fold(ll, f, acc)
 {
   if(ll.p_next)
@@ -99,6 +152,13 @@ main()
 
   my_list = ll_map(~my_list, &square);
   print("Squared(squared): " + ll_to_string(~my_list));
+
+  let ival = ll_get(~my_list, 2) in
+  print("Third value is: " + string_of_int(ival));
+
+  print("Setting fourth to 100...");
+  my_list = ll_set(~my_list, 3, 100);
+  print(ll_to_string(~my_list));
 
   "" // Effectively a unit return
 }

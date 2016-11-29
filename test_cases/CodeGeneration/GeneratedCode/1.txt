@@ -2,5 +2,5 @@ ld 5
 st r1
 ld 10
 st r2
-add r1, r2
+div r2, r1
 st r3
