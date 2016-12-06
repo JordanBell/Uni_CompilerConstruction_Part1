@@ -1,5 +1,5 @@
-main (x, y, z)
+main ()
 {
 	// Return a boolean result
-	~x <= 0
+	3 <= 0
 }

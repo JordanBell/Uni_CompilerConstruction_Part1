@@ -1,0 +1,25 @@
+factorial(val)
+{
+  if(val == 1)
+  {
+    1
+  }
+  else
+  {
+    val * factorial(val - 1)
+  }
+}
+
+foo(x)
+{
+  5 + x
+}
+
+main()
+{
+  let x = 1 in
+  let y = foo(5) in
+  let z = factorial(y) in
+
+  z
+}

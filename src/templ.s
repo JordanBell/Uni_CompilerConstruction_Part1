@@ -30,17 +30,29 @@ print:
 main:
 .LFB3:
 	.cfi_startproc
-	pushq	%rbp									## Frame used by the call of the call to main. "This is where we're starting the stack now. Everything between the stack pointer and the base pointer is our stack"
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	$260, -4(%rbp)
-	movl	-4(%rbp), %eax
+	subq	$32, %rsp
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	movl	$260, -20(%rbp)
+	leaq	-20(%rbp), %rax
+	push 	%rax
+	pop 	%rbx
+	movq	$15, (%rbx)
+	movl	-20(%rbp), %eax
 	movl	%eax, %edi
 	call	print
 	movl	$1, %eax
+	movq	-8(%rbp), %rdx
+	xorq	%fs:40, %rdx
+	je	.L4
+	call	__stack_chk_fail
+.L4:
 	leave
 	.cfi_def_cfa 7, 8
 	ret

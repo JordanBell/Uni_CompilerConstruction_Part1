@@ -1,0 +1,28 @@
+foo(x)
+{
+	x+1
+}
+
+start(count)
+{
+  // Test while loop
+  new total = 0 in
+  new input = 0 in
+
+  // Based on the input argument, add the total of all input ints
+  while (count >= 1)
+  {
+    input = read_int();
+    total = ~total + foo(input);
+    count = count - 1
+  };
+
+  // Print and return the total
+  print (5);
+  ~total
+}
+
+main()
+{
+  start(5)
+}

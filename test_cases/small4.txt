@@ -1,16 +1,14 @@
-doub (x)
+main()
 {
-	~x * ~x
-}
-
-main ()
-{
-	// Evaluate the total of the arguments and print & return its value, doubled
-	let x = 0 in
-	let y = 0 in
-	let z = 0 in
-	new n = x * y * z in
-	n = doub(~n);
-	print_int (~n);
-	~n
+	// Create a variable and return the boolean result
+	let x = 5 in
+	if (x <= 0)
+	{
+		let r = 0 in
+		r - 1
+	}
+	else
+	{
+		x
+	}
 }

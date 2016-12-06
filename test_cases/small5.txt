@@ -1,20 +1,13 @@
-foo(x) {x+1}
-
-main(count)
+main (basically, any, number, of, arguments)
 {
-	// Test while loop
-	new total = 0 in
-	new input = 0 in
+	// Do more complex bool ops
+	let b_leq5 = 0 <= 5 in
+	let b_geq10 = 15 >= 10 in
+	let b_or = b_leq5 || b_geq10 in
 
-	// Based on the input argument, add the total of all input ints
-	while (~count >= 1)
-	{
-		input = read_int();
-		total = ~total + foo(input);
-		count = ~count - 1
-	};
+	let b_noteq4 = 4 != 4 in
+	let b_eq8 = 7 == 8 in
+	let b_and = b_noteq4 && b_eq8 in
 
-	// Print and return the total
-	print_int (5);
-	~total
+	b_and || b_or
 }

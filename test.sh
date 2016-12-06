@@ -25,10 +25,10 @@ src/Main.native test_cases/small2.txt $1
 src/Main.native test_cases/small3.txt $1
 src/Main.native test_cases/small4.txt $1
 src/Main.native test_cases/small5.txt $1
-src/Main.native test_cases/small6.txt $1
-src/Main.native test_cases/small7.txt $1
-src/Main.native test_cases/small8.txt $1
-src/Main.native test_cases/small9.txt $1
+src/Main.native test_cases/parse_err0.txt $1
+src/Main.native test_cases/parse_no_eval0.txt $1
+src/Main.native test_cases/parse_no_eval1.txt $1
+src/Main.native test_cases/parse_no_eval2.txt $1
 src/Main.native test_cases/large_recursive.txt $1
 src/Main.native test_cases/large_iterative.txt $1
 

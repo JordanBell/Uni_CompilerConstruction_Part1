@@ -10,6 +10,8 @@ void print(int x)
 int main()
 {
   int y = 260;
+  int* x = &y;
+  *x = 15;
   // Put my code here. Move the result into the variable y
   print(y);
   return 1;

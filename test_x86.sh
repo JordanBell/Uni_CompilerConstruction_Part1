@@ -22,21 +22,23 @@ perform_test()
 				$TEST_FILE_EXE
 			fi
 		fi
+	else
+		printf "File does not exist: %s" $TEST_FILE_IN
 	fi
 
 
 }
 
 # Perform tests written specifically for x86
-for i in {0..8}
+for i in {0..9}
 do
 	perform_test test_cases/CodeGeneration/$i
 done
 
 # Perform regression tests
-for i in {0..9}
+for j in {0..5}
 do
-	perform_test test_cases/small_$i
+	perform_test test_cases/small$j
 done
 
 perform_test test_cases/large_iterative

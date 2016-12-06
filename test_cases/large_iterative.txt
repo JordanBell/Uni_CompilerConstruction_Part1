@@ -44,3 +44,8 @@ bisection_find (f, a, b, TOL)
 		}
 	}
 }
+
+main()
+{
+	"Written but not run"
+}

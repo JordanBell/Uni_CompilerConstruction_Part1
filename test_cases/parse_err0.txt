@@ -2,7 +2,7 @@
 main (invalid argument)
 {
 	/ Bad comment
-	
+
 	// Bad variable
 	var x:int = 5
 }
