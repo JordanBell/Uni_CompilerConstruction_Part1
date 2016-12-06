@@ -94,7 +94,10 @@ main:
 	push	%rax
 ### Incrementing Stack Pointer: 5
 	call	doub
+### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
+	pop	%rbx
 	push	%rax
+### Stack Pointer: 5
 	# write offset 4
 	pop	%rax
 	mov	%rax, -48(%rbp)
@@ -103,32 +106,44 @@ main:
 	mov	-48(%rbp), %rax
 	push	%rax
 ### Incrementing Stack Pointer: 6
-	pop	-4(%rbp)
-	movl	-4(%rbp), %eax
-	movl	%eax, %edi
-	call	print
+### Printing the top of the stack (int):
+	movl	-64(%rbp), %eax
+	movl	%eax, %esi
+	movl	$.LC0, %edi
+	movl	$0, %eax
+	call	printf
+	pop	%rax
+### Decrementing Stack Pointer (for printf arg): 5
 	push	$3
-### Incrementing Stack Pointer: 7
-	pop	-4(%rbp)
-	movl	-4(%rbp), %eax
-	movl	%eax, %edi
-	call	print
+### Incrementing Stack Pointer: 6
+### Printing the top of the stack (int):
+	movl	-64(%rbp), %eax
+	movl	%eax, %esi
+	movl	$.LC0, %edi
+	movl	$0, %eax
+	call	printf
+	pop	%rax
+### Decrementing Stack Pointer (for printf arg): 5
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 8
+### Incrementing Stack Pointer: 6
 	pop	%rax
 	pop	%rbx
 	push	%rax
+### Decrementing Stack Pointer: 5
 	pop	%rax
 	pop	%rbx
 	push	%rax
+### Decrementing Stack Pointer: 4
 	pop	%rax
 	pop	%rbx
 	push	%rax
+### Decrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	push	%rax
+### Decrementing Stack Pointer: 2
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)
@@ -138,11 +153,6 @@ main:
 
 
 	call	print
-
-	movl	$77, %eax
-	movl	%eax, %edi
-	call	print
-
 	movl	$1, %eax
 	leave
 	.cfi_def_cfa 7, 8

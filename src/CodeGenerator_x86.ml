@@ -315,14 +315,20 @@ let rec codegenx86 symt structdefs e_in =
     |> Buffer.add_string code;
     sp := !sp + (1 - num_args) (* Increment once for the pushed return value, decrement per popped argument. *)
 
-  | Printint (e) -> failwith "Expression not implemented: print"
-    (* frec e;
-    printf "Print!\n";
-    "\tpop\t-4(%rbp)\n" ^
-    "\tmovl\t-4(%rbp), %eax\n" ^
-    "\tmovl\t%eax, %edi\n" ^
-    "\tcall\tprint\n"
-    |> Buffer.add_string code *)
+  | Printint (e) ->
+    (*failwith "Expression not implemented: print"*)
+    frec e;
+    let str_top_addr = (!stack_offset - (8 * !sp) |> string_of_int) ^ "(%rbp)" in (* Get the address of the value at the top of the stack (to be pushed to %edi for the print call) *)
+    "### Printing the top of the stack (int):\n" ^
+    "\tmovl\t" ^ str_top_addr ^ ", %eax\n" ^
+    "\tmovl\t%eax, %esi\n" ^
+    "\tmovl\t$.LC0, %edi\n" ^
+    "\tmovl\t$0, %eax\n" ^
+    "\tcall\tprintf\n" ^
+    "\tpop\t%rax\n" ^
+    "### Decrementing Stack Pointer (for printf arg): " ^ (string_of_int (!sp - 1)) ^ "\n"
+    |> Buffer.add_string code;
+    sp := !sp - 1
 
   | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."

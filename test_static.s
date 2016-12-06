@@ -30,7 +30,7 @@ print:
 main:
 .LFB3:
 	.cfi_startproc
-	pushq	%rbp									## Frame used by the call of the call to main. "This is where we're starting the stack now. Everything between the stack pointer and the base pointer is our stack"
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
@@ -39,54 +39,49 @@ main:
 	movl	$260, -4(%rbp)
 	## We will put our assembly code here. Store the value to print in the %edi register
 
+	# movl	$246, -8(%rbp)
+	# movl	$357, -4(%rbp)
+	# movl	-8(%rbp), %eax
+	# movl	%eax, %edi
+	# call	print
+	# movl	-4(%rbp), %eax
+	# movl	%eax, %edi
+	# call	print
+	# movl	$1, %eax
+
+	# movl	-8(%rbp), %eax
+	# movl	%eax, %esi
+	# movl	$.LC0, %edi
+	# movl	$0, %eax
+	# call	printf
+	# movl	-4(%rbp), %eax
+	# movl	%eax, %esi
+	# movl	$.LC0, %edi
+	# movl	$0, %eax
+	# call	printf
 
 	# Generated code START
-	push	$777
+	push	$246
 ### Incrementing Stack Pointer: 1
-	push	$1000
+	push	$357
 ### Incrementing Stack Pointer: 2
 	# offset 1
-	mov	-24(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 3
-	movl	-40(%rbp), %eax
+	movl	-24(%rbp), %eax
 	movl	%eax, %esi
 	movl	$.LC0, %edi
 	movl	$0, %eax
 	call	printf
-	pop	%rax
-### Decrementing Stack Pointer: 2
+
 	# offset 2
-	mov	-32(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 3
-	movl	-40(%rbp), %eax
+	movl	-32(%rbp), %eax
 	movl	%eax, %esi
 	movl	$.LC0, %edi
 	movl	$0, %eax
 	call	printf
-	pop	%rax
+
 ### Decrementing Stack Pointer: 2
-	push	$23
+	push	$1
 ### Incrementing Stack Pointer: 3
-	# offset 1
-	mov	-24(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 4
-	pop	%rax
-	pop	%rbx
-	add	%rax, %rbx
-	push	%rbx
-### Decrementing Stack Pointer: 3
-	# offset 2
-	mov	-32(%rbp), %rax
-	push	%rax
-### Incrementing Stack Pointer: 4
-	pop	%rax
-	pop	%rbx
-	add	%rax, %rbx
-	push	%rbx
-### Decrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	push	%rax
