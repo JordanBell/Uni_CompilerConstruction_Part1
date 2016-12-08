@@ -50,7 +50,6 @@ type identifier_definition =
   | Const of eval_result
   | Var of int
 
-
 type tstore =
 {
   decl_funcs : fundef list ref;
@@ -89,4 +88,4 @@ let read_all filename =
   with End_of_file ->
       close_in channel;
       i_lines := List.rev !i_lines);
-      !i_lines 
+      !i_lines

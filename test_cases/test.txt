@@ -1,0 +1,89 @@
+f(index)
+{
+  if(index >= 0 && index <= 4)
+  {
+    1
+  }
+  else
+  {
+    0
+  }
+}
+
+g(index)
+{
+  if(index >= 0 && index <= 4)
+  {
+    1
+  }
+  else
+  {
+    0
+  }
+}
+
+main()
+{
+  // Output values
+  let h0 = 1001 in
+  let h1 = 1001 in
+  let h2 = 1001 in
+  let h3 = 1001 in
+  let h4 = 1001 in
+  let h5 = 1001 in
+  let h6 = 1001 in
+  let h7 = 1001 in
+  let h8 = 1001 in
+
+  let f_len = 5 in
+  let g_len = 5 in
+
+  new n = 0 in
+  while(~n <= f_len + g_len - 2)
+  {
+    new kmin = 777 in
+    new kmax = 888 in
+
+    // Calculate kmin
+    if(~n >= g_len - 1)
+    {
+      let a = g_len - 1 in
+      kmin = ~n - a
+    }
+    else
+    {
+      kmin = 0
+    };
+
+    // Calculate kmax
+    if(~n <= f_len - 2)
+    {
+      kmax = ~n
+    }
+    else
+    {
+      kmax = f_len - 1
+    };
+
+    new k = ~kmin in
+    while(~k <= ~kmax)
+    {
+      let f_val = f(~k) in
+      let g_val = g(~n - ~k) in
+
+      //n_result = ~n_result + f_val * g_val;
+      k = ~k + 1
+    };
+    n = ~n + 1
+  };
+
+  print(h0);
+  print(h1);
+  print(h2);
+  print(h3);
+  print(h4);
+  print(h5);
+  print(h6);
+  print(h7);
+  h8
+}

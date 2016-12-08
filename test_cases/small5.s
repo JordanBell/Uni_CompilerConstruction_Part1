@@ -42,9 +42,7 @@ main:
 
 	# Generated code START
 	push	$0
-### Incrementing Stack Pointer: 1
 	push	$5
-### Incrementing Stack Pointer: 2
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -56,11 +54,8 @@ main:
 .BOP0:
 	push	$1
 .CONT_BOP0:
-### Decrementing Stack Pointer: 1
 	push	$15
-### Incrementing Stack Pointer: 2
 	push	$10
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -72,24 +67,18 @@ main:
 .BOP1:
 	push	$1
 .CONT_BOP1:
-### Decrementing Stack Pointer: 2
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
 	# offset 2
 	mov	-32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 4
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 3
 	push	$4
-### Incrementing Stack Pointer: 4
 	push	$4
-### Incrementing Stack Pointer: 5
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -101,11 +90,8 @@ main:
 .BOP2:
 	push	$1
 .CONT_BOP2:
-### Decrementing Stack Pointer: 4
 	push	$7
-### Incrementing Stack Pointer: 5
 	push	$8
-### Incrementing Stack Pointer: 6
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -117,15 +103,12 @@ main:
 .BOP3:
 	push	$1
 .CONT_BOP3:
-### Decrementing Stack Pointer: 5
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
 	# offset 5
 	mov	-56(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 7
 	pop	%rax
 	pop	%rbx
 	cmp	$0, %rax
@@ -138,44 +121,40 @@ main:
 .BOP4:
 	push	$0
 .CONT_BOP4:
-### Decrementing Stack Pointer: 6
 	# offset 6
 	mov	-64(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 7
 	# offset 3
 	mov	-40(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 8
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 7
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 6
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 5
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 4
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 3
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 2
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 1
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

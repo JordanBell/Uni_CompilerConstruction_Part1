@@ -42,28 +42,20 @@ main:
 
 	# Generated code START
 	push	$1
-### Incrementing Stack Pointer: 1
 	push	$99
-### Incrementing Stack Pointer: 2
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 2
 	push	$10
-### Incrementing Stack Pointer: 3
 	push	$0
-### Incrementing Stack Pointer: 4
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 5
 	push	$0
-### Incrementing Stack Pointer: 6
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -75,76 +67,65 @@ main:
 .BOP0:
 	push	$1
 .CONT_BOP0:
-### Decrementing Stack Pointer: 5
 	pop	%rax
 	mov	$0, %rbx
 	cmp	%rax, %rbx
-### Decrementing Stack Pointer: 4
 	jne	.IE0
 ### If false: 
 	push	$2000
-### Incrementing Stack Pointer: 5
 	# write offset 4
 	pop	%rax
 	mov	%rax, -48(%rbp)
 	push	-48(%rbp)
-### Decrementing Stack Pointer: 4
 	jmp	.CONT_IE0
 ### If true: 
 .IE0:
 	push	$1000
-### Incrementing Stack Pointer: 5
 	# offset 5
 	mov	-56(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
 	# write offset 4
 	pop	%rax
 	mov	%rax, -48(%rbp)
 	push	-48(%rbp)
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 5
 .CONT_IE0:
 	# offset 3
 	mov	-40(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
 	# offset 2
 	mov	-32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 7
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 6
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 7
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 6
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 5
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 4
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 3
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 2
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

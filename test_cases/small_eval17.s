@@ -33,9 +33,7 @@ factorial:
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	push	$1
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -47,28 +45,22 @@ factorial:
 .BOP0:
 	push	$1
 .CONT_BOP0:
-### Decrementing Stack Pointer: 2
 	pop	%rax
 	mov	$0, %rbx
 	cmp	%rax, %rbx
-### Decrementing Stack Pointer: 1
 	jne	.IE0
 ### If false: 
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
 	push	$1
-### Incrementing Stack Pointer: 4
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 3
 	call	factorial
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
 	pop	%rbx
@@ -78,15 +70,12 @@ factorial:
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 2
-### Decrementing Stack Pointer: 1
 	jmp	.CONT_IE0
 ### If true: 
 .IE0:
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 .CONT_IE0:
 	popq	%rax
 	movq %rbp, %rsp
@@ -107,7 +96,6 @@ main:
 
 	# Generated code START
 	push	$3
-### Incrementing Stack Pointer: 1
 	call	factorial
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
 	pop	%rbx

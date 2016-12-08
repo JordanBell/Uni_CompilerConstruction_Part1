@@ -1,1 +1,0 @@
-Main.ml: Array Hashtbl List Parser Parser_evaluator Parser_lex Parser_optimisation Parser_printer Parser_types Printf Sys

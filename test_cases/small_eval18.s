@@ -33,7 +33,6 @@ inc:
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -53,24 +52,20 @@ main:
 
 	# Generated code START
 	push	$0
-### Incrementing Stack Pointer: 1
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	push	$1
-### Incrementing Stack Pointer: 3
 	call	inc
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 2
 	pop	%rbx
 	push	$1
-### Incrementing Stack Pointer: 4
 	push	%rax
 ### Stack Pointer: 3
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 2
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

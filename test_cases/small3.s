@@ -33,16 +33,13 @@ doub:
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 2
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -62,37 +59,28 @@ main:
 
 	# Generated code START
 	push	$0
-### Incrementing Stack Pointer: 1
 	push	$0
-### Incrementing Stack Pointer: 2
 	push	$0
-### Incrementing Stack Pointer: 3
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 4
 	# offset 2
 	mov	-32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 5
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 4
 	# offset 3
 	mov	-40(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 5
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 4
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 5
 	call	doub
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
 	pop	%rbx
@@ -105,7 +93,6 @@ main:
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
 ### Printing the top of the stack (int):
 	movl	-64(%rbp), %eax
 	movl	%eax, %esi
@@ -113,9 +100,7 @@ main:
 	movl	$0, %eax
 	call	printf
 	pop	%rax
-### Decrementing Stack Pointer (for printf arg): 5
 	push	$3
-### Incrementing Stack Pointer: 6
 ### Printing the top of the stack (int):
 	movl	-64(%rbp), %eax
 	movl	%eax, %esi
@@ -123,27 +108,25 @@ main:
 	movl	$0, %eax
 	call	printf
 	pop	%rax
-### Decrementing Stack Pointer (for printf arg): 5
 	# offset 4
 	mov	-48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 5
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 4
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 3
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 2
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

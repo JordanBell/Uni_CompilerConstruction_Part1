@@ -42,28 +42,21 @@ main:
 
 	# Generated code START
 	push	$5
-### Incrementing Stack Pointer: 1
 	push	$2
-### Incrementing Stack Pointer: 2
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 1
 	push	$5
-### Incrementing Stack Pointer: 2
 	push	$2
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 2
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 1
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

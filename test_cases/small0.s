@@ -42,7 +42,6 @@ main:
 
 	# Generated code START
 	push	$5
-### Incrementing Stack Pointer: 1
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

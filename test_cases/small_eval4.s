@@ -42,12 +42,10 @@ main:
 
 	# Generated code START
 	push	$5
-### Incrementing Stack Pointer: 1
 	# ref to offset 1
 	leaq	-24(%rbp), %rax
 	push	%rax
 	push	$20
-### Incrementing Stack Pointer: 2
 	# write offset 1
 	pop	%rax
 	mov	%rax, -24(%rbp)
@@ -55,15 +53,14 @@ main:
 	# offset 1
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 3
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 2
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 1
 
 	# Push the top of the stack onto the output register
 	pop	-4(%rbp)

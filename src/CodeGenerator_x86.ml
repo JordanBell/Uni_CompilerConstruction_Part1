@@ -18,7 +18,7 @@ let stack_offset_default = -16
 let stack_offset = ref stack_offset_default
 
 let string_of_opcode_x86 opc = match opc with
-  | Plus | Or -> "add"
+  | Plus | Or -> "add" (* Or also uses the add instruction, as two Or'd values will be non-zero if either are non-zero. A known issue is that this will cause unexpected results when Or-ing two integers such as -7 and 7 (which will equal "false"), but this is acceptable as implicit int-to-bool casting is ill-advised *)
   | Minus -> "sub"
   | Times -> "imul"
   | Divide -> "idiv"
@@ -87,6 +87,34 @@ let codegenx86_op opc =
   "\t" ^ (string_of_opcode_x86 opc) ^ "\t%rax, %rbx\n" ^
   "\tpush\t%rbx\n" |> Buffer.add_string code
 
+let codegenx86_not () =
+  let s_lbl_make_true = ".BOP" ^ (string_of_int !bool_op_count) in
+  let s_lbl_continue = ".CONT_BOP" ^ (string_of_int !bool_op_count) in
+  "\tpop\t%rax\n" ^
+  "\tcmp\t$0, %rax\n" ^
+  "\tje\t" ^ s_lbl_make_true ^ "\n" ^
+
+  (* If top of stack = "true" *)
+  "\tpush\t$0\n" (* Push "false" *)
+   |> Buffer.add_string code;
+
+  (* If top of stack = "false" *)
+  s_lbl_make_true ^ ":\n" ^ (* Push "true" *)
+  "\tpush\t$1\n" |> Buffer.add_string code; (* Push a value of TRUE *)
+
+  (* Continue *)
+  s_lbl_continue ^ ":\n" |> Buffer.add_string code;
+
+  (* Increment Bool-op count for new labels in the future *)
+  bool_op_count := !bool_op_count + 1
+
+let codegenx86_let () =
+  "# Let\n" ^
+  "\tpop\t%rax\n" ^
+  "\tpop\t%rbx\n" ^
+  "\tpush\t%rax\n"
+  |> Buffer.add_string code
+
 let codegenx86_id addr =
   "\t# offset " ^ (string_of_int addr) ^ "\n" ^
   "\tmov\t" ^ (!stack_offset - (8 * addr) |> string_of_int) ^ "(%rbp), %rax\n" ^
@@ -96,26 +124,9 @@ let codegenx86_id addr =
 let codegenx86_st n =
   "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code
 
-(* let codegenx86_st_struct s_data =
-  "\tpush\t$" ^ (string_of_int n) ^ "\n" |> Buffer.add_string code *)
-
-let codegenx86_let _ =
-  "\tpop\t%rax\n" ^
-  "\tpop\t%rbx\n" ^
-  "\tpush\t%rax\n"
-  |> Buffer.add_string code
-
 let sizeof_struct structdefs id_struct =
   let struct_mems = List.assoc id_struct structdefs in
   List.length struct_mems
-
-let rec sizeof_eval_result = function
-  | Int _ -> 1
-  | Bool _ -> 1
-  | Struct_data (s_data) -> Hashtbl.fold (fun id er acc -> acc + (sizeof_eval_result er)) s_data 0 (* Sizeof all members of that struct *)
-  | Identifier _ -> failwith "Sizeof Identifier reference currently unsupported"
-  | _ -> failwith "Unsupported eval result"
-
 
 let get_member_index structdefs id_struct id_member_search =
   let struct_mems = List.assoc id_struct structdefs in
@@ -134,23 +145,7 @@ let rec codegenx86 symt structdefs e_in =
   | Operator_unary (opcode, e) ->
       (match opcode with Not ->
       frec e;
-      let s_lbl_make_true = ".BOP" ^ (string_of_int !bool_op_count) in
-      let s_lbl_continue = ".CONT_BOP" ^ (string_of_int !bool_op_count) in
-      "\tpop\t%rax\n" ^
-      "\tcmp\t$0, %rax\n" ^
-      "\tje\t" ^ s_lbl_make_true ^ "\n" ^
-      "\tpush\t$0\n" (* Push "false" *)
-       |> Buffer.add_string code;
-
-      (* If FALSE *)
-      s_lbl_make_true ^ ":\n" ^
-      "\tpush\t$1\n" |> Buffer.add_string code; (* Push a value of TRUE *)
-
-      (* Continue *)
-      s_lbl_continue ^ ":\n" |> Buffer.add_string code;
-
-      (* Increment Bool-op count *)
-      bool_op_count := !bool_op_count + 1)
+      codegenx86_not ())
 
   | Operator (op, e1, e2) ->
     (match op with
@@ -163,34 +158,25 @@ let rec codegenx86 symt structdefs e_in =
         "\tcqto\n" ^
         "\tidivq\t%rbx\n" ^
         "\tpush\t%rax\n" |> Buffer.add_string code;
-        "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
         sp := !sp - 1
       | _ ->
         frec e1;
         frec e2;
         codegenx86_op op;
-        "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
         sp := !sp - 1)
 
   | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
     codegenx86_id (addr);
-    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
 
-  | Memaccess (Identifier (id_parent), Identifier (id_child)) -> failwith "Memaccess not implemented"
-    (* Push the id_parent index plus the id_child index*)
-    (* let child_index = get_member_index structdefs id_child in
-    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
-    sp := !sp + 1 *)
-
-  | Memaccess (_, _) -> failwith "Expression not implemented: Memaccess (without simple id1.id2 format)"
+  | Memaccess (_, _) -> failwith "Expression not implemented: Memaccess"
 
   | Let (x, e1, e2) | New (x, e1, e2) ->
     frec e1;
     codegenx86 ((x, !sp) :: symt) structdefs e2;
     codegenx86_let ();
-    "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
+
     sp := !sp - 1
 
   | Ref (Identifier(id_str)) ->
@@ -219,13 +205,7 @@ let rec codegenx86 symt structdefs e_in =
 
   | Const_int n ->
     codegenx86_st n;
-    "### Incrementing Stack Pointer: " ^ (string_of_int (!sp + 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp + 1
-
-  | Const_struct (s_data) ->
-    failwith "Unsupported expression: Const_struct"
-    (* codegenx86_st_struct s_data;
-    sp := !sp + (Hashtbl.length s_data); *)
 
   | Const_bool b ->
     (* Run the bool as an int *)
@@ -243,7 +223,6 @@ let rec codegenx86 symt structdefs e_in =
     "\tpop\t%rax\n" ^       (* Move the condition value into rax *)
     "\tmov\t$0, %rbx\n" ^   (* Move 0 into rbx for comparison *)
     "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
-    "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
     "\tjne\t" ^ str_label_if_nonzero ^ "\n"
     |> Buffer.add_string code;
     sp := !sp - 1;
@@ -254,7 +233,6 @@ let rec codegenx86 symt structdefs e_in =
     (* If not jumping, just execute the else code (where the condition equals 0, ie FALSE) *)
     "### If false: \n" |> Buffer.add_string code;
     frec e_iffalse;
-    "### Decrementing Stack Pointer: " ^ (string_of_int (!sp - 1)) ^ "\n" |> Buffer.add_string code;
     sp := !sp - 1; (* Decrement the sp as we have exited the scope of this If branch *)
     ("\tjmp\t" ^ str_label_continue ^ "\n") |> Buffer.add_string code;
 
@@ -279,9 +257,14 @@ let rec codegenx86 symt structdefs e_in =
     "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
     "\tje\t" ^ str_label_continue ^ "\n" (* If the condition is 0, exit the loop and continue *)
     |> Buffer.add_string code;
+    sp := !sp - 1;
 
     (* Generate code for the loop expression *)
     frec f;
+
+    (* Discard the value pushed by f onto the stack *)
+    "\tpop\t%rax\n" |> Buffer.add_string code;
+    sp := !sp - 1;
 
     (* Jump to the start of the loop, where we recalculate the condition *)
     "\tjmp\t" ^ str_label_loop ^ "\n" |> Buffer.add_string code;
@@ -325,13 +308,13 @@ let rec codegenx86 symt structdefs e_in =
     "\tmovl\t$.LC0, %edi\n" ^
     "\tmovl\t$0, %eax\n" ^
     "\tcall\tprintf\n" ^
-    "\tpop\t%rax\n" ^
-    "### Decrementing Stack Pointer (for printf arg): " ^ (string_of_int (!sp - 1)) ^ "\n"
+    "\tpop\t%rax\n"
     |> Buffer.add_string code;
     sp := !sp - 1
 
   | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."
+  | Const_struct (id_struct) -> failwith "Expression not implemented: Const_struct"
   | Application (_, _) -> failwith "Expression not implemented: Assignment (with non-simple identifier expression as the function)"
   | Asg (_, _) -> failwith "Expression not implemented: Asg (with a non-simple identifier on the left)"
   | Deref _ ->	failwith "Expression not implemented: Deref (applied to a non-simple identifier)"

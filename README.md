@@ -1,4 +1,5 @@
 # Uni_CompilerConstruction_Part2
+Note: Some features are not available for x86 compiling. These are marked with a * in their title.
 ## Language Syntax
 
 ### Let
@@ -58,7 +59,7 @@ new is_false = false in
 is_true || ~is_false
 ```
 
-#### Type: String
+#### Type: String*
 ```
 let helloworld = "Hello world" in
 print(helloworld)
@@ -87,7 +88,7 @@ prefix + name + suffix
 ```
 
 #### Type: Identifier reference
-Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name.
+Use the `&` character to create an identifier reference. This will reference another identifier, be it a constant, variable or function name*.
 
 ```
 let x = 5 in
@@ -96,7 +97,7 @@ x = 10
 y // Now equals 10
 ```
 
-#### Type: Defined Struct
+#### Type: Defined Struct*
 A structure of data may be declared for use as a data type.
 
 Declaration:
@@ -192,16 +193,21 @@ main()
 
 ### Printing
 Integers, strings and booleans can all be printed by the `print` keyword. For example:
+
+##### Direct and evaluated integers
 ```
-// Direct and evaluated integers
 print(5);
 print(10 + 18)
+```
 
-// Direct and evaluated booleans
+##### Direct and evaluated booleans
+```
 print(true);
 print(true && false);
+```
 
-// Direct and concatenated strings
+##### Direct and concatenated strings*
+```
 print("Hello world!");
 print("Hello " + "world");
 
@@ -227,12 +233,14 @@ Entering `bash build.sh` will build all necessary files. It will create a number
 ### Batch
 Entering `bash test.sh` will run all tests and print out the results. `bash test.sh -verbose` will perform the tests and print out a parsed expression structure for the successful files.
 
-Entering `bash test_x86.sh` will run tests and print out the results of a select few compatible files.
+Entering `bash test_x86.sh` will run tests and print out the results of a select few compatible files. *Important:* Some examples are designed to fail to show the limits of the x86 code generation. These cases will have errors, not values, printed for their tests.
 
 ### Individual files
-All \*.txt test files are found within the `test_cases` directory. To run the program on a particular test file, for example test\_cases/small0.txt, enter the command: `src/Parser.native test\_cases/small0.txt`. Use the optional `-verbose` argument to the see the parsed expression structure.
+All \*.txt test files are found within the `test_cases` directory. To run the program on a particular test file, for example test\_cases/small0.txt, enter the command: `src/Parser.native test_cases/small0.txt`. Use the optional `-verbose` argument to the see the parsed expression structure. Use the `-o` argument for optimisations. (see the optimisations section below for more info)
 
-## optimisation
+`src/CodeGenerator_x86.native test_cases/small0.txt test_cases/small0.s` will generate an x86 assembly file (second argument) for a given code txt file (first argument).
+
+## Optimisation
 * Activate optimisation with the -o option.
 * The -oc option also evaluates with optimisations, but prints out optimisation statistics. If -verbose is set, this also prints out both optimised and non-optimised expression trees.
 * Optimisation is applied 10 times in total

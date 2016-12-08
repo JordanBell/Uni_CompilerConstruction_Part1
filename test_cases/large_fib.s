@@ -31,22 +31,16 @@ fibo:
 	pushq	%rbp
 	movq %rsp, %rbp
 	push	$1
-### Incrementing Stack Pointer: 2
 	push	$1
-### Incrementing Stack Pointer: 3
 	push	$0
-### Incrementing Stack Pointer: 4
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 5
 .W0:
 	# offset 5
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 6
 	push	$2
-### Incrementing Stack Pointer: 7
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
@@ -58,7 +52,6 @@ fibo:
 .BOP0:
 	push	$1
 .CONT_BOP0:
-### Decrementing Stack Pointer: 6
 	pop	%rax
 	mov	$0, %rbx
 	cmp	%rax, %rbx
@@ -66,16 +59,13 @@ fibo:
 	# offset 2
 	mov	0(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 7
 	# offset 3
 	mov	-8(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 8
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 7
 	# write offset 4
 	pop	%rax
 	mov	%rax, -48(%rbp)
@@ -83,7 +73,6 @@ fibo:
 	# offset 3
 	mov	-8(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 8
 	# write offset 2
 	pop	%rax
 	mov	%rax, -32(%rbp)
@@ -91,7 +80,6 @@ fibo:
 	# offset 4
 	mov	-16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 9
 	# write offset 3
 	pop	%rax
 	mov	%rax, -40(%rbp)
@@ -99,40 +87,37 @@ fibo:
 	# offset 5
 	mov	-24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 10
 	push	$1
-### Incrementing Stack Pointer: 11
 	pop	%rax
 	pop	%rbx
 	sub	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 10
 	# write offset 5
 	pop	%rax
 	mov	%rax, -56(%rbp)
 	push	-56(%rbp)
+	pop	%rax
 	jmp	.W0
 .CONT_W0:
 	# offset 3
 	mov	-8(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 11
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 10
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 9
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 8
+# Let
 	pop	%rax
 	pop	%rbx
 	push	%rax
-### Decrementing Stack Pointer: 7
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -152,7 +137,6 @@ main:
 
 	# Generated code START
 	push	$20
-### Incrementing Stack Pointer: 1
 	call	fibo
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
 	pop	%rbx

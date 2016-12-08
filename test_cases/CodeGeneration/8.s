@@ -33,88 +33,69 @@ sum_10:
 	# offset 0
 	mov	88(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 11
 	# offset 1
 	mov	80(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 2
 	mov	72(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 3
 	mov	64(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 4
 	mov	56(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 5
 	mov	48(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 6
 	mov	40(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 7
 	mov	32(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 8
 	mov	24(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	# offset 9
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 12
 	pop	%rax
 	pop	%rbx
 	add	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 11
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -134,46 +115,27 @@ main:
 
 	# Generated code START
 	push	$1
-### Incrementing Stack Pointer: 1
 	push	$2
-### Incrementing Stack Pointer: 2
 	push	$3
-### Incrementing Stack Pointer: 3
 	push	$4
-### Incrementing Stack Pointer: 4
 	push	$5
-### Incrementing Stack Pointer: 5
 	push	$6
-### Incrementing Stack Pointer: 6
 	push	$7
-### Incrementing Stack Pointer: 7
 	push	$8
-### Incrementing Stack Pointer: 8
 	push	$9
-### Incrementing Stack Pointer: 9
 	push	$10
-### Incrementing Stack Pointer: 10
 	call	sum_10
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 10
 	pop	%rbx
 	push	$2
-### Incrementing Stack Pointer: 11
 	push	$3
-### Incrementing Stack Pointer: 12
 	push	$4
-### Incrementing Stack Pointer: 13
 	push	$5
-### Incrementing Stack Pointer: 14
 	push	$6
-### Incrementing Stack Pointer: 15
 	push	$7
-### Incrementing Stack Pointer: 16
 	push	$8
-### Incrementing Stack Pointer: 17
 	push	$9
-### Incrementing Stack Pointer: 18
 	push	$10
-### Incrementing Stack Pointer: 19
 	push	%rax
 ### Stack Pointer: 10
 

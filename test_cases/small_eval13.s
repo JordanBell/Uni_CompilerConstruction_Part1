@@ -33,14 +33,11 @@ doub:
 	# offset 0
 	mov	16(%rbp), %rax
 	push	%rax
-### Incrementing Stack Pointer: 2
 	push	$2
-### Incrementing Stack Pointer: 3
 	pop	%rax
 	pop	%rbx
 	imul	%rax, %rbx
 	push	%rbx
-### Decrementing Stack Pointer: 2
 	popq	%rax
 	movq %rbp, %rsp
 	popq	%rbp
@@ -60,7 +57,6 @@ main:
 
 	# Generated code START
 	push	$50
-### Incrementing Stack Pointer: 1
 	call	doub
 ### Discard the arguments that were pushed onto the stack. Num arguments discarded: 1
 	pop	%rbx
