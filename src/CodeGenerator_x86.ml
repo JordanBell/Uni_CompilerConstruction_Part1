@@ -301,9 +301,8 @@ let rec codegenx86 symt structdefs e_in =
   | Printint (e) ->
     (*failwith "Expression not implemented: print"*)
     frec e;
-    let str_top_addr = (!stack_offset - (8 * !sp) |> string_of_int) ^ "(%rbp)" in (* Get the address of the value at the top of the stack (to be pushed to %edi for the print call) *)
     "### Printing the top of the stack (int):\n" ^
-    "\tmovl\t" ^ str_top_addr ^ ", %eax\n" ^
+    "\tmovl\t(%rsp), %eax\n" ^
     "\tmovl\t%eax, %esi\n" ^
     "\tmovl\t$.LC0, %edi\n" ^
     "\tmovl\t$0, %eax\n" ^
