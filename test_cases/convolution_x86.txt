@@ -41,26 +41,14 @@ main()
   new n = 0 in
   while(~n <= f_len + g_len - 2)
   {
-    new n_result =
-             if (~n == 0) { &h0 }
-      else { if (~n == 1) { &h1 }
-      else { if (~n == 2) { &h2 }
-      else { if (~n == 3) { &h3 }
-      else { if (~n == 4) { &h4 }
-      else { if (~n == 5) { &h5 }
-      else { if (~n == 6) { &h6 }
-      else { if (~n == 7) { &h7 }
-      else                { &h8 }}}}}}}}
-    in
-
     new kmin = 0 in
     new kmax = 0 in
 
     // Calculate kmin
     if(~n >= g_len - 1)
     {
-      let a = g_len - 1 in
-      kmin = ~n - a
+      kmin = ~n - g_len;
+      kmin = ~kmin + 1
     }
     else
     {
@@ -82,7 +70,19 @@ main()
     {
       let f_val = f(~k) in
       let g_val = g(~n - ~k) in
-      n_result = ~n_result + f_val * g_val;
+      //n_result = ~n_result + f_val * g_val;
+      let res = f_val * g_val in
+
+             if (~n == 0) { h0 = ~h0 + res }
+      else { if (~n == 1) { h1 = ~h1 + res }
+      else { if (~n == 2) { h2 = ~h2 + res }
+      else { if (~n == 3) { h3 = ~h3 + res }
+      else { if (~n == 4) { h4 = ~h4 + res }
+      else { if (~n == 5) { h5 = ~h5 + res }
+      else { if (~n == 6) { h6 = ~h6 + res }
+      else { if (~n == 7) { h7 = ~h7 + res }
+      else                { h8 = ~h8 + res }}}}}}}};
+
       k = ~k + 1
     };
     n = ~n + 1
