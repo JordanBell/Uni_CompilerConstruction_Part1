@@ -19,15 +19,16 @@ let rec string_of_eval_result er = match er with
 	| Int (i) -> string_of_int i
 	| Bool (b) -> if b then "true" else "false"
 	| String (s) -> s
-	| Struct_data (data_tbl) ->
-		(* let accumulate_data_strings id val acc = acc ^ ", " in *)
-		"["
-
-		(* id ^ ":" ^ (string_of_eval_result val) ^
-		"[struct: " ^
-		(Hashtbl.fold accumulate_data_strings data_tbl "") ^
-		"]" *)
+	| Struct_data (data_tbl) -> "[struct]"
 	| Identifier (s) -> "ID:" ^ s
+	| Unit -> "Unit"
+
+let rec string_of_eval_result_type er = match er with
+	| Int (i) -> "int"
+	| Bool (b) -> "bool"
+	| String (s) -> "string"
+	| Struct_data (data_tbl) -> "struct"
+	| Identifier (s) -> "Identifier"
 	| Unit -> "Unit"
 
 let string_of_opcode_unary = function
