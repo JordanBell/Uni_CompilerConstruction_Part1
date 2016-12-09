@@ -1,0 +1,49 @@
+mod(i, divisor)
+{
+  while(i >= divisor)
+  {
+    let less = ~i - divisor in
+    i = less
+  };
+
+  ~i
+}
+
+isdiv(val, div)
+{
+  mod(val, div) == 0
+}
+
+main()
+{
+  new n = 0 in
+  while(~n <= 100)
+  {
+    let isdiv3 = isdiv(~n, 3) in
+    let isdiv5 = isdiv(~n, 5) in
+
+    if(isdiv3)
+    {
+      if(isdiv5)
+      {
+        print(15)
+      }
+      else
+      {
+        print(3)
+      }
+    }
+    else
+    {
+      if(isdiv5)
+      {
+        print(5)
+      }
+      else
+      {
+        print(~n)
+      }
+    };
+    n = ~n + 1
+  }
+}

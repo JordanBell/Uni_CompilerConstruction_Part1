@@ -17,6 +17,15 @@ let bool_op_count = ref 0
 let stack_offset_default = -16
 let stack_offset = ref stack_offset_default
 
+let decr_sp () =
+  "\t# Sp-- to " ^ (string_of_int (!sp - 1)) ^ " (%" ^ (string_of_int (!stack_offset - (8 * (!sp - 1)))) ^ ")\n" |> Buffer.add_string code;
+  sp := !sp - 1
+
+let incr_sp () =
+  "\t# Sp++ to " ^ (string_of_int (!sp + 1)) ^ " (%" ^ (string_of_int (!stack_offset - (8 * (!sp + 1)))) ^ ")\n" |> Buffer.add_string code;
+  sp := !sp + 1
+
+
 let string_of_opcode_x86 opc = match opc with
   | Plus | Or -> "add" (* Or also uses the add instruction, as two Or'd values will be non-zero if either are non-zero. A known issue is that this will cause unexpected results when Or-ing two integers such as -7 and 7 (which will equal "false"), but this is acceptable as implicit int-to-bool casting is ill-advised *)
   | Minus -> "sub"
@@ -109,15 +118,15 @@ let codegenx86_not () =
   bool_op_count := !bool_op_count + 1
 
 let codegenx86_let () =
-  "# Let\n" ^
+  "# Let \n" ^
   "\tpop\t%rax\n" ^
   "\tpop\t%rbx\n" ^
   "\tpush\t%rax\n"
   |> Buffer.add_string code
 
-let codegenx86_id addr =
+let codegenx86_id addr id_str =
   "\t# offset " ^ (string_of_int addr) ^ "\n" ^
-  "\tmov\t" ^ (!stack_offset - (8 * addr) |> string_of_int) ^ "(%rbp), %rax\n" ^
+  "\tmov\t" ^ (!stack_offset - (8 * addr) |> string_of_int) ^ "(%rbp), %rax\t# " ^ id_str ^ "\n" ^
   "\tpush\t%rax\n"
   |> Buffer.add_string code
 
@@ -158,26 +167,26 @@ let rec codegenx86 symt structdefs e_in =
         "\tcqto\n" ^
         "\tidivq\t%rbx\n" ^
         "\tpush\t%rax\n" |> Buffer.add_string code;
-        sp := !sp - 1
+        decr_sp ()
       | _ ->
         frec e1;
         frec e2;
         codegenx86_op op;
-        sp := !sp - 1)
+        decr_sp ())
 
   | Identifier (id_str) | Deref (Identifier (id_str)) ->
     let addr = List.assoc id_str symt in
-    codegenx86_id (addr);
-    sp := !sp + 1
+    codegenx86_id addr id_str;
+    incr_sp ()
 
   | Memaccess (_, _) -> failwith "Expression not implemented: Memaccess"
 
   | Let (x, e1, e2) | New (x, e1, e2) ->
+    "\t# " ^ x ^ " declared as: \n" |> Buffer.add_string code;
     frec e1;
     codegenx86 ((x, !sp) :: symt) structdefs e2;
     codegenx86_let ();
-
-    sp := !sp - 1
+    decr_sp ()
 
   | Ref (Identifier(id_str)) ->
     let addr = List.assoc id_str symt in
@@ -192,8 +201,8 @@ let rec codegenx86 symt structdefs e_in =
   | Asg (Identifier (id_str), e) ->
     frec e;
     let addr = List.assoc id_str symt in
-    let str_var_reg = (-16 - 8 * addr |> string_of_int) ^ "(%rbp)" in
-    "\t# write offset " ^ (string_of_int addr) ^ "\n" ^
+    let str_var_reg = (!stack_offset - 8 * addr |> string_of_int) ^ "(%rbp)" in
+    "\t# write (" ^ id_str ^ "), offset " ^ (string_of_int addr) ^ "\n" ^
     "\tpop\t%rax\n" ^
     "\tmov\t%rax, " ^ str_var_reg ^ "\n" ^
     "\tpush\t" ^ str_var_reg ^ "\n"
@@ -201,11 +210,15 @@ let rec codegenx86 symt structdefs e_in =
 
   | Seq (e, f) ->
     let _ = frec e in
+    "# (Pop previous value in sequence)\n" ^
+    "\tpop\t%rax\n"
+    |> Buffer.add_string code;
+    decr_sp ();
     frec f
 
   | Const_int n ->
     codegenx86_st n;
-    sp := !sp + 1
+    incr_sp ()
 
   | Const_bool b ->
     (* Run the bool as an int *)
@@ -225,7 +238,7 @@ let rec codegenx86 symt structdefs e_in =
     "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
     "\tjne\t" ^ str_label_if_nonzero ^ "\n"
     |> Buffer.add_string code;
-    sp := !sp - 1;
+    decr_sp ();
 
     (* Increase the counter of if statement labels *)
     ifelse_count := !ifelse_count + 1;
@@ -233,10 +246,11 @@ let rec codegenx86 symt structdefs e_in =
     (* If not jumping, just execute the else code (where the condition equals 0, ie FALSE) *)
     "### If false: \n" |> Buffer.add_string code;
     frec e_iffalse;
-    sp := !sp - 1; (* Decrement the sp as we have exited the scope of this If branch *)
     ("\tjmp\t" ^ str_label_continue ^ "\n") |> Buffer.add_string code;
 
+
     "### If true: \n" |> Buffer.add_string code;
+    sp := !sp - 1; (* Reset sp after the increase from generating if-false code *)
     str_label_if_nonzero ^ ":\n" |> Buffer.add_string code;
     frec e_iftrue;
 
@@ -257,18 +271,21 @@ let rec codegenx86 symt structdefs e_in =
     "\tcmp\t%rax, %rbx\n" ^ (* Compare the condition to 0 *)
     "\tje\t" ^ str_label_continue ^ "\n" (* If the condition is 0, exit the loop and continue *)
     |> Buffer.add_string code;
-    sp := !sp - 1;
+    decr_sp ();
 
     (* Generate code for the loop expression *)
     frec f;
 
     (* Discard the value pushed by f onto the stack *)
     "\tpop\t%rax\n" |> Buffer.add_string code;
-    sp := !sp - 1;
+    decr_sp ();
 
     (* Jump to the start of the loop, where we recalculate the condition *)
     "\tjmp\t" ^ str_label_loop ^ "\n" |> Buffer.add_string code;
-    str_label_continue   ^ ":\n" |> Buffer.add_string code
+    str_label_continue   ^ ":\n" ^
+    "\t# Push back the final value of the while loop to give it a value\n" ^
+    "\tpush\t%rax\n"|> Buffer.add_string code
+
 
   | Application (Identifier (str_func), args) ->
     (* Push all of the args onto the stack *)
@@ -287,7 +304,7 @@ let rec codegenx86 symt structdefs e_in =
     (*"\tsub\t$" ^ str_num_args ^ ", %rsp\n" ^ (* Discard the arguments into the redzone *)*)
 
     let rec pop_all = function
-      | h::tl -> "\tpop\t%rbx\n" |> Buffer.add_string code; frec_all tl
+      | h::tl -> "\tpop\t%rbx\n" |> Buffer.add_string code; pop_all tl
       | _ -> ()
     in
     pop_all args;
@@ -306,10 +323,9 @@ let rec codegenx86 symt structdefs e_in =
     "\tmovl\t%eax, %esi\n" ^
     "\tmovl\t$.LC0, %edi\n" ^
     "\tmovl\t$0, %eax\n" ^
-    "\tcall\tprintf\n" ^
-    "\tpop\t%rax\n"
-    |> Buffer.add_string code;
-    sp := !sp - 1
+    "\tcall\tprintf\n"
+    |> Buffer.add_string code(*;
+    decr_sp ()*)
 
   | Empty -> ()
   | Const_string (str) -> failwith "Const_strings not implemented for running with instruction sets."
@@ -347,6 +363,7 @@ let generate_function structdefs f = match f with Myfunc (str_func, args, e) ->
       stack_offset := 8 + (List.length args) * 8; (* Note: The constant 8 at the start accounts for the pushed rbp value *)
       sp := 0;
       List.iter (fun arg_name -> symt := (arg_name, !sp)::!symt; sp := !sp + 1) args;
+      sp := !sp + 1; (* For the pushed base pointer *)
       codegenx86 (!symt) structdefs e; (* Generate function code *)
       stack_offset := stack_offset_default;
       sp := 0;
