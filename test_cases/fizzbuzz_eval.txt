@@ -1,0 +1,46 @@
+include "util.txt"
+include "linked_list.txt"
+
+print_for_num(i)
+{
+  let isdiv3 = mod(i, 3) == 0 in
+  let isdiv5 = mod(i, 5) == 0 in
+
+  if(isdiv3 && isdiv5)
+  {
+    print("fizzbuzz")
+  }
+  else
+  {
+    if(isdiv3)
+    {
+      print("fizz")
+    }
+    else
+    {
+      if(isdiv5)
+      {
+        print("buzz")
+      }
+      else
+      {
+        print(i)
+      }
+    }
+  }
+}
+
+main()
+{
+  new num_list = struct linked_list in
+
+  new n = 0 in
+  while(~n <= 100)
+  {
+    num_list = ll_add(~num_list, ~n);
+    n = ~n + 1
+  };
+
+  ll_map(~num_list, &print_for_num);
+  ""
+}
